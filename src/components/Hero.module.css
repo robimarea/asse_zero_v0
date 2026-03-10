@@ -1,0 +1,69 @@
+.heroSection {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  padding: 6rem 2rem 2rem;
+}
+
+.heroContent {
+  text-align: center;
+  max-width: 1000px;
+}
+
+.quoteWrapper {
+  margin-bottom: 4rem;
+}
+
+.heroTitle {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  line-height: 1.2;
+  margin-bottom: 2rem;
+  /* gradient rimosso dal <p>, viene applicato su ogni <span> in Hero.jsx */
+}
+
+.heroAuthor {
+  font-family: 'Space Mono', monospace;
+  font-size: 1.2rem;
+  color: var(--text-gray);
+  letter-spacing: 2px;
+}
+
+.scrollIndicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(10px); }
+}
+
+.scrollLine {
+  width: 2px;
+  height: 60px;
+  background: linear-gradient(to bottom, var(--primary-blue), transparent);
+}
+
+.scrollText {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  color: var(--primary-blue);
+}
+
+@media (max-width: 768px) {
+  .heroSection {
+    padding-top: 8rem;
+  }
+
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+}

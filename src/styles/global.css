@@ -1,0 +1,109 @@
+/* ─── Reset & Variables ──────────────────────────────────────────────────── */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* ── Tints (chiaro → scuro) derivati da #92c8d3 ─────────────────────────
+     Salendo verso il bianco si ottiene un ghiaccio quasi latteo;
+     scendendo verso il nero si arriva al blu petrolio profondo.       */
+
+  --teal-100: #d6eef2;   /* ghiaccio, hover leggeri, bordi sottili        */
+  --teal-200: #b8dde4;   /* tint medio, placeholder, testo secondario light*/
+  --teal-300: #92c8d3;   /* ★ ACCENT PRIMARIO – il colore sorgente         */
+  --teal-400: #5a9aaa;   /* accent hover, link attivi, highlight           */
+  --teal-500: #2d6b78;   /* tono profondo, bordi forti, icone              */
+  --teal-600: #1a4550;   /* quasi-scuro, card overlay, sfumature           */
+
+  /* ── Sfondi ──────────────────────────────────────────────────────────────
+     --bg-base è nero con leggerissima dominante teal (non puro #000)
+     così quando i raggi WebGL colorano il buio la transizione è naturale  */
+  --bg-base:    #03090a;   /* sfondo principale – quasi-nero freddo          */
+  --bg-surface: #071215;   /* card, pannelli elevati                         */
+  --bg-overlay: #0d1e22;   /* modal, tooltip, dropdown                       */
+
+  /* ── Testo ───────────────────────────────────────────────────────────────*/
+  --text-primary:   #e4f3f6;   /* bianco ghiaccio – corpo testo principale  */
+  --text-secondary: #92c8d3;   /* teal puro – etichette, date, sottotitoli  */
+  --text-muted:     #4a7a87;   /* grigio-teal – placeholder, note           */
+  --text-dark:      #071215;   /* testo su sfondo chiaro                    */
+
+  /* ── Alias semantici (usati nei componenti esistenti) ────────────────────
+     Mantengono i vecchi nomi così non serve toccare ogni componente.       */
+  --primary-white:   var(--teal-100);
+  --light-gray:      var(--teal-200);
+  --medium-gray:     var(--teal-200);
+  --primary-blue:    var(--teal-300);   /* era l'arancio, ora è il teal     */
+  --secondary-blue:  var(--teal-400);
+  --light-blue:      var(--teal-100);
+  --accent-blue:     var(--teal-400);
+  --dark-blue:       var(--teal-500);
+  --dark-bg:         var(--bg-surface);
+  --darker-bg:       var(--bg-base);
+  --text-white:      var(--text-primary);
+  --text-gray:       var(--text-secondary);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  /* Quasi-nero freddo #03090a: non puro nero, ha una traccia teal
+     così i raggi WebGL si fondono nell'ambiente invece di sembrare incollati */
+  background: var(--bg-base);
+  color: var(--text-white);
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ─── Grid background DISABILITATO ──────────────────────────────────────── */
+/* Il .grid-background è stato rimosso dall'App.jsx: in questo modo
+   l'unica fonte di luce visiva sono i raggi WebGL su fondo nero assoluto. */
+.grid-background {
+  display: none;
+}
+
+/* ─── Layout Utilities ───────────────────────────────────────────────────── */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Section Scroll Reveal ──────────────────────────────────────────────── */
+section {
+  padding: 8rem 0;
+  position: relative;
+  z-index: 1;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Section Header ─────────────────────────────────────────────────────── */
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  background: linear-gradient(135deg, var(--light-blue), var(--primary-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+  letter-spacing: 3px;
+}
