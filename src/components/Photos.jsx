@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import useDragScroll from '../hooks/useDragScroll';
 import useAutoScroll from '../hooks/useAutoScroll';
+import FilmFrame from './FilmFrame';
 import styles from './Photos.module.css';
 
 const photos = [
@@ -14,13 +15,12 @@ const photos = [
 ];
 
 export default function Photos() {
-  const containerRef            = useRef(null);
+  const containerRef = useRef(null);
   const [lightboxSrc, setLightboxSrc] = useState(null);
 
   useDragScroll(containerRef, 'x', 0.8);
   useAutoScroll(containerRef, 'x', 0.6);
 
-  // Close lightbox on Escape
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') setLightboxSrc(null); };
     document.addEventListener('keydown', onKey);
@@ -34,54 +34,27 @@ export default function Photos() {
           <h2 className="section-title">LE MIE FOTO</h2>
         </div>
 
-        <div className={styles.photosScrollContainer} ref={containerRef}>
-          <div className={styles.photosScrollTrack}>
-            {photos.map((photo) => (
-              <div
-                key={photo.id}
-                className={styles.photoItem}
-                onClick={() => setLightboxSrc(photo.path)}
-              >
-                <div className={styles.photoWrapper}>
-                  <div className={styles.photoBorder} />
-                  <img
-                    src={photo.path}
-                    alt={`Foto ${photo.id}`}
-                    loading="eager"
-                    decoding="async"
-                    width="600"
-                    height="338"
-                  />
-                  <div className={styles.photoOverlay}>
-                    <div className={styles.photoInfo}>
-                      <p className={styles.photoDescription}>{photo.description}</p>
-                      <p className={styles.photoDate}>{photo.date}</p>
-                    </div>
+        {/* FilmFrame h: top+bottom strips. The .slot fills the space between them. */}
+        <FilmFrame variant="h" speed="16s" className={styles.frameOuter}>
+          <div className={styles.scrollArea} ref={containerRef}>
+            <div className={styles.track}>
+              {photos.map((photo) => (
+                <div key={photo.id} className={styles.item} onClick={() => setLightboxSrc(photo.path)}>
+                  <img src={photo.path} alt={`Foto ${photo.id}`} loading="eager" decoding="async" width="600" height="338" />
+                  <div className={styles.overlay}>
+                    <p className={styles.desc}>{photo.description}</p>
+                    <p className={styles.date}>{photo.date}</p>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        </FilmFrame>
       </div>
 
-      {/* Lightbox */}
       {lightboxSrc && (
-        <div
-          className={styles.lightbox}
-          onClick={(e) => {
-            if (e.target === e.currentTarget || e.target.tagName === 'IMG') {
-              setLightboxSrc(null);
-            }
-          }}
-        >
-          <button
-            className={styles.lightboxClose}
-            aria-label="Chiudi"
-            onClick={() => setLightboxSrc(null)}
-          >
-            X
-          </button>
+        <div className={styles.lightbox} onClick={(e) => { if (e.target === e.currentTarget || e.target.tagName === 'IMG') setLightboxSrc(null); }}>
+          <button className={styles.lbClose} aria-label="Chiudi" onClick={() => setLightboxSrc(null)}>✕</button>
           <img src={lightboxSrc} alt="Foto ingrandita" />
         </div>
       )}

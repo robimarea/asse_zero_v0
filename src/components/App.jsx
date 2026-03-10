@@ -14,19 +14,27 @@ import useScrollReveal from './hooks/useScrollReveal';
 
 export default function App() {
   const [loading, setLoading] = useState(true);
-  const done = useCallback(() => setLoading(false), []);
+
+  // Called by LoadingScreen when the exit animation ends
+  const handleLoadingComplete = useCallback(() => {
+    setLoading(false);
+  }, []);
 
   useScrollReveal('section');
 
   return (
     <>
       <Helmet>
-        <title>ASSE ZERO | Production</title>
-        <meta name="description" content="ASSE ZERO – Advertising, Short Films, Music Videos, Sound Design" />
+        <title>Portfolio | Gerardo Romani</title>
+        <meta name="description" content="Portfolio creativo di Gerardo Romani" />
       </Helmet>
 
-      {loading && <LoadingScreen onComplete={done} />}
+      {/* ── Loading screen – rendered on top until animation ends ── */}
+      {loading && (
+        <LoadingScreen onComplete={handleLoadingComplete} />
+      )}
 
+      {/* ── Main site ─────────────────────────────────────────────── */}
       <LightRays
         raysOrigin="top-center"
         raysColor="#92c8d3"

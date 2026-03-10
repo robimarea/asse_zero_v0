@@ -1,0 +1,203 @@
+/* ── Design tokens ────────────────────────────────────────────────────── */
+.frame {
+  --sh:          52px;          /* strip height (horizontal) / width (vertical) */
+  --hole-w:      18px;
+  --hole-h:      24px;
+  --cell:        32px;          /* pitch between hole centers                   */
+  --film-dark:   #050d0f;       /* acetate base colour                          */
+  --film-mid:    #091519;       /* slightly lighter stripe                      */
+  --rim:  rgba(146,200,211,.20);/* sprocket rim colour                          */
+  --glint:rgba(146,200,211,.22);/* top-left glint                               */
+  --edge: rgba(146,200,211,.18);/* edge lines                                   */
+
+  position: relative;
+  display: flex;
+}
+
+/* ── Flex axis per variant ────────────────────────────────────────────── */
+.var_h { flex-direction: column; }
+.var_v { flex-direction: row;    }
+
+/* ── Content slot ─────────────────────────────────────────────────────── */
+.slot {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;         /* clips scroll content to this area exactly */
+}
+
+/* ── Strip shell ──────────────────────────────────────────────────────── */
+.strip {
+  flex-shrink: 0;
+  display: flex;
+  background: var(--film-dark);
+  overflow: hidden;
+  position: relative;
+  z-index: 3;
+}
+
+/* horizontal strips stacked top/bottom */
+.top, .bot {
+  flex-direction: column;
+  width: 100%;
+  height: var(--sh);
+}
+
+/* vertical strips left/right */
+.left, .right {
+  flex-direction: row;
+  height: 100%;
+  width: var(--sh);
+}
+
+/* ── Edge lines ───────────────────────────────────────────────────────── */
+.edgeA, .edgeB {
+  flex-shrink: 0;
+  background: var(--edge);
+}
+
+/* horizontal strip: edges are full-width horizontal lines */
+.top .edgeA, .top .edgeB,
+.bot .edgeA, .bot .edgeB {
+  width: 100%;
+  height: 1px;
+}
+
+/* vertical strip: edges are full-height vertical lines */
+.left  .edgeA, .left  .edgeB,
+.right .edgeA, .right .edgeB {
+  height: 100%;
+  width: 1px;
+}
+
+/* outer edge — slightly dimmer */
+.edgeA { opacity: .6; }
+/* inner edge — brighter, sits right against the content */
+.edgeB {
+  opacity: 1;
+  /* adds a thin glow spilling toward the content */
+}
+.top  .edgeB { box-shadow:  0  3px 10px rgba(146,200,211,.06); }
+.bot  .edgeB { box-shadow:  0 -3px 10px rgba(146,200,211,.06); }
+.left .edgeB { box-shadow:  3px 0  10px rgba(146,200,211,.06); }
+.right .edgeB{ box-shadow: -3px 0  10px rgba(146,200,211,.06); }
+
+/* ── Sprocket channel ─────────────────────────────────────────────────── */
+.channel {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  /* subtle midtone so sprocket holes have something to punch through */
+  background: var(--film-mid);
+}
+
+/* ── Scrolling track ──────────────────────────────────────────────────── */
+.track {
+  position: absolute;
+  inset: 0;
+  display: flex;
+}
+
+.trackX {
+  flex-direction: row;
+  width: max-content;
+  align-items: center;
+  animation: scrollH var(--spd, 14s) linear infinite;
+}
+
+.trackY {
+  flex-direction: column;
+  height: max-content;
+  justify-content: flex-start;
+  align-items: center;
+  animation: scrollV var(--spd, 14s) linear infinite;
+}
+
+/* ── Inner duplicate (makes loop seamless) ────────────────────────────── */
+.inner      { display: flex; flex-shrink: 0; }
+.innerX     { flex-direction: row;    align-items: center; }
+.innerY     { flex-direction: column; align-items: center; }
+
+/* ── Cell wrapper ─────────────────────────────────────────────────────── */
+.cell {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.innerX .cell { width: var(--cell); height: 100%; }
+.innerY .cell { height: var(--cell); width: 100%; }
+
+/* ── Sprocket hole ────────────────────────────────────────────────────── */
+.hole {
+  display: block;
+  flex-shrink: 0;
+  width:  var(--hole-w);
+  height: var(--hole-h);
+  border-radius: 4px;
+  background: #020507;
+  border: 1px solid var(--rim);
+  position: relative;
+  /* punched-through depth effect */
+  box-shadow:
+    inset 0  2px  6px rgba(0,0,0,.95),
+    inset 0 -2px  4px rgba(0,0,0,.70),
+    inset 2px 0   4px rgba(0,0,0,.50),
+    0 0 0 1px rgba(0,0,0,.5);
+}
+
+/* horizontal strip: hole is portrait (taller than wide) — already default */
+/* vertical strip: hole rotates to landscape */
+.left  .hole,
+.right .hole {
+  width:  var(--hole-h);
+  height: var(--hole-w);
+}
+
+/* ── Hole detail: top-left glint ──────────────────────────────────────── */
+.holeInner {
+  position: absolute;
+  top:  3px;
+  left: 3px;
+  width:  6px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--glint);
+  opacity: .8;
+}
+
+/* vertical hole glint rotates */
+.left  .holeInner,
+.right .holeInner { width: 3px; height: 6px; }
+
+/* ── Acetate texture ──────────────────────────────────────────────────── */
+.acetate {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .05;
+  background-image: repeating-linear-gradient(
+    -48deg,
+    transparent,
+    transparent 4px,
+    rgba(146,200,211,.6) 4px,
+    rgba(146,200,211,.6) 5px
+  );
+  mix-blend-mode: overlay;
+}
+
+/* ── Keyframes ────────────────────────────────────────────────────────── */
+@keyframes scrollH {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+@keyframes scrollV {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trackX, .trackY { animation: none; }
+}
