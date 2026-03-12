@@ -1,60 +1,110 @@
-import { useState, useRef, useEffect } from 'react';
-import useDragScroll from '../hooks/useDragScroll';
-import useAutoScroll from '../hooks/useAutoScroll';
-import FilmFrame from './FilmFrame';
+import { useState } from 'react';
 import styles from './Photos.module.css';
 
+/* ─── Dati foto ───────────────────────────────────────────────────────────────
+   src: usa path locali dalla cartella public/photos/
+   Struttura cartelle corretta:
+     progetto/
+     ├── public/
+     │   └── photos/
+     │       ├── f1.jpg
+     │       ├── f2.jpg   ← estensione ESATTA (minuscola su Linux)
+     │       └── ...
+     ├── src/
+     └── index.html
+   In Vite i file in public/ si referenziano con /nomefile  (senza 'public')
+────────────────────────────────────────────────────────────────────────────── */
 const photos = [
-  { id: 1, description: 'Scatto creativo 1', date: 'Gennaio 2026',  path: '/photos/f1.jpg' },
-  { id: 2, description: 'Scatto creativo 2', date: 'Gennaio 2026',  path: '/photos/f2.jpg' },
-  { id: 3, description: 'Scatto creativo 3', date: 'Dicembre 2025', path: '/photos/f3.jpg' },
-  { id: 4, description: 'Scatto creativo 4', date: 'Dicembre 2025', path: '/photos/f4.jpg' },
-  { id: 5, description: 'Scatto creativo 5', date: 'Novembre 2025', path: '/photos/f5.jpg' },
-  { id: 6, description: 'Scatto creativo 6', date: 'Novembre 2025', path: '/photos/f6.jpg' },
-  { id: 7, description: 'Scatto creativo 7', date: 'Ottobre 2025',  path: '/photos/f7.jpg' },
+  { title: 'Campagna Autunnale',        category: 'Pubblicità',      date: 'Gennaio 2026',   src: '/photos/1.jpeg' },
+  { title: 'Brand Identity Shoot',      category: 'Pubblicità',      date: 'Dicembre 2025',  src: '/photos/2.jpeg' },
+  { title: 'Luce di Mezzogiorno',       category: 'Cortometraggio',  date: 'Novembre 2025',  src: '/photos/3.jpeg' },
+  { title: 'Il Confine',                category: 'Cortometraggio',  date: 'Ottobre 2025',   src: '/photos/4.jpeg' },
+  { title: 'Neon Nights',               category: 'Video Musicale',  date: 'Settembre 2025', src: '/photos/5.jpeg' },
+
 ];
 
-export default function Photos() {
-  const containerRef = useRef(null);
-  const [lightboxSrc, setLightboxSrc] = useState(null);
-
-  useDragScroll(containerRef, 'x', 0.8);
-  useAutoScroll(containerRef, 'x', 0.6);
-
-  useEffect(() => {
-    const onKey = (e) => { if (e.key === 'Escape') setLightboxSrc(null); };
-    document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
-  }, []);
+/* ─── Card singola ───────────────────────────────────────────────────────── */
+function Card({ card, index, hovered, setHovered, onOpen }) {
+  const isDimmed = hovered !== null && hovered !== index;
+  const isActive = hovered === index;
 
   return (
-    <section id="photos" className={styles.sliderSection}>
+    <div
+      className={[
+        styles.card,
+        isDimmed ? styles.dimmed : '',
+        isActive  ? styles.active  : '',
+      ].join(' ')}
+      onMouseEnter={() => setHovered(index)}
+      onMouseLeave={() => setHovered(null)}
+      onClick={() => onOpen(card)}
+    >
+      <img
+        src={card.src}
+        alt={card.title}
+        className={styles.cardImage}
+        loading="lazy"
+        decoding="async"
+      />
+      <div className={`${styles.overlay} ${isActive ? styles.overlayVisible : ''}`}>
+        <span className={styles.category}>{card.category}</span>
+        <span className={styles.title}>{card.title}</span>
+        <span className={styles.date}>{card.date}</span>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Componente principale ─────────────────────────────────────────────── */
+export default function Photos() {
+  const [hovered, setHovered]   = useState(null);
+  const [lightbox, setLightbox] = useState(null);
+
+  return (
+    <section id="photos" className={styles.section}>
       <div className="container">
         <div className="section-header">
           <h2 className="section-title">LE MIE FOTO</h2>
+          <p className={styles.subtitle}>
+            Scatti dal set — pubblicità, cortometraggi, videoclip, sound design
+          </p>
         </div>
 
-        <FilmFrame variant="h" speed="16s" className={styles.frameOuter}>
-          <div className={styles.scrollArea} ref={containerRef}>
-            <div className={styles.track}>
-              {photos.map((photo) => (
-                <div key={photo.id} className={styles.item} onClick={() => setLightboxSrc(photo.path)}>
-                  <img src={photo.path} alt={`Foto ${photo.id}`} loading="eager" decoding="async" width="600" height="338" />
-                  <div className={styles.overlay}>
-                    <p className={styles.desc}>{photo.description}</p>
-                    <p className={styles.date}>{photo.date}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </FilmFrame>
+        <div className={styles.grid}>
+          {photos.map((card, index) => (
+            <Card
+              key={index}
+              card={card}
+              index={index}
+              hovered={hovered}
+              setHovered={setHovered}
+              onOpen={setLightbox}
+            />
+          ))}
+        </div>
       </div>
 
-      {lightboxSrc && (
-        <div className={styles.lightbox} onClick={(e) => { if (e.target === e.currentTarget || e.target.tagName === 'IMG') setLightboxSrc(null); }}>
-          <button className={styles.lbClose} aria-label="Chiudi" onClick={() => setLightboxSrc(null)}>✕</button>
-          <img src={lightboxSrc} alt="Foto ingrandita" />
+      {lightbox && (
+        <div
+          className={styles.lightbox}
+          onClick={(e) => {
+            if (e.target === e.currentTarget || e.target.tagName === 'IMG')
+              setLightbox(null);
+          }}
+        >
+          <button
+            className={styles.lbClose}
+            aria-label="Chiudi"
+            onClick={() => setLightbox(null)}
+          >✕</button>
+          <div className={styles.lbInner}>
+            <img src={lightbox.src} alt={lightbox.title} />
+            <span className={styles.lbMeta}>
+              <span className={styles.lbCategory}>{lightbox.category}</span>
+              {' — '}
+              <span className={styles.lbTitle}>{lightbox.title}</span>
+            </span>
+          </div>
         </div>
       )}
     </section>
