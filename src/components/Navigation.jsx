@@ -1,36 +1,28 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { gsap } from 'gsap';
 import styles from './Navigation.module.css';
 
 const NAV_ITEMS = [
-  { href: '#about',    label: 'About',     num: '01' },
-  { href: '#photos',   label: 'Foto',      num: '02' },
-  { href: '#videos',   label: 'Video',     num: '03' },
-  { href: '#services', label: 'Servizi',   num: '04' },
-  { href: '#contact',  label: 'Contatti',  num: '05' },
+  { to: '/',        label: 'Home',    num: '01' },
+  { to: '/work',    label: 'Work',    num: '02' },
+  { to: '/servizi', label: 'Servizi', num: '03' },
 ];
 
 export default function Navigation() {
-  const [isOpen, setIsOpen]       = useState(false);
-  const [activeHref, setActive]   = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const location            = useLocation();
+  const navigate            = useNavigate();
 
-  const overlayRef    = useRef(null);
-  const bgRef         = useRef(null);
-  const linksRef      = useRef([]);
-  const metaRef       = useRef(null);
-  const bar1Ref       = useRef(null);
-  const bar2Ref       = useRef(null);
-  const tlRef         = useRef(null);
+  const overlayRef  = useRef(null);
+  const bgRef       = useRef(null);
+  const linksRef    = useRef([]);
+  const metaRef     = useRef(null);
+  const bar1Ref     = useRef(null);
+  const bar2Ref     = useRef(null);
+  const tlRef       = useRef(null);
 
-  /* track active section */
-  useEffect(() => {
-    const onHash = () => setActive(window.location.hash || '');
-    window.addEventListener('hashchange', onHash);
-    onHash();
-    return () => window.removeEventListener('hashchange', onHash);
-  }, []);
-
-  /* build GSAP timeline once */
+  /* Build GSAP timeline once */
   useEffect(() => {
     const overlay = overlayRef.current;
     const bg      = bgRef.current;
@@ -43,7 +35,6 @@ export default function Navigation() {
     gsap.set(meta,    { opacity: 0, y: 20 });
 
     const tl = gsap.timeline({ paused: true });
-
     tl
       .set(overlay, { visibility: 'visible' })
       .to(bg, { scaleY: 1, duration: 0.65, ease: 'expo.inOut' })
@@ -62,8 +53,6 @@ export default function Navigation() {
     setIsOpen(true);
     document.body.style.overflow = 'hidden';
     tlRef.current?.play();
-
-    /* hamburger → X */
     gsap.to(bar1Ref.current, { rotation: 45,  y:  6, duration: 0.35, ease: 'power3.out' });
     gsap.to(bar2Ref.current, { rotation: -45, y: -6, duration: 0.35, ease: 'power3.out' });
   }, []);
@@ -72,25 +61,19 @@ export default function Navigation() {
     setIsOpen(false);
     document.body.style.overflow = '';
     tlRef.current?.reverse();
-
-    /* X → hamburger */
     gsap.to(bar1Ref.current, { rotation: 0, y: 0, duration: 0.35, ease: 'power3.out' });
     gsap.to(bar2Ref.current, { rotation: 0, y: 0, duration: 0.35, ease: 'power3.out' });
   }, []);
 
   const toggle = () => (isOpen ? close() : open());
 
-  const handleLinkClick = (e, href) => {
+  const handleLinkClick = (e, to) => {
     e.preventDefault();
     close();
-    setTimeout(() => {
-      document.querySelector(href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      window.history.pushState(null, '', href);
-      setActive(href);
-    }, 600);
+    setTimeout(() => navigate(to), 600);
   };
 
-  /* close on ESC */
+  /* Close on ESC */
   useEffect(() => {
     const onKey = e => { if (e.key === 'Escape' && isOpen) close(); };
     window.addEventListener('keydown', onKey);
@@ -101,13 +84,13 @@ export default function Navigation() {
     <>
       {/* ── Fixed top bar ── */}
       <header className={styles.header}>
-        <a
+        <Link
           className={styles.logo}
-          href="#hero"
-          onClick={e => handleLinkClick(e, '#hero')}
+          to="/"
+          onClick={() => isOpen && close()}
         >
           ASSE ZERO
-        </a>
+        </Link>
 
         <button
           className={styles.menuBtn}
@@ -125,23 +108,21 @@ export default function Navigation() {
 
       {/* ── Fullscreen overlay ── */}
       <div className={styles.overlay} ref={overlayRef} aria-hidden={!isOpen}>
-        {/* animated background panel */}
         <div className={styles.overlayBg} ref={bgRef} />
 
         <div className={styles.overlayInner}>
-          {/* big nav links */}
-          <nav className={styles.overlayNav} aria-label="Fullscreen navigation">
+          <nav className={styles.overlayNav} aria-label="Navigazione principale">
             <ul className={styles.overlayList}>
               {NAV_ITEMS.map((item, i) => (
                 <li
-                  key={item.href}
+                  key={item.to}
                   className={styles.overlayItem}
                   ref={el => { linksRef.current[i] = el; }}
                 >
                   <a
-                    href={item.href}
-                    className={`${styles.overlayLink}${activeHref === item.href ? ` ${styles.active}` : ''}`}
-                    onClick={e => handleLinkClick(e, item.href)}
+                    href={item.to}
+                    className={`${styles.overlayLink}${location.pathname === item.to ? ` ${styles.active}` : ''}`}
+                    onClick={e => handleLinkClick(e, item.to)}
                     tabIndex={isOpen ? 0 : -1}
                   >
                     <span className={styles.linkNum}>{item.num}</span>
@@ -164,7 +145,6 @@ export default function Navigation() {
             </ul>
           </nav>
 
-          {/* bottom meta row */}
           <div className={styles.overlayMeta} ref={metaRef}>
             <span className={styles.metaTag}>Production Studio</span>
             <div className={styles.metaSocials}>

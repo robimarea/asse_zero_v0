@@ -438,3 +438,17 @@
   .phaseItem { border-right: none; border-bottom: 1px solid rgba(146,200,211,.08); padding-right: 0; padding-left: 0 !important; }
   .phaseItem:last-child { border-bottom: none; }
 }
+
+/* ── Button overrides for React Router navigation ─────────────────── */
+/* These override default <button> styles so .btnPrimary / .btnSecondary
+   look identical to the original <a> tag styles */
+.btnPrimary {
+  border: none;
+  cursor: pointer;
+}
+
+.btnSecondary {
+  background: none;
+  border: none;
+  cursor: pointer;
+}

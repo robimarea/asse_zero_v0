@@ -1,72 +1,217 @@
-.section { padding: 8rem 0; background: transparent; }
+/* Contact.module.css — stessa architettura di Services.module.css */
 
-.layout {
-  display: grid;
-  grid-template-columns: 1fr 1.6fr;
-  gap: 6rem;
-  align-items: start;
-  max-width: 1100px;
+/* ─── Section wrapper ──────────────────────────────────────── */
+.section {
+  width: 100%;
+  overflow: hidden;
+  padding-bottom: 10rem;
+}
+
+/* ─── Section header ───────────────────────────────────────── */
+.sectionHeader {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10rem 2rem 5rem;
+  text-align: center;
+}
+
+.sectionLabel {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #666;
+  margin: 0 0 1.5rem;
+}
+
+.sectionTitle {
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: #fff;
+  margin: 0 0 2rem;
+  line-height: 1;
+}
+
+.sectionIntro {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: #888;
+  line-height: 1.7;
+  max-width: 600px;
   margin: 0 auto;
 }
 
-/* ── Info column ──────────────────────────────────────────────────── */
+/* ─── Card section (ContainerScroll wrapper) ───────────────── */
+.cardSection {
+  position: relative;
+  padding: 4rem 2rem 4rem;
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Title above the card */
+.cardTitle {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.cardIndex {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.75rem;
+  color: var(--teal-300, #92c8d3);
+  letter-spacing: 0.2em;
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+.cardHeadline {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  color: #fff;
+  margin: 0;
+  line-height: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.cardSubtitle {
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--teal-300, #92c8d3);
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* ─── Perspective wrapper ──────────────────────────────────── */
+.cardPerspective {
+  width: 100%;
+  max-width: 1200px;
+  perspective: 1200px;
+  perspective-origin: center 30%;
+}
+
+/* ─── The GlareCard ────────────────────────────────────────── */
+.card {
+  width: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  position: relative;
+  will-change: transform;
+  transform-style: preserve-3d;
+  background: #0a0c10;
+  border: 1px solid rgba(146, 200, 211, 0.08);
+  box-shadow:
+    0 2px 2px rgba(0, 0, 0, 0.4),
+    0 20px 60px rgba(0, 0, 0, 0.7),
+    0 60px 120px rgba(0, 0, 0, 0.5);
+  transition: transform 0.08s ease-out, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow:
+    0 2px 2px rgba(0, 0, 0, 0.4),
+    0 30px 80px rgba(0, 0, 0, 0.8),
+    0 0 60px rgba(146, 200, 211, 0.08);
+}
+
+/* ─── Glare overlay ─────────────────────────────────────────── */
+.glareOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  border-radius: inherit;
+  transition: background 0.08s ease-out, opacity 0.3s ease;
+}
+
+/* ─── Inner layout ──────────────────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1.6fr;
+  min-height: 520px;
+}
+
+/* ─── Info column ───────────────────────────────────────────── */
 .info {
   display: flex;
   flex-direction: column;
   gap: 1.8rem;
-  padding-top: .5rem;
+  padding: 3.5rem;
+  border-right: 1px solid rgba(146, 200, 211, 0.06);
+  position: relative;
 }
 
 .infoLead {
   font-family: 'Archivo Black', sans-serif;
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
-  line-height: 1.2;
-  color: var(--text-primary);
-  letter-spacing: -.3px;
+  font-size: clamp(1.4rem, 2.5vw, 2rem);
+  line-height: 1.25;
+  color: #fff;
+  letter-spacing: -0.3px;
 }
 
 .infoBody {
-  font-size: 1rem;
+  font-size: 0.95rem;
   line-height: 1.9;
-  color: var(--text-secondary);
+  color: #888;
 }
 
-.contact_details {
+.contactDetails {
   display: flex;
   flex-direction: column;
-  gap: .4rem;
-  padding-top: .5rem;
-  border-top: 1px solid rgba(146,200,211,.1);
+  gap: 0.4rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(146, 200, 211, 0.08);
+  margin-top: auto;
 }
 
 .contactLabel {
-  font-family: 'Space Mono', monospace;
-  font-size: .65rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.65rem;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--teal-500);
+  color: var(--teal-500, #5a9aaa);
   margin-top: 1rem;
 }
 
 .contactLink {
-  font-size: .95rem;
-  color: var(--teal-300);
+  font-size: 0.95rem;
+  color: var(--teal-300, #92c8d3);
   text-decoration: none;
-  transition: color .25s ease;
+  transition: color 0.25s ease;
 }
-.contactLink:hover { color: var(--teal-100); }
+.contactLink:hover { color: #c8eef5; }
 
-/* ── Form column ──────────────────────────────────────────────────── */
-.formWrap {
-  border: 1px solid rgba(146,200,211,.09);
-  background: rgba(146,200,211,.015);
-  padding: 3rem;
+/* Accent bar decorativa (come .cardAccentBar in Services) */
+.accentBar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  background: var(--teal-300, #92c8d3);
+  opacity: 0.5;
+}
+
+/* ─── Form column ───────────────────────────────────────────── */
+.formCol {
+  padding: 3.5rem;
 }
 
 .form {
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
+  height: 100%;
 }
 
 .row {
@@ -78,78 +223,112 @@
 .group {
   display: flex;
   flex-direction: column;
-  gap: .45rem;
+  gap: 0.45rem;
 }
 
 .group label {
-  font-family: 'Space Mono', monospace;
-  font-size: .65rem;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.65rem;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: var(--text-secondary);
+  color: #666;
 }
 
 .group input,
 .group textarea {
-  padding: .85rem 1rem;
-  background: rgba(146,200,211,.025);
-  border: 1px solid rgba(146,200,211,.1);
-  border-radius: 0;
-  color: var(--text-primary);
+  padding: 0.85rem 1rem;
+  background: rgba(146, 200, 211, 0.025);
+  border: 1px solid rgba(146, 200, 211, 0.1);
+  border-radius: 6px;
+  color: #f0f0f0;
   font-family: 'DM Sans', sans-serif;
-  font-size: .93rem;
+  font-size: 0.93rem;
   outline: none;
-  transition: border-color .25s ease, background .25s ease;
+  transition: border-color 0.25s ease, background 0.25s ease;
 }
 
 .group input::placeholder,
-.group textarea::placeholder { color: var(--text-muted); }
+.group textarea::placeholder { color: #444; }
 
 .group input:focus,
 .group textarea:focus {
-  border-color: rgba(146,200,211,.35);
-  background: rgba(146,200,211,.04);
+  border-color: rgba(146, 200, 211, 0.35);
+  background: rgba(146, 200, 211, 0.04);
 }
 
 .group textarea { resize: vertical; min-height: 130px; }
 
+/* ─── Button ────────────────────────────────────────────────── */
 .btn {
-  padding: .9rem 2.4rem;
-  background: var(--teal-300);
+  padding: 0.9rem 2.4rem;
+  background: var(--teal-300, #92c8d3);
   border: none;
-  color: var(--bg-base);
-  font-family: 'Space Mono', monospace;
-  font-size: .75rem;
+  color: #060a0c;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.75rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2px;
   cursor: pointer;
   align-self: flex-start;
-  display: flex; align-items: center; gap: .8rem;
-  transition: background .25s ease, transform .2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  border-radius: 4px;
+  transition: background 0.25s ease, transform 0.2s ease;
 }
 .btn svg { width: 14px; height: 14px; stroke-width: 2; }
-.btn:hover { background: var(--teal-100); transform: translateY(-2px); }
+.btn:hover { background: #c8eef5; transform: translateY(-2px); }
 
+/* ─── Status messages ───────────────────────────────────────── */
 .msg {
-  padding: .9rem 1rem;
-  font-size: .88rem;
-  letter-spacing: .3px;
-  border-radius: 0;
+  padding: 0.9rem 1rem;
+  font-size: 0.88rem;
+  letter-spacing: 0.3px;
+  border-radius: 6px;
 }
 .success {
-  background: rgba(146,200,211,.06);
-  border: 1px solid rgba(146,200,211,.22);
-  color: var(--teal-100);
+  background: rgba(146, 200, 211, 0.06);
+  border: 1px solid rgba(146, 200, 211, 0.22);
+  color: #c8eef5;
 }
 .error {
-  background: rgba(200,50,50,.06);
-  border: 1px solid rgba(200,50,50,.22);
+  background: rgba(200, 50, 50, 0.06);
+  border: 1px solid rgba(200, 50, 50, 0.22);
   color: #ff8a8a;
 }
 
+/* ─── Responsive ────────────────────────────────────────────── */
 @media (max-width: 900px) {
-  .layout { grid-template-columns: 1fr; gap: 4rem; }
-  .formWrap { padding: 2rem 1.5rem; }
-  .row { grid-template-columns: 1fr; }
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .info {
+    border-right: none;
+    border-bottom: 1px solid rgba(146, 200, 211, 0.06);
+    padding: 2.5rem 2rem;
+  }
+
+  .formCol {
+    padding: 2.5rem 2rem;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .cardSection {
+    padding: 4rem 1rem 2rem;
+    min-height: 60vh;
+  }
+
+  .cardTitle {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .sectionHeader {
+    padding: 6rem 1.5rem 4rem;
+  }
 }

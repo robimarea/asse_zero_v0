@@ -27,7 +27,6 @@ export default function Videos() {
           <h2 className="section-title">I MIEI VIDEO</h2>
         </div>
 
-        {/* FilmFrame v: left+right strips. The .slot fills the space between them. */}
         <FilmFrame variant="v" speed="12s" className={styles.frameOuter}>
           <div className={styles.scrollArea} ref={containerRef}>
             <div className={styles.grid}>

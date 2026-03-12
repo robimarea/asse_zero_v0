@@ -34,7 +34,6 @@ export default function Photos() {
           <h2 className="section-title">LE MIE FOTO</h2>
         </div>
 
-        {/* FilmFrame h: top+bottom strips. The .slot fills the space between them. */}
         <FilmFrame variant="h" speed="16s" className={styles.frameOuter}>
           <div className={styles.scrollArea} ref={containerRef}>
             <div className={styles.track}>

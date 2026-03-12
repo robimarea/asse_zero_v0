@@ -1,0 +1,687 @@
+/* ═══════════════════════════════════════════════════════════════
+   HomeStory.module.css
+   ─────────────────────────────────────────────────────────────
+   All scroll-driven animations live here.
+
+   The reveal system works in three layers:
+     1. Elements with [data-reveal] start in a hidden/transformed
+        state defined by their class rules below.
+     2. JavaScript (IntersectionObserver) adds data-visible="true"
+        when the element enters the viewport.
+     3. CSS transitions fire: opacity, transform, clip-path.
+
+   CSS custom properties on individual elements (--wi, --delay, --fi)
+   let us stagger animations across siblings without any JS timers.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Wrapper ─────────────────────────────────────────────────── */
+.story {
+  background: var(--bg-base);
+  position:   relative;
+  z-index:    1;
+  overflow-x: hidden;  /* prevent horizontal flash during clip-path reveal */
+}
+
+/* ── Shared: small monospace label chip ──────────────────────── */
+.chip {
+  display:       inline-block;
+  font-family:   'Space Mono', monospace;
+  font-size:     0.72rem;
+  letter-spacing: 3px;
+  color:         var(--teal-300);
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+
+  /* Start invisible — parent [data-visible="true"] triggers it */
+  opacity:   0;
+  transform: translateY(18px);
+  transition: opacity 0.55s ease 0.15s, transform 0.55s ease 0.15s;
+}
+
+[data-visible="true"] .chip {
+  opacity:   1;
+  transform: none;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   01 — MANIFESTO
+   ═══════════════════════════════════════════════════════════════ */
+.manifestoWrap {
+  min-height: 95vh;
+  display:    flex;
+  align-items: center;
+  justify-content: space-between;
+  padding:    10rem 4rem 8rem;
+  max-width:  1400px;
+  margin:     0 auto;
+  gap:        4rem;
+  position:   relative;
+}
+
+@media (max-width: 900px) {
+  .manifestoWrap {
+    flex-direction: column;
+    align-items:    flex-start;
+    padding:        8rem 2rem 5rem;
+    min-height:     auto;
+  }
+}
+
+.manifestoInner { flex: 1; }
+
+/* ─ Word-by-word heading ──────────────────────────────────────
+   Each word is wrapped in an overflow:hidden container (.wordMask)
+   so the animated inner span slides up from below without being
+   seen before the trigger point.                               */
+.manifestoHeading {
+  font-family:   'Archivo Black', sans-serif;
+  font-size:     clamp(3.8rem, 9vw, 10rem);
+  line-height:   0.92;
+  color:         var(--text-primary);
+  margin-bottom: 2.5rem;
+  display:       flex;
+  flex-wrap:     wrap;
+  /* Small gap between words; inside each .wordMask is a separate block */
+  gap:           0 0.25em;
+}
+
+/* The "overflow container" — hides the wordInner when it's below */
+.wordMask {
+  display:       inline-block;
+  overflow:      hidden;
+  vertical-align: bottom;   /* align baseline correctly */
+  line-height:   1.05;       /* tighten so revealed text seats flush */
+}
+
+/* The animated span — starts 110 % below, slides to 0 */
+.wordInner {
+  display:       inline-block;
+  transform:     translateY(110%);
+  opacity:       0;
+  /* delay = base offset + (word index × step) */
+  transition:
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1)
+              calc(0.25s + var(--wi, 0) * 0.13s),
+    opacity   0.7s ease
+              calc(0.25s + var(--wi, 0) * 0.13s);
+}
+
+/* Triggered when the parent [data-reveal] becomes visible */
+[data-visible="true"] .wordInner {
+  transform: translateY(0);
+  opacity:   1;
+}
+
+.manifestoBody {
+  font-family:   'DM Sans', sans-serif;
+  font-size:     clamp(0.95rem, 1.4vw, 1.15rem);
+  color:         var(--teal-200);
+  line-height:   1.85;
+  max-width:     520px;
+
+  /* Delayed so it appears after the heading finishes */
+  opacity:   0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease 1.0s, transform 0.7s ease 1.0s;
+}
+
+[data-visible="true"] .manifestoBody {
+  opacity:   1;
+  transform: none;
+}
+
+/* ─ Decorative vertical text (right edge) ─────────────────── */
+.manifestoSide {
+  display:        flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-self:     flex-end;
+  gap:            1rem;
+  padding-bottom: 2rem;
+}
+
+@media (max-width: 900px) { .manifestoSide { display: none; } }
+
+.manifestoSide span {
+  font-family:   'Space Mono', monospace;
+  font-size:     0.62rem;
+  letter-spacing: 4px;
+  color:         var(--teal-600);
+  text-transform: uppercase;
+  writing-mode:  vertical-lr;
+  transform:     rotate(180deg);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   02 — SERVICES
+   ═══════════════════════════════════════════════════════════════ */
+.servicesWrap {
+  padding:   4rem 4rem 6rem;
+  max-width: 1400px;
+  margin:    0 auto;
+}
+
+@media (max-width: 900px) {
+  .servicesWrap { padding: 3rem 2rem 4rem; }
+}
+
+.servicesHeader {
+  margin-bottom: 3rem;
+}
+
+.servicesTagline {
+  font-family:  'Archivo Black', sans-serif;
+  font-size:    clamp(1.4rem, 3vw, 2.2rem);
+  color:        var(--text-primary);
+  margin-top:   0.3rem;
+
+  opacity:   0;
+  transform: translateX(-40px);
+  transition: opacity 0.7s ease 0.3s, transform 0.7s ease 0.3s;
+}
+
+[data-visible="true"] .servicesTagline {
+  opacity:   1;
+  transform: none;
+}
+
+/* ─ Cards grid ────────────────────────────────────────────── */
+.servicesGrid {
+  display:               grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:                   2px;        /* tiny gap so they look like a grid */
+  border:                1px solid var(--teal-600);
+}
+
+@media (max-width: 768px) {
+  .servicesGrid { grid-template-columns: 1fr; }
+}
+
+/* Each card starts clipped to 0 height (bottom clip) and reveals upward */
+.card {
+  position:     relative;
+  aspect-ratio: 4 / 3;
+  overflow:     hidden;
+  cursor:       pointer;
+
+  /* Initial: clip from bottom (card is invisible) */
+  clip-path:  inset(0 0 100% 0);
+  /* Delay comes from the --delay CSS variable set inline in JSX */
+  transition: clip-path 1s cubic-bezier(0.16, 1, 0.3, 1) var(--delay, 0ms);
+}
+
+/* When the card itself gets data-visible="true" */
+.card[data-visible="true"] {
+  clip-path: inset(0 0 0% 0);
+}
+
+/* Photo background that slightly zooms on hover */
+.cardBg {
+  position:            absolute;
+  inset:               0;
+  background-size:     cover;
+  background-position: center;
+  filter:              brightness(0.35);
+  transition:          transform 0.7s ease, filter 0.7s ease;
+}
+
+.card:hover .cardBg {
+  transform: scale(1.05);
+  filter:    brightness(0.55);
+}
+
+/* Gradient from bottom for text legibility */
+.cardVeil {
+  position: absolute;
+  inset:    0;
+  background: linear-gradient(
+    to top,
+    rgba(3, 9, 10, 0.97) 0%,
+    rgba(3, 9, 10, 0.4)  55%,
+    transparent          100%
+  );
+}
+
+.cardBody {
+  position:       absolute;
+  bottom:         0;
+  left:           0;
+  right:          0;
+  padding:        2rem;
+  display:        flex;
+  flex-direction: column;
+  gap:            0.4rem;
+}
+
+.cardNum {
+  font-family:   'Space Mono', monospace;
+  font-size:     0.78rem;
+  letter-spacing: 2px;
+  color:         var(--teal-300);
+}
+
+.cardTitle {
+  font-family:   'Archivo Black', sans-serif;
+  font-size:     clamp(1.5rem, 3vw, 2.2rem);
+  color:         var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.cardSub {
+  font-family:   'DM Sans', sans-serif;
+  font-size:     0.82rem;
+  color:         var(--teal-200);
+  letter-spacing: 0.5px;
+}
+
+/* Arrow revealed on hover */
+.cardArrow {
+  position:  absolute;
+  top:       1.5rem;
+  right:     1.5rem;
+  font-size: 1.4rem;
+  color:     var(--teal-300);
+  opacity:   0;
+  transform: translate(-8px, 8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.card:hover .cardArrow {
+  opacity:   1;
+  transform: translate(0, 0);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   03 — DIPTYCH
+   ═══════════════════════════════════════════════════════════════ */
+.diptych {
+  display:               grid;
+  grid-template-columns: 58% 42%;
+  min-height:            80vh;
+  overflow:              hidden;
+}
+
+@media (max-width: 900px) {
+  .diptych { grid-template-columns: 1fr; }
+}
+
+/* ─ Photo side: wipes in from the right edge ─────────────── */
+.diptychPhoto {
+  position:   relative;
+  overflow:   hidden;
+
+  /* Start: fully hidden — the clip hides everything to the right
+     of the left edge (100 % right clip = show nothing)           */
+  clip-path:  inset(0 100% 0 0);
+  transition: clip-path 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.1s;
+}
+
+.diptychPhoto[data-visible="true"] {
+  clip-path: inset(0 0% 0 0);   /* fully revealed */
+}
+
+.diptychPhoto img {
+  width:       100%;
+  height:      100%;
+  object-fit:  cover;
+  display:     block;
+}
+
+.photoCaption {
+  position:      absolute;
+  bottom:        1.5rem;
+  left:          1.5rem;
+  font-family:   'Space Mono', monospace;
+  font-size:     0.68rem;
+  letter-spacing: 3px;
+  color:         var(--teal-300);
+  text-transform: uppercase;
+}
+
+/* ─ Text side ─────────────────────────────────────────────── */
+.diptychText {
+  padding:        5rem 3.5rem 5rem 4rem;
+  display:        flex;
+  flex-direction: column;
+  justify-content: center;
+  gap:            1.5rem;
+  background:     var(--bg-surface);
+}
+
+@media (max-width: 900px) {
+  .diptychText { padding: 3rem 2rem; }
+}
+
+.diptychHeading {
+  font-family:   'Archivo Black', sans-serif;
+  font-size:     clamp(2rem, 4vw, 3.4rem);
+  color:         var(--text-primary);
+  line-height:   1.1;
+
+  opacity:   0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease 0.2s, transform 0.7s ease 0.2s;
+}
+
+[data-visible="true"] .diptychHeading {
+  opacity:   1;
+  transform: none;
+}
+
+.diptychHeading em {
+  font-style: italic;
+  color:      var(--teal-300);
+}
+
+.diptychBody {
+  font-family:   'DM Sans', sans-serif;
+  font-size:     clamp(0.95rem, 1.3vw, 1.05rem);
+  color:         var(--teal-200);
+  line-height:   1.8;
+  max-width:     420px;
+
+  opacity:   0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease 0.45s, transform 0.6s ease 0.45s;
+}
+
+[data-visible="true"] .diptychBody {
+  opacity:   1;
+  transform: none;
+}
+
+.ghostBtn {
+  display:        inline-flex;
+  align-items:    center;
+  gap:            0.5rem;
+  align-self:     flex-start;
+  background:     none;
+  border:         1px solid var(--teal-500);
+  color:          var(--teal-300);
+  font-family:    'Space Mono', monospace;
+  font-size:      0.82rem;
+  letter-spacing: 2px;
+  padding:        0.85rem 1.7rem;
+  cursor:         pointer;
+
+  /* Hidden initially; revealed with delay after the text */
+  opacity:   0;
+  transform: translateY(18px);
+  /* NOTE: include ALL transition properties in one declaration
+     so hover overrides work correctly */
+  transition:
+    opacity      0.6s ease 0.65s,
+    transform    0.6s ease 0.65s,
+    background   0.3s ease,
+    color        0.3s ease,
+    border-color 0.3s ease;
+}
+
+[data-visible="true"] .ghostBtn {
+  opacity:   1;
+  transform: none;
+}
+
+.ghostBtn:hover {
+  background:   var(--teal-300);
+  color:        var(--bg-base);
+  border-color: var(--teal-300);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   04 — FILM STRIP  (CSS infinite marquee)
+   ═══════════════════════════════════════════════════════════════ */
+.stripWrap {
+  padding: 5rem 0 3rem;
+
+  /* The wrapper itself fades + slides into view */
+  opacity:   0;
+  transform: translateY(50px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+
+.stripWrap[data-visible="true"] {
+  opacity:   1;
+  transform: none;
+}
+
+/* Viewport that masks the overflow from the marquee */
+.stripViewport {
+  overflow:  hidden;
+  width:     100%;
+}
+
+/* The actual scrolling track — two identical sets of photos
+   make a seamless loop: when the first set scrolls off-screen
+   the second has taken its position and the animation resets. */
+.strip {
+  display:   flex;
+  gap:       0.5rem;
+  width:     max-content;
+
+  /* Pause until the wrapper becomes visible so the first
+     impression is always the full strip in motion */
+  animation: marquee 28s linear infinite;
+  animation-play-state: paused;
+}
+
+.stripWrap[data-visible="true"] .strip {
+  animation-play-state: running;
+}
+
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }  /* -50 % = one full set width */
+}
+
+.frame {
+  flex:         0 0 280px;
+  aspect-ratio: 16 / 10;
+  overflow:     hidden;
+}
+
+@media (max-width: 600px) {
+  .frame { flex: 0 0 220px; }
+}
+
+.frame img {
+  width:      100%;
+  height:     100%;
+  object-fit: cover;
+  display:    block;
+  filter:     grayscale(0.25) brightness(0.85);
+  transition: filter 0.4s ease;
+}
+
+.frame:hover img {
+  filter: grayscale(0) brightness(1);
+}
+
+/* Label row below the strip */
+.stripMeta {
+  display:     flex;
+  align-items: center;
+  gap:         1.2rem;
+  padding:     1.4rem 4rem 0;
+}
+
+@media (max-width: 900px) {
+  .stripMeta { padding-left: 2rem; }
+}
+
+.stripLabel {
+  font-family:   'Space Mono', monospace;
+  font-size:     0.72rem;
+  letter-spacing: 2px;
+  color:         var(--teal-500);
+}
+
+.stripCta {
+  background:    none;
+  border:        none;
+  color:         var(--teal-300);
+  font-family:   'Space Mono', monospace;
+  font-size:     0.72rem;
+  letter-spacing: 2px;
+  cursor:        pointer;
+  padding:       0;
+  transition:    color 0.3s ease;
+}
+
+.stripCta:hover { color: var(--text-primary); }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   05 — DIRECTOR QUOTE
+   A "focus pull" entry: scales from 96 % → 100 % while fading.
+   ═══════════════════════════════════════════════════════════════ */
+.quoteSection {
+  padding:    8rem 4rem;
+  max-width:  900px;
+  margin:     0 auto;
+  text-align: center;
+
+  opacity:   0;
+  transform: scale(0.96) translateY(30px);
+  transition: opacity 1.1s ease, transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.quoteSection[data-visible="true"] {
+  opacity:   1;
+  transform: scale(1) translateY(0);
+}
+
+@media (max-width: 600px) {
+  .quoteSection { padding: 5rem 2rem; }
+}
+
+.blockQuote {
+  position: relative;
+  margin:   0;
+}
+
+/* Large decorative opening quote mark */
+.quoteMark {
+  font-family:  'Archivo Black', sans-serif;
+  font-size:    9rem;
+  color:        var(--teal-600);
+  line-height:  0;
+  position:     absolute;
+  top:          2.5rem;
+  left:         -1.5rem;
+  pointer-events: none;
+  user-select:  none;
+}
+
+@media (max-width: 600px) {
+  .quoteMark { display: none; }
+}
+
+.blockQuote p {
+  font-family:  'Archivo Black', sans-serif;
+  font-size:    clamp(1.5rem, 3.5vw, 2.8rem);
+  color:        var(--text-primary);
+  line-height:  1.3;
+  position:     relative;
+  z-index:      1;
+  margin-bottom: 1.8rem;
+}
+
+.blockQuote cite {
+  font-family:   'Space Mono', monospace;
+  font-size:     0.78rem;
+  letter-spacing: 2px;
+  color:         var(--teal-300);
+  font-style:    normal;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   06 — CTA
+   ═══════════════════════════════════════════════════════════════ */
+.ctaSection {
+  padding:         7rem 4rem 9rem;
+  max-width:       1400px;
+  margin:          0 auto;
+  display:         flex;
+  flex-direction:  column;
+  align-items:     flex-start;
+  gap:             0.6rem;
+  border-top:      1px solid var(--teal-600);
+
+  opacity:   0;
+  transform: translateY(40px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+
+.ctaSection[data-visible="true"] {
+  opacity:   1;
+  transform: none;
+}
+
+@media (max-width: 900px) {
+  .ctaSection { padding: 5rem 2rem 6rem; }
+}
+
+.ctaEyebrow {
+  font-family:   'Space Mono', monospace;
+  font-size:     0.8rem;
+  letter-spacing: 3px;
+  color:         var(--teal-300);
+  text-transform: uppercase;
+}
+
+.ctaHeading {
+  font-family:  'Archivo Black', sans-serif;
+  font-size:    clamp(4rem, 12vw, 10rem);
+  color:        var(--text-primary);
+  line-height:  0.88;
+  letter-spacing: -3px;
+  margin-bottom: 1.5rem;
+}
+
+.ctaRow {
+  display:   flex;
+  gap:       1.2rem;
+  flex-wrap: wrap;
+}
+
+/* Solid teal button */
+.primaryBtn {
+  background:    var(--teal-300);
+  color:         var(--bg-base);
+  border:        none;
+  font-family:   'Space Mono', monospace;
+  font-size:     0.88rem;
+  letter-spacing: 1px;
+  padding:       1rem 2rem;
+  cursor:        pointer;
+  transition:    background 0.3s ease, transform 0.2s ease;
+}
+
+.primaryBtn:hover {
+  background: var(--teal-100);
+  transform:  translateY(-2px);
+}
+
+/* Ghost / outline button */
+.outlineBtn {
+  background:    none;
+  border:        1px solid var(--teal-500);
+  color:         var(--teal-300);
+  font-family:   'Space Mono', monospace;
+  font-size:     0.88rem;
+  letter-spacing: 1px;
+  padding:       1rem 2rem;
+  cursor:        pointer;
+  transition:    border-color 0.3s ease, color 0.3s ease;
+}
+
+.outlineBtn:hover {
+  border-color: var(--teal-300);
+  color:        var(--text-primary);
+}

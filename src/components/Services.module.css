@@ -1,123 +1,278 @@
-.section { padding: 8rem 0; }
+/* Services.module.css */
 
-.subtitle {
-  font-size: 1.05rem;
-  color: var(--text-secondary);
+/* ─── Section wrapper ──────────────────────────────────────── */
+.servicesSection {
+  width: 100%;
+  
+  overflow: hidden;
+}
+
+/* ─── Section header ───────────────────────────────────────── */
+.sectionHeader {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10rem 2rem 5rem;
   text-align: center;
-  max-width: 560px;
-  margin: 0 auto 4rem;
-  font-weight: 300;
-  letter-spacing: .5px;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1px;               /* 1px gap filled by background = hairline grid */
-  background: rgba(146,200,211,.09);
-  border: 1px solid rgba(146,200,211,.09);
-  margin-top: 3rem;
+.sectionLabel {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #666;
+  margin: 0 0 1.5rem;
 }
 
+.sectionTitle {
+  font-size: clamp(3rem, 8vw, 7rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: #fff;
+  margin: 0 0 2rem;
+  line-height: 1;
+}
+
+.sectionIntro {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: #888;
+  line-height: 1.7;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* ─── Cards stack ──────────────────────────────────────────── */
+.cardsStack {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-bottom: 10rem;
+}
+
+/* ─── Individual card section (ContainerScroll wrapper) ─────── */
+.cardSection {
+  position: relative;
+  padding: 6rem 2rem 4rem;
+  /* Each section is tall enough to give scroll room for the animation */
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Title above each card (mimics ContainerScroll titleComponent) */
+.cardTitle {
+  display: flex;
+  align-items: baseline;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.cardIndex {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.75rem;
+  color: var(--accent);
+  letter-spacing: 0.2em;
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+.cardHeadline {
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  color: #fff;
+  margin: 0;
+  line-height: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.cardSubtitle {
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* ─── Perspective wrapper ──────────────────────────────────── */
+.cardPerspective {
+  width: 100%;
+  max-width: 1200px;
+  perspective: 1200px;
+  perspective-origin: center 30%;
+}
+
+/* ─── The actual card ──────────────────────────────────────── */
 .card {
-  background: var(--bg-base);
-  padding: 3rem 2.5rem 2.5rem;
+  width: 100%;
+  border-radius: 24px;
+  overflow: hidden;
+  will-change: transform;
+  transform-style: preserve-3d;
+  box-shadow:
+    0 2px 2px rgba(0, 0, 0, 0.4),
+    0 20px 60px rgba(0, 0, 0, 0.7),
+    0 60px 120px rgba(0, 0, 0, 0.5);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 420px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow:
+    0 2px 2px rgba(0, 0, 0, 0.4),
+    0 30px 80px rgba(0, 0, 0, 0.8),
+    0 0 60px color-mix(in srgb, var(--accent) 15%, transparent);
+}
+
+/* ─── Graphic column (left) ────────────────────────────────── */
+.cardGraphicCol {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  min-height: 380px;
+}
+
+.svgGraphic {
+  width: 100%;
+  height: 100%;
+  max-width: 400px;
+  max-height: 300px;
+  position: relative;
+  z-index: 1;
+}
+
+.cardAccentBar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3px;
+  height: 100%;
+  opacity: 0.7;
+}
+
+/* ─── Content column (right) ───────────────────────────────── */
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 3.5rem;
+  gap: 2rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.cardDesc {
+  font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+  line-height: 1.75;
+  color: var(--text, #ccc);
+  margin: 0;
+  opacity: 0.85;
+}
+
+/* ─── Tags ─────────────────────────────────────────────────── */
+.cardTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cardTag {
+  font-size: 0.7rem;
+  font-family: 'Courier New', Courier, monospace;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: 1px solid;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  opacity: 0.75;
+  transition: opacity 0.2s;
+}
+
+.cardTag:hover {
+  opacity: 1;
+}
+
+/* ─── CTA ───────────────────────────────────────────────────── */
+.cardCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.85rem;
+  font-family: 'Courier New', Courier, monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  width: fit-content;
+  transition: border-color 0.2s, gap 0.2s;
+}
+
+.cardCta:hover {
+  border-color: var(--accent);
+  gap: 1rem;
+}
+
+/* ─── Responsive ────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .card {
+    grid-template-columns: 1fr;
+    min-height: unset;
+  }
+
+  .cardGraphicCol {
+    min-height: 200px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .cardContent {
+    padding: 2rem 1.5rem;
+    border-left: none;
+  }
+
+  .sectionHeader {
+    padding: 6rem 1.5rem 4rem;
+  }
+
+  .cardSection {
+    padding: 4rem 1rem 2rem;
+    min-height: 60vh;
+  }
+
+  .cardTitle {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+/* ─── Glare overlay ─────────────────────────────────────────── */
+.glareOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  border-radius: inherit;
+  transition: background 0.08s ease-out, opacity 0.3s ease;
+}
+
+/* Card needs relative + overflow for glare to work */
+.card {
   position: relative;
   overflow: hidden;
-  cursor: pointer;
-  transition: background .3s ease;
-}
-
-.card:hover { background: #060f12; }
-
-/* subtle teal glow on hover via pseudo */
-.card::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: radial-gradient(ellipse at top left, rgba(146,200,211,.05), transparent 65%);
-  opacity: 0;
-  transition: opacity .4s ease;
-}
-.card:hover::before { opacity: 1; }
-
-.cardTop {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 1.8rem;
-}
-
-.iconWrap {
-  width: 48px; height: 48px;
-  border: 1px solid rgba(146,200,211,.18);
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(146,200,211,.04);
-  transition: border-color .3s ease, background .3s ease;
-}
-.card:hover .iconWrap {
-  border-color: rgba(146,200,211,.4);
-  background: rgba(146,200,211,.08);
-}
-
-.icon { width: 22px; height: 22px; stroke: var(--teal-300); }
-
-.num {
-  font-family: 'Archivo Black', sans-serif;
-  font-size: 3rem;
-  color: rgba(146,200,211,.05);
-  line-height: 1;
-  user-select: none;
-  transition: color .3s ease;
-}
-.card:hover .num { color: rgba(146,200,211,.09); }
-
-.title {
-  font-family: 'Archivo Black', sans-serif;
-  font-size: 1.5rem;
-  color: var(--text-primary);
-  letter-spacing: .3px;
-  margin-bottom: .4rem;
-  position: relative; z-index: 1;
-}
-
-/* expand on hover */
-.details {
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: max-height .5s ease, opacity .45s ease;
-  position: relative; z-index: 1;
-}
-.card:hover .details { max-height: 400px; opacity: 1; }
-
-.desc {
-  color: var(--text-secondary);
-  font-size: .92rem;
-  line-height: 1.85;
-  margin: 1.2rem 0 1.5rem;
-}
-
-.features { list-style: none; padding: 0; }
-.features li {
-  display: flex; align-items: center; gap: .7rem;
-  padding: .6rem 0;
-  border-bottom: 1px solid rgba(146,200,211,.06);
-  color: var(--text-secondary);
-  font-size: .88rem;
-}
-.features li:last-child { border-bottom: none; }
-.features svg { width: 13px; height: 13px; stroke: var(--teal-400); flex-shrink: 0; }
-
-/* animated bottom accent line */
-.hoverLine {
-  position: absolute;
-  bottom: 0; left: 0;
-  width: 0; height: 2px;
-  background: linear-gradient(90deg, var(--teal-300), transparent);
-  transition: width .55s cubic-bezier(.25,.46,.45,.94);
-}
-.card:hover .hoverLine { width: 100%; }
-
-@media (max-width: 768px) {
-  .grid { grid-template-columns: 1fr; }
+  transition: transform 0.08s ease-out, box-shadow 0.3s ease;
 }
