@@ -5,28 +5,15 @@
 
 /* ── Fixed top bar ──────────────────────────── */
 .header {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 2.5rem;
-  height: 72px;
-  /* transparent by default; readable over hero */
-  mix-blend-mode: normal;
-}
-
-/* Logo */
-.logo {
-  font-family: 'Archivo Black', sans-serif;
-  font-size: 1.1rem;
-  letter-spacing: 0.25em;
-  color: #fff;
-  text-decoration: none;
-  text-transform: uppercase;
-  position: relative;
-  z-index: 1001;
+  position:        fixed;
+  top:             0;
+  right:           0;
+  z-index:         1000;
+  display:         flex;
+  align-items:     center;
+  justify-content: flex-end;
+  padding:         1.5rem 2rem;
+  background:      transparent;
 }
 
 /* Menu button */
@@ -40,14 +27,6 @@
   padding: 0.4rem 0;
   position: relative;
   z-index: 1001;
-}
-
-.menuLabel {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  color: #fff;
-  text-transform: uppercase;
 }
 
 .hamburger {
@@ -259,5 +238,5 @@
 
   .linkLabel { font-size: clamp(1.8rem, 11vw, 3rem); }
 
-  .menuLabel { display: none; }
-}
+  }
+

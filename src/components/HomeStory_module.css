@@ -16,9 +16,9 @@
 
 /* ── Wrapper ─────────────────────────────────────────────────── */
 .story {
+  background: transparent;
   position:   relative;
   z-index:    1;
-  overflow-x: hidden;
 }
 
 /* ── Shared: small monospace label chip ──────────────────────── */
@@ -51,7 +51,7 @@
   display:    flex;
   align-items: center;
   justify-content: space-between;
-  padding:    5rem 4rem 6rem;
+  padding:    10rem 4rem 8rem;
   max-width:  1400px;
   margin:     0 auto;
   gap:        4rem;
@@ -429,109 +429,6 @@
   color:        var(--bg-base);
   border-color: var(--teal-300);
 }
-
-
-/* ═══════════════════════════════════════════════════════════════
-   04 — FILM STRIP  (CSS infinite marquee)
-   ═══════════════════════════════════════════════════════════════ */
-.stripWrap {
-  padding: 5rem 0 3rem;
-
-  /* The wrapper itself fades + slides into view */
-  opacity:   0;
-  transform: translateY(50px);
-  transition: opacity 0.9s ease, transform 0.9s ease;
-}
-
-.stripWrap[data-visible="true"] {
-  opacity:   1;
-  transform: none;
-}
-
-/* Viewport that masks the overflow from the marquee */
-.stripViewport {
-  overflow:  hidden;
-  width:     100%;
-}
-
-/* The actual scrolling track — two identical sets of photos
-   make a seamless loop: when the first set scrolls off-screen
-   the second has taken its position and the animation resets. */
-.strip {
-  display:   flex;
-  gap:       0.5rem;
-  width:     max-content;
-
-  /* Pause until the wrapper becomes visible so the first
-     impression is always the full strip in motion */
-  animation: marquee 28s linear infinite;
-  animation-play-state: paused;
-}
-
-.stripWrap[data-visible="true"] .strip {
-  animation-play-state: running;
-}
-
-@keyframes marquee {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }  /* -50 % = one full set width */
-}
-
-.frame {
-  flex:         0 0 280px;
-  aspect-ratio: 16 / 10;
-  overflow:     hidden;
-}
-
-@media (max-width: 600px) {
-  .frame { flex: 0 0 220px; }
-}
-
-.frame img {
-  width:      100%;
-  height:     100%;
-  object-fit: cover;
-  display:    block;
-  filter:     grayscale(0.25) brightness(0.85);
-  transition: filter 0.4s ease;
-}
-
-.frame:hover img {
-  filter: grayscale(0) brightness(1);
-}
-
-/* Label row below the strip */
-.stripMeta {
-  display:     flex;
-  align-items: center;
-  gap:         1.2rem;
-  padding:     1.4rem 4rem 0;
-}
-
-@media (max-width: 900px) {
-  .stripMeta { padding-left: 2rem; }
-}
-
-.stripLabel {
-  font-family:   'Space Mono', monospace;
-  font-size:     0.72rem;
-  letter-spacing: 2px;
-  color:         var(--teal-500);
-}
-
-.stripCta {
-  background:    none;
-  border:        none;
-  color:         var(--teal-300);
-  font-family:   'Space Mono', monospace;
-  font-size:     0.72rem;
-  letter-spacing: 2px;
-  cursor:        pointer;
-  padding:       0;
-  transition:    color 0.3s ease;
-}
-
-.stripCta:hover { color: var(--text-primary); }
 
 
 /* ═══════════════════════════════════════════════════════════════

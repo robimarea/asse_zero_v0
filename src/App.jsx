@@ -1,67 +1,50 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 
-import LoadingScreen from './components/LoadingScreen';
-import Navigation    from './components/Navigation';
-import Footer        from './components/Footer';
-import LightRays     from './components/LightRays';
-import ClickSpark    from './components/ClickSpark';
+import { TransitionProvider } from './components/TransitionContext';
+import LoadingScreen           from './components/LoadingScreen';
+import Navigation              from './components/Navigation';
+import Footer                  from './components/Footer';
+import LightRays               from './components/LightRays';
+import ClickSpark              from './components/ClickSpark';
+import Cursor                  from './components/Cursor';
 
 import Home    from './pages/Home';
 import Work    from './pages/Work';
 import Servizi from './pages/Servizi';
+import About   from './pages/About';
 
 export default function App() {
-  const [loading, setLoading] = useState(true);
-  const done = useCallback(() => setLoading(false), []);
   const { pathname } = useLocation();
+  // Once the LoadingScreen animation finishes it calls onComplete,
+  // which unmounts it — removing the fixed full-screen div that was
+  // intercepting all pointer events.
+  const [showLoading, setShowLoading] = useState(true);
 
-  /* Scroll to top on page change */
+  /* Scroll to top on route change */
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [pathname]);
 
   return (
-    <>
+    <TransitionProvider>
+      {showLoading && (
+        <LoadingScreen onComplete={() => setShowLoading(false)} />
+      )}
+      <Cursor />
       <ClickSpark />
-
-      <Helmet>
-        <title>ASSE ZERO | Production</title>
-        <meta name="description" content="ASSE ZERO – Advertising, Short Films, Music Videos, Sound Design" />
-      </Helmet>
-
-      {loading && <LoadingScreen onComplete={done} />}
-
-      <LightRays
-        raysOrigin="top-center"
-        raysColor="#92c8d3"
-        raysSpeed={0.4}
-        lightSpread={0.7}
-        rayLength={1.2}
-        followMouse={true}
-        mouseInfluence={0.1}
-        noiseAmount={0}
-        distortion={0}
-        className="custom-rays"
-        pulsating={false}
-        fadeDistance={1}
-        saturation={1.7}
-      />
-
-      <Navigation />
-
+      <LightRays />
       <main>
+        <Navigation />
         <Routes>
           <Route path="/"        element={<Home />} />
           <Route path="/work"    element={<Work />} />
           <Route path="/servizi" element={<Servizi />} />
-          {/* Fallback */}
+          <Route path="/about"   element={<About />} />
           <Route path="*"        element={<Home />} />
         </Routes>
       </main>
-
       <Footer />
-    </>
+    </TransitionProvider>
   );
 }

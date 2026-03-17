@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import styles from './Footer.module.css';
 
 export default function Footer() {
@@ -6,13 +5,14 @@ export default function Footer() {
     <footer className={styles.footerSection}>
       <div className="container">
         <div className={styles.footerContent}>
+
           <p className={styles.copyright}>© 2026 Gerardo Romani</p>
 
           <a
-            href="https://www.instagram.com/tuousername/"
+            href="https://www.instagram.com/"
             target="_blank"
             rel="noopener noreferrer"
-            className={styles.instagramIcon}
+            className={styles.instagramLink}
             aria-label="Instagram"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -22,9 +22,8 @@ export default function Footer() {
             </svg>
           </a>
 
-          <p className={styles.madeWith}>
-            Made with <span className={styles.heart}>♥</span> and creative energy
-          </p>
+          <p className={styles.tagline}>ADV · FILM · MUSIC · SOUND</p>
+
         </div>
       </div>
     </footer>

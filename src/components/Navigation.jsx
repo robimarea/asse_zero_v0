@@ -1,28 +1,31 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { gsap } from 'gsap';
-import styles from './Navigation.module.css';
+import { useNavigate, useLocation }                 from 'react-router-dom';
+import { gsap }                                     from 'gsap';
+import { usePageTransition }                        from './TransitionContext';
+import styles                                       from './Navigation.module.css';
 
 const NAV_ITEMS = [
   { to: '/',        label: 'Home',    num: '01' },
   { to: '/work',    label: 'Work',    num: '02' },
   { to: '/servizi', label: 'Servizi', num: '03' },
+  { to: '/about',   label: 'About',   num: '04' },
 ];
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
-  const location            = useLocation();
-  const navigate            = useNavigate();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const transit  = usePageTransition();
 
-  const overlayRef  = useRef(null);
-  const bgRef       = useRef(null);
-  const linksRef    = useRef([]);
-  const metaRef     = useRef(null);
-  const bar1Ref     = useRef(null);
-  const bar2Ref     = useRef(null);
-  const tlRef       = useRef(null);
+  const overlayRef = useRef(null);
+  const bgRef      = useRef(null);
+  const linksRef   = useRef([]);
+  const metaRef    = useRef(null);
+  const bar1Ref    = useRef(null);
+  const bar2Ref    = useRef(null);
+  const tlRef      = useRef(null);
 
-  /* Build GSAP timeline once */
+  /* ── Build GSAP timeline once ───────────────────────────────── */
   useEffect(() => {
     const overlay = overlayRef.current;
     const bg      = bgRef.current;
@@ -37,14 +40,9 @@ export default function Navigation() {
     const tl = gsap.timeline({ paused: true });
     tl
       .set(overlay, { visibility: 'visible' })
-      .to(bg, { scaleY: 1, duration: 0.65, ease: 'expo.inOut' })
-      .to(links, {
-        y: 0, opacity: 1,
-        duration: 0.55,
-        stagger: 0.07,
-        ease: 'power3.out'
-      }, '-=0.3')
-      .to(meta, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, '-=0.2');
+      .to(bg,    { scaleY: 1, duration: 0.65, ease: 'expo.inOut' })
+      .to(links, { y: 0, opacity: 1, duration: 0.55, stagger: 0.07, ease: 'power3.out' }, '-=0.3')
+      .to(meta,  { opacity: 1, y: 0, duration: 0.4,  ease: 'power2.out' }, '-=0.2');
 
     tlRef.current = tl;
   }, []);
@@ -69,36 +67,27 @@ export default function Navigation() {
 
   const handleLinkClick = (e, to) => {
     e.preventDefault();
+    if (location.pathname === to) { close(); return; }
     close();
-    setTimeout(() => navigate(to), 600);
+    transit(() => navigate(to));
   };
 
-  /* Close on ESC */
   useEffect(() => {
-    const onKey = e => { if (e.key === 'Escape' && isOpen) close(); };
+    const onKey = (e) => { if (e.key === 'Escape' && isOpen) close(); };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [isOpen, close]);
 
   return (
     <>
-      {/* ── Fixed top bar ── */}
+      {/* ── Fixed top bar: hamburger only, always transparent ──── */}
       <header className={styles.header}>
-        <Link
-          className={styles.logo}
-          to="/"
-          onClick={() => isOpen && close()}
-        >
-          ASSE ZERO
-        </Link>
-
         <button
           className={styles.menuBtn}
           onClick={toggle}
           aria-label={isOpen ? 'Chiudi menu' : 'Apri menu'}
           aria-expanded={isOpen}
         >
-          <span className={styles.menuLabel}>{isOpen ? 'CLOSE' : 'MENU'}</span>
           <span className={styles.hamburger}>
             <span className={styles.bar} ref={bar1Ref} />
             <span className={styles.bar} ref={bar2Ref} />
@@ -106,7 +95,7 @@ export default function Navigation() {
         </button>
       </header>
 
-      {/* ── Fullscreen overlay ── */}
+      {/* ── Fullscreen overlay ─────────────────────────────────── */}
       <div className={styles.overlay} ref={overlayRef} aria-hidden={!isOpen}>
         <div className={styles.overlayBg} ref={bgRef} />
 
@@ -117,22 +106,18 @@ export default function Navigation() {
                 <li
                   key={item.to}
                   className={styles.overlayItem}
-                  ref={el => { linksRef.current[i] = el; }}
+                  ref={(el) => { linksRef.current[i] = el; }}
                 >
                   <a
                     href={item.to}
                     className={`${styles.overlayLink}${location.pathname === item.to ? ` ${styles.active}` : ''}`}
-                    onClick={e => handleLinkClick(e, item.to)}
+                    onClick={(e) => handleLinkClick(e, item.to)}
                     tabIndex={isOpen ? 0 : -1}
                   >
                     <span className={styles.linkNum}>{item.num}</span>
                     <span className={styles.linkLabel} aria-label={item.label}>
                       {item.label.split('').map((char, ci) => (
-                        <span
-                          key={ci}
-                          className={styles.charWrap}
-                          style={{ '--ci': ci }}
-                        >
+                        <span key={ci} className={styles.charWrap} style={{ '--ci': ci }}>
                           <span className={styles.charInner}>{char}</span>
                           <span className={styles.charClone} aria-hidden="true">{char}</span>
                         </span>

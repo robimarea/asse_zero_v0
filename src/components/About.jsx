@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { usePageTransition } from './TransitionContext';
 import styles from './About.module.css';
 
 const PROCESS = [
@@ -11,6 +12,7 @@ const PROCESS = [
 
 export default function About() {
   const navigate    = useNavigate();
+  const transit     = usePageTransition();
   const sectionRef  = useRef(null);
   const imgARef     = useRef(null);
   const imgBRef     = useRef(null);
@@ -45,10 +47,10 @@ export default function About() {
     <section id="about" className={styles.about} ref={sectionRef}>
       <div className="container">
 
-        {/* ── A: Opening tag ──────────────────────────────────────── */}
+        {/* ── A: Chapter heading ──────────────────────────────────── */}
         <div className={styles.tagLine} ref={reveal(0)}>
           <span className={styles.tagDash} />
-          <span className={styles.tagText}>Studio di Produzione</span>
+          <span className={styles.tagText}>Chi siamo</span>
           <span className={styles.tagDash} />
         </div>
 
@@ -69,10 +71,10 @@ export default function About() {
 
           <div className={styles.introText}>
             <p className={styles.leadText}>
-              Siamo un collettivo creativo specializzato in video production,
-              cortometraggi, videoclip musicali, pubblicità e sound design.
-              Ogni progetto che tocchiamo viene trattato con la cura e l'intenzione
-              di un'opera cinematografica.
+              Siamo Gerardo Romani e un nucleo di collaboratori selezionati.
+              Ogni progetto è diretto — non prodotto in serie.
+              Portiamo la stessa testa creativa a un videoclip indipendente
+              come a una campagna televisiva.
             </p>
 
             <blockquote className={styles.directorQuote}>
@@ -99,9 +101,9 @@ export default function About() {
             <span className={styles.sectionMicro}>// Il nostro approccio</span>
             <p className={styles.strengthsBody}>
               Lavoriamo con brand emergenti, artisti indipendenti e registi
-              alla loro prima opera. La dimensione del progetto non cambia
-              il nostro standard: portiamo la stessa ossessione per il dettaglio
-              a un videoclip da camera come a una campagna per un brand internazionale.
+              alla loro prima opera. Non abbiamo un formato standard:
+              costruiamo ogni progetto attorno alla storia che deve raccontare,
+              senza mai separare la direzione artistica dalla produzione.
             </p>
             <p className={styles.strengthsBody}>
               Il sound design non è un'aggiunta — è metà della storia.
@@ -146,13 +148,13 @@ export default function About() {
           <div className={styles.ctaButtons}>
             <button
               className={styles.btnPrimary}
-              onClick={() => navigate('/servizi')}
+              onClick={() => transit(() => navigate('/servizi'))}
             >
               Vedi i servizi
             </button>
             <button
               className={styles.btnSecondary}
-              onClick={() => navigate('/servizi#contact')}
+              onClick={() => transit(() => navigate('/servizi'))}
             >
               Inizia un progetto →
             </button>

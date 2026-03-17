@@ -30,6 +30,7 @@ function Card({ card, index, hovered, setHovered, onOpen }) {
 
   return (
     <div
+      data-cursor="view"
       className={[
         styles.card,
         isDimmed ? styles.dimmed : '',

@@ -28,10 +28,11 @@ export default function Videos() {
         </div>
 
         <FilmFrame variant="v" speed="12s" className={styles.frameOuter}>
-          <div className={styles.scrollArea} ref={containerRef}>
+          <div className={styles.scrollArea} ref={containerRef} data-cursor="drag">
             <div className={styles.grid}>
               {videos.map((video) => (
-                <a key={video.id} href={video.url} target="_blank" rel="noopener noreferrer" className={styles.card}>
+                <a key={video.id} href={video.url} target="_blank" rel="noopener noreferrer" data-cursor="view"
+                className={styles.card}>
                   <div className={styles.cardInner}>
                     <img src={`/images/video${video.id}-thumb.jpg`} alt={`Video ${video.id}`} loading="eager" decoding="async" width="405" height="720" />
                     <div className={styles.cardOverlay}>
