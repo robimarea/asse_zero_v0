@@ -1,0 +1,7 @@
+/* HomeStory.module.css — Orchestrator Styles */
+
+.story {
+  background: transparent;
+  position:   relative;
+  z-index:    1;
+}

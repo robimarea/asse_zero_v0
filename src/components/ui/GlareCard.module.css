@@ -1,0 +1,22 @@
+/* ── GlareCard ─────────────────────────────────────────────────────────────
+   Shared card surface used by Services and Contact.
+   Individual sections can override bg/color via the style prop.
+──────────────────────────────────────────────────────────────────────────── */
+
+.card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.12s ease;
+  will-change: transform;
+}
+
+/* Glare overlay — pointer-events: none so it never blocks clicks */
+.glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  transition: background 0.05s linear;
+  z-index: 1;
+}

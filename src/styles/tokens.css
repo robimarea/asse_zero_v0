@@ -1,0 +1,38 @@
+/* src/styles/tokens.css
+   Design tokens estratti da global.css — importare PRIMA di global.css.
+   Contiene solo custom properties, nessuna regola di stile applicata. */
+
+:root {
+  /* Teal scale */
+  --teal-100: #d6eef2;
+  --teal-200: #b8dde4;
+  --teal-300: #92c8d3;
+  --teal-400: #5a9aaa;
+  --teal-500: #2d6b78;
+  --teal-600: #1a4550;
+
+  /* Backgrounds */
+  --bg-base:    #03090a;
+  --bg-surface: #071215;
+  --bg-overlay: #0d1e22;
+
+  /* Text */
+  --text-primary:   #e4f3f6;
+  --text-secondary: #92c8d3;
+  --text-muted:     #4a7a87;
+  --text-dark:      #071215;
+
+  /* Semantic aliases */
+  --primary-white:  var(--teal-100);
+  --light-gray:     var(--teal-200);
+  --medium-gray:    var(--teal-200);
+  --primary-blue:   var(--teal-300);
+  --secondary-blue: var(--teal-400);
+  --light-blue:     var(--teal-100);
+  --accent-blue:    var(--teal-400);
+  --dark-blue:      var(--teal-500);
+  --dark-bg:        var(--bg-surface);
+  --darker-bg:      var(--bg-base);
+  --text-white:     var(--text-primary);
+  --text-gray:      var(--text-secondary);
+}

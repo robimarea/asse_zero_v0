@@ -1,0 +1,126 @@
+.servicesWrap {
+  padding:   4rem 4rem 6rem;
+  max-width: 1400px;
+  margin:    0 auto;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  scroll-snap-align: center;
+}
+
+@media (max-width: 900px) {
+  .servicesWrap { padding: 3rem 2rem 4rem; }
+}
+
+.servicesHeader {
+  margin-bottom: 3rem;
+}
+
+.chip {
+  display:       inline-block;
+  font-family:   'Space Mono', monospace;
+  font-size:     0.72rem;
+  letter-spacing: 3px;
+  color:         var(--teal-300);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+.servicesTagline {
+  font-family:  'Archivo Black', sans-serif;
+  font-size:    clamp(1.4rem, 3vw, 2.2rem);
+  color:        var(--text-primary);
+  margin-top:   0.3rem;
+}
+
+.servicesGrid {
+  display:               grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap:                   2px;
+  border:                1px solid var(--teal-600);
+}
+
+@media (max-width: 768px) {
+  .servicesGrid { grid-template-columns: 1fr; }
+}
+
+.card {
+  position:     relative;
+  aspect-ratio: 4 / 3;
+  overflow:     hidden;
+  cursor:       pointer;
+}
+
+.cardBg {
+  position:            absolute;
+  inset:               0;
+  background-size:     cover;
+  background-position: center;
+  filter:              brightness(0.35);
+  transition:          transform 0.7s ease, filter 0.7s ease;
+}
+
+.card:hover .cardBg {
+  transform: scale(1.05);
+  filter:    brightness(0.55);
+}
+
+.cardVeil {
+  position: absolute;
+  inset:    0;
+  background: linear-gradient(
+    to top,
+    rgba(3, 9, 10, 0.97) 0%,
+    rgba(3, 9, 10, 0.4)  55%,
+    transparent          100%
+  );
+}
+
+.cardBody {
+  position:       absolute;
+  bottom:         0;
+  left:           0;
+  right:          0;
+  padding:        2rem;
+  display:        flex;
+  flex-direction: column;
+  gap:            0.4rem;
+}
+
+.cardNum {
+  font-family:   'Space Mono', monospace;
+  font-size:     0.78rem;
+  letter-spacing: 2px;
+  color:         var(--teal-300);
+}
+
+.cardTitle {
+  font-family:   'Archivo Black', sans-serif;
+  font-size:     clamp(1.5rem, 3vw, 2.2rem);
+  color:         var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.cardSub {
+  font-family:   'DM Sans', sans-serif;
+  font-size:     0.82rem;
+  color:         var(--teal-200);
+  letter-spacing: 0.5px;
+}
+
+.cardArrow {
+  position:  absolute;
+  top:       1.5rem;
+  right:     1.5rem;
+  font-size: 1.4rem;
+  color:     var(--teal-300);
+  opacity:   0;
+  transform: translate(-8px, 8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.card:hover .cardArrow {
+  opacity:   1;
+  transform: translate(0, 0);
+}

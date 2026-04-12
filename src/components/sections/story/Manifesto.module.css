@@ -1,0 +1,84 @@
+.manifestoWrap {
+  min-height: 95svh;
+  display:    flex;
+  align-items: center;
+  justify-content: space-between;
+  padding:    10rem 4rem 8rem;
+  max-width:  1400px;
+  margin:     0 auto;
+  gap:        4rem;
+  position:   relative;
+  scroll-snap-align: center;
+}
+
+@media (max-width: 900px) {
+  .manifestoWrap {
+    flex-direction: column;
+    align-items:    flex-start;
+    padding:        8rem 2rem 5rem;
+    min-height:     auto;
+  }
+}
+
+.manifestoInner { flex: 1; }
+
+.chip {
+  display:       inline-block;
+  font-family:   'Space Mono', monospace;
+  font-size:     0.72rem;
+  letter-spacing: 3px;
+  color:         var(--teal-300);
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+}
+
+.manifestoHeading {
+  font-family:   'Archivo Black', sans-serif;
+  font-size:     clamp(3.8rem, 9vw, 10rem);
+  line-height:   0.92;
+  color:         var(--text-primary);
+  margin-bottom: 2.5rem;
+  display:       flex;
+  flex-wrap:     wrap;
+  gap:           0 0.25em;
+}
+
+.wordMask {
+  display:       inline-block;
+  overflow:      hidden;
+  vertical-align: bottom;
+  line-height:   1.05;
+}
+
+.wordInner {
+  display:       inline-block;
+}
+
+.manifestoBody {
+  font-family:   'DM Sans', sans-serif;
+  font-size:     clamp(0.95rem, 1.4vw, 1.15rem);
+  color:         var(--teal-200);
+  line-height:   1.85;
+  max-width:     520px;
+}
+
+.manifestoSide {
+  display:        flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-self:     flex-end;
+  gap:            1rem;
+  padding-bottom: 2rem;
+}
+
+@media (max-width: 900px) { .manifestoSide { display: none; } }
+
+.manifestoSide span {
+  font-family:   'Space Mono', monospace;
+  font-size:     0.62rem;
+  letter-spacing: 4px;
+  color:         var(--teal-600);
+  text-transform: uppercase;
+  writing-mode:  vertical-lr;
+  transform:     rotate(180deg);
+}

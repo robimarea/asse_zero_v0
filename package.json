@@ -4,11 +4,12 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@rollup/rollup-win32-x64-msvc": "^4.60.1",
     "framer-motion": "^12.35.2",
     "gsap": "^3.14.2",
     "ogl": "^1.0.11",

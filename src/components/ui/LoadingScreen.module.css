@@ -1,0 +1,194 @@
+/* ═══════════════════════════════════════════════════════════════
+   ROOT – stacking context for the two curtain panels
+   ═══════════════════════════════════════════════════════════════ */
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  /* No background here — panels cover everything */
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PANELS
+   Both panels start at translateY(0) (cover the page).
+   On exit they translateY(-100%) — the "curtain lifts" effect.
+   Panel B is slightly behind A to give the layered depth feel.
+   ═══════════════════════════════════════════════════════════════ */
+.panel {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+  transition: transform 1.05s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* Panel A – foreground, carries all the visible content */
+.panelA {
+  background: #03090a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+.panelAExit {
+  transform: translateY(-100%);
+}
+
+/* Panel B – slightly lighter/different tint, peeks out for 1 frame */
+.panelB {
+  background: #071a1f;
+  z-index: 1;
+}
+.panelBExit {
+  transform: translateY(-100%);
+  transition: transform 1.05s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SIDE LABELS
+   ═══════════════════════════════════════════════════════════════ */
+.sideL,
+.sideR {
+  position: absolute;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.48rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(146, 200, 211, 0.35);
+  opacity: 0;
+  animation: fadeUp 0.7s ease forwards 0.3s;
+}
+.sideL {
+  left: 2rem;
+  bottom: 1.8rem;
+}
+.sideR {
+  right: 2rem;
+  bottom: 1.8rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CORE – centered block
+   ═══════════════════════════════════════════════════════════════ */
+.core {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.6rem;
+  width: min(560px, 88vw);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LINES
+   ═══════════════════════════════════════════════════════════════ */
+.lineTop,
+.lineBot {
+  width: 100%;
+  height: 1px;
+  background: rgba(146, 200, 211, 0.12);
+  overflow: hidden;
+}
+.lineInner {
+  height: 100%;
+  background: rgba(146, 200, 211, 0.60);
+  transform-origin: left center;
+  /* starts at scaleX(0), driven by inline style */
+  transition: transform 0.05s linear;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MIDDLE ROW
+   ═══════════════════════════════════════════════════════════════ */
+.middle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COUNTER
+   ═══════════════════════════════════════════════════════════════ */
+.counterWrap {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.15em;
+  opacity: 0;
+  animation: fadeUp 0.5s ease forwards 0.1s;
+}
+.counter {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(5rem, 18vw, 12rem);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: #e4f3f6;
+  font-variant-numeric: tabular-nums;
+}
+.sup {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(1rem, 3vw, 2rem);
+  font-weight: 300;
+  color: rgba(146, 200, 211, 0.6);
+  margin-top: 0.5em;
+  letter-spacing: 0.05em;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LOGO — revealed left-to-right via clip-path
+   ═══════════════════════════════════════════════════════════════ */
+.logoWrap {
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeUp 0.5s ease forwards 0.2s;
+}
+.logoClip {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  /* clip-path driven by inline style: inset(0 {100-pct}% 0 0) */
+  transition: clip-path 0.05s linear;
+}
+.logoA {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(1.4rem, 5vw, 3.2rem);
+  letter-spacing: 0.22em;
+  color: #e4f3f6;
+}
+.logoB {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: clamp(1.4rem, 5vw, 3.2rem);
+  letter-spacing: 0.22em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(146, 200, 211, 0.7);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SERVICES LINE
+   ═══════════════════════════════════════════════════════════════ */
+.services {
+  position: absolute;
+  top: 1.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.48rem;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  color: rgba(146, 200, 211, 0.30);
+  white-space: nowrap;
+  opacity: 0;
+  animation: fadeUp 0.7s ease forwards 0.5s;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SHARED ANIMATION
+   ═══════════════════════════════════════════════════════════════ */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
