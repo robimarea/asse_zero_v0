@@ -1,17 +1,12 @@
-import { Helmet } from 'react-helmet-async';
-import About          from '@sections/About';
+import About from '@sections/About';
+import PageSeo from '@components/seo/PageSeo';
+import { SEO } from '@data/seoData';
 
 export default function AboutPage() {
-
   return (
     <>
-      <Helmet>
-        <title>ASSE ZERO | Chi Siamo</title>
-        <meta
-          name="description"
-          content="ASSE ZERO – Chi siamo: Gerardo Romani, director e sound designer. Il processo creativo, dall'idea al master."
-        />
-      </Helmet>
+      <PageSeo {...SEO.about} />
+      <h1 className="srOnly">{SEO.about.heading}</h1>
       <About />
     </>
   );

@@ -57,7 +57,7 @@ export function TransitionProvider({ children }) {
         style={{
           position:       'fixed',
           inset:          0,
-          background:     'var(--teal-600)',
+          background:     'var(--accent-teal-dark)',
           zIndex:         9998,
           visibility:     'hidden',
           pointerEvents:  'none',

@@ -15,7 +15,10 @@ const revealVariants = {
 
 export default function Diptych({ onNavigate }) {
   return (
-    <section className={styles.diptych} aria-label="Dichiarazione" data-chapter="diptych">
+    <section
+      className={styles.diptych}
+      aria-label="Dichiarazione"
+    >
       <motion.div
         className={styles.diptychPhoto}
         initial={{ clipPath: 'inset(0 100% 0 0)' }}
@@ -24,7 +27,7 @@ export default function Diptych({ onNavigate }) {
         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
         data-cursor="view"
       >
-        <img src="/photos/f2.jpg" alt="Produzione cinematografica" />
+        <img src="/photos/2.webp" alt="Produzione cinematografica" />
         <span className={styles.photoCaption} aria-hidden="true">Behind the Frame</span>
       </motion.div>
 
@@ -44,8 +47,8 @@ export default function Diptych({ onNavigate }) {
           Ogni inquadratura è una scelta. Ogni taglio, un ritmo.
           Dal set alle suite di post, il controllo creativo non cambia mai mano.
         </p>
-        <button className={styles.ghostBtn} onClick={() => onNavigate('/about')}>
-          Chi siamo <span aria-hidden="true">↗</span>
+        <button className={styles.ghostBtn} onClick={() => onNavigate('/our-team')}>
+          Our Team <span aria-hidden="true">↗</span>
         </button>
       </motion.div>
     </section>

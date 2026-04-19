@@ -1,38 +1,89 @@
 /* src/styles/tokens.css
-   Design tokens estratti da global.css — importare PRIMA di global.css.
-   Contiene solo custom properties, nessuna regola di stile applicata. */
+   Design tokens - Trap editoriale pulita: avorio, bordeaux ossido, rame, petrolio */
 
 :root {
-  /* Teal scale */
-  --teal-100: #d6eef2;
-  --teal-200: #b8dde4;
-  --teal-300: #92c8d3;
-  --teal-400: #5a9aaa;
-  --teal-500: #2d6b78;
-  --teal-600: #1a4550;
+  --white: #ffffff;
+  --color-bg: #f7f1e8;
+  --color-primary: #a3382f;
+  --color-secondary: #b7845d;
+  --color-tertiary: #d8b694;
+  --color-accent: #5c3d2e;
+  --color-neutral: #241816;
+  --color-success: #9d6c4d;
+  --color-warning: #bf5b42;
+  --color-error: #8c2f28;
+  --color-bordeaux-vibrant: #b21a1f;
+  --color-bg-alt: #efe6da;
+  --color-text: #241816;
+
+  --primary-rgb: 163 56 47;
+  --secondary-rgb: 183 132 93;
+  --accent-rgb: 92 61 46;
+  --text-rgb: 74 35 28;
+
+  --slate-gray: #5c3d2e;
 
   /* Backgrounds */
-  --bg-base:    #03090a;
-  --bg-surface: #071215;
-  --bg-overlay: #0d1e22;
+  --bg-base: #f7f1e8;
+  --bg-surface: #efe6da;
+  --bg-overlay: #e6dacb;
+  --bg-dark: #d9c9b8;
 
-  /* Text */
-  --text-primary:   #e4f3f6;
-  --text-secondary: #92c8d3;
-  --text-muted:     #4a7a87;
-  --text-dark:      #071215;
+  /* Text colors */
+  --text-primary: #4a231c;
+  --text-secondary: #7a5240;
+  --text-muted: #9a7060;
+  --text-dark: #351814;
+
+  /* Accent colors */
+  --accent-red: #8c2f28;
+  --accent-brown: #7b4b3a;
+  --accent-teal: #5c3d2e;
+  --accent-cream: #e5d7c7;
+  --accent-copper: #b7845d;
+  --accent-teal-dark: #3d2418;
+
+  /* Legacy aliases */
+  --color-red: #8c2f28;
+  --color-black: #351814;
+  --color-dark-red: #4a231c;
+
+  /* Accent scale kept for backwards compatibility */
+  --teal-100: #ede5de;
+  --teal-200: #d9c5b8;
+  --teal-300: #c0a08a;
+  --teal-400: #9a7060;
+  --teal-500: #7a5240;
+  --teal-600: #5c3d2e;
+
+  /* Typography */
+  --font-display: 'Roboto Condensed', Arial, sans-serif;
+  --font-body: 'Roboto', Arial, sans-serif;
+  --font-mono: 'Roboto Mono', monospace;
 
   /* Semantic aliases */
-  --primary-white:  var(--teal-100);
-  --light-gray:     var(--teal-200);
-  --medium-gray:    var(--teal-200);
-  --primary-blue:   var(--teal-300);
-  --secondary-blue: var(--teal-400);
-  --light-blue:     var(--teal-100);
-  --accent-blue:    var(--teal-400);
-  --dark-blue:      var(--teal-500);
-  --dark-bg:        var(--bg-surface);
-  --darker-bg:      var(--bg-base);
-  --text-white:     var(--text-primary);
-  --text-gray:      var(--text-secondary);
+  --primary-white: var(--white);
+  --light-gray: var(--bg-surface);
+  --medium-gray: var(--bg-overlay);
+  --primary-blue: var(--accent-teal);
+  --secondary-blue: var(--accent-teal);
+  --light-blue: var(--accent-copper);
+  --accent-blue: var(--accent-teal);
+  --dark-blue: var(--accent-teal-dark);
+  --dark-bg: var(--bg-dark);
+  --darker-bg: var(--bg-surface);
+  --text-white: var(--text-primary);
+  --text-gray: var(--text-secondary);
+
+  /* Viewport system */
+  --viewport-width: 100vw;
+  --viewport-height: 100dvh;
+  --viewport-header-offset: clamp(84px, 8vh, 112px);
+  --viewport-section-pad: clamp(3.5rem, 7vw, 7rem);
+
+  --viewport-sticky-top: max(0px, calc(var(--viewport-header-offset) - 0.75rem));
+  --vh-100: var(--viewport-height);
+  --svh-100: var(--viewport-height);
+  --chapter-min-height: var(--viewport-height);
+  --chapter-content-min-height: calc(var(--viewport-height) - var(--viewport-header-offset));
 }

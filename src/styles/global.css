@@ -11,27 +11,33 @@ html {
 }
 
 body {
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Roboto', Arial, sans-serif;
   background:  var(--bg-base);
-  color:       var(--text-white);
+  color:       var(--text-primary);
   overflow-x:  hidden;
   position:    relative;
+  z-index:     1;
+  min-height:  var(--viewport-height);
+}
+
+html[data-motion="reduce"] {
+  scroll-behavior: auto;
 }
 
 /* ── Text selection ─────────────────────────────────────────────────────── */
 ::selection {
-  background: var(--teal-500);
-  color:      var(--teal-100);
+  background: var(--accent-red);
+  color:      var(--white);
 }
 
 /* ── Custom scrollbar (webkit) ─────────────────────────────────────────── */
 ::-webkit-scrollbar              { width: 4px; }
 ::-webkit-scrollbar-track        { background: var(--bg-base); }
-::-webkit-scrollbar-thumb        { background: var(--teal-600); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover  { background: var(--teal-500); }
+::-webkit-scrollbar-thumb        { background: var(--accent-red); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover  { background: var(--accent-brown); }
 
 /* Firefox */
-* { scrollbar-width: thin; scrollbar-color: var(--teal-600) var(--bg-base); }
+* { scrollbar-width: thin; scrollbar-color: var(--accent-red) var(--bg-base); }
 
 /* ── Layout utilities ──────────────────────────────────────────────────── */
 .container {
@@ -44,10 +50,12 @@ body {
 
 /* ── Section scroll-reveal ─────────────────────────────────────────────── */
 section {
-  padding:    8rem 0;
+  padding:    var(--viewport-section-pad) 0;
   position:   relative;
   z-index:    1;
 }
+
+
 
 /* ── Section header ────────────────────────────────────────────────────── */
 .section-header {
@@ -56,12 +64,25 @@ section {
 }
 
 .section-title {
-  font-family:            'Archivo Black', sans-serif;
+  font-family:            'Roboto Condensed', Arial, sans-serif;
+  font-weight:            700;
   font-size:              clamp(2.5rem, 5vw, 4rem);
-  background:             linear-gradient(135deg, var(--light-blue), var(--primary-blue));
+  background:             linear-gradient(135deg, var(--accent-brown), var(--accent-red));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip:        text;
   margin-bottom:          1rem;
   letter-spacing:         3px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

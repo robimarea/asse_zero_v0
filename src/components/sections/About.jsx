@@ -2,171 +2,257 @@ import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePageTransition } from '@context/TransitionContext';
 import { PROCESS_STEPS as PROCESS } from '@data/constants';
+import SimpleBlurText from '@ui/SimpleBlurText';
 import styles from './About.module.css';
 
-import SimpleBlurText from '@ui/SimpleBlurText';
+const TEAM_MEMBERS = [
+  {
+    name: 'Gerardo Romani',
+    role: 'Direction / Sound Design',
+    text:
+      'Guida ogni progetto dal concept alla finalizzazione, tenendo insieme linguaggio visivo, ritmo e identita sonora.',
+  },
+  {
+    name: 'Production Network',
+    role: 'Production / Crew',
+    text:
+      'Una rete selezionata di collaboratori tra produzione, camera, styling e post che si adatta a ogni film senza irrigidirlo.',
+  },
+  {
+    name: 'Post Pipeline',
+    role: 'Color / Edit / Mix',
+    text:
+      'Montaggio, color e mix convivono nello stesso processo per evitare fratture tra idea, set e risultato finale.',
+  },
+];
+
+const VISION_POINTS = [
+  'Ogni progetto parte dalla storia, non dal formato.',
+  'L immagine e il suono vengono pensati come un unico gesto autoriale.',
+  'Preferiamo precisione e carattere alla produzione seriale.',
+];
+
+const STORY_STATS = [
+  { value: '01', label: 'Visione unica per progetto' },
+  { value: '360', label: 'Direzione tra set, edit e sound' },
+  { value: 'In-house', label: 'Controllo creativo in post-produzione' },
+];
 
 export default function About() {
-  const navigate    = useNavigate();
-  const transit     = usePageTransition();
-  const sectionRef  = useRef(null);
-  const imgARef     = useRef(null);
-  const imgBRef     = useRef(null);
-  const revealRefs  = useRef([]);
+  const navigate = useNavigate();
+  const transit = usePageTransition();
+  const sectionRef = useRef(null);
+  const imgARef = useRef(null);
+  const imgBRef = useRef(null);
+  const revealRefs = useRef([]);
 
-  /* ── Parallax on two inset images ───────────────────────────────── */
   useEffect(() => {
     const onScroll = () => {
       const sec = sectionRef.current;
       if (!sec) return;
-      const prog = -sec.getBoundingClientRect().top;
-      if (imgARef.current) imgARef.current.style.transform = `translateY(${prog * 0.07}px)`;
-      if (imgBRef.current) imgBRef.current.style.transform = `translateY(${prog * -0.05}px)`;
+
+      const progress = -sec.getBoundingClientRect().top;
+      if (imgARef.current) imgARef.current.style.transform = `translateY(${progress * 0.055}px)`;
+      if (imgBRef.current) imgBRef.current.style.transform = `translateY(${progress * -0.04}px)`;
     };
+
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  /* ── Reveal on scroll ────────────────────────────────────────────── */
   useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting) {
-            e.target.classList.add(styles.visible);
-            io.unobserve(e.target); // Unobserve to save memory once revealed
-          }
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add(styles.visible);
+          io.unobserve(entry.target);
         });
       },
-      { threshold: 0.12 }
+      {
+        threshold: 0.16,
+        rootMargin: '0px 0px -8% 0px',
+      }
     );
-    revealRefs.current.forEach(el => el && io.observe(el));
+
+    revealRefs.current.forEach((el) => el && io.observe(el));
     return () => io.disconnect();
   }, []);
 
-  const reveal = (i) => (el) => { revealRefs.current[i] = el; };
+  const reveal = (index) => (element) => {
+    revealRefs.current[index] = element;
+  };
 
   return (
-    <section id="about" className={styles.about} ref={sectionRef} data-chapter="about">
+    <div id="our-team" className={styles.about} ref={sectionRef}>
       <div className="container">
-
-        {/* ── A: Chapter heading ──────────────────────────────────── */}
-        <div className={styles.tagLine} ref={reveal(0)}>
-          <span className={styles.tagDash} />
-          <span className={styles.tagText}>Chi siamo</span>
-          <span className={styles.tagDash} />
-        </div>
-
-        {/* ── B: Hero statement ───────────────────────────────────── */}
-        <div className={styles.heroStatementWrap}>
-          <SimpleBlurText
-            text="Raccontiamo storie attraverso immagini."
-            className={styles.heroStatement}
-          />
-        </div>
-
-        {/* ── C: Two-column intro ─────────────────────────────────── */}
-        <div className={styles.introRow} ref={reveal(2)}>
-          <div className={styles.imageBlockA}>
-            <div className={styles.imageAInner} ref={imgARef}>
-              <img src="/photos/f1.jpg" alt="Set cinematografico" />
-              <div className={styles.imageCaption}>Behind the frame</div>
-            </div>
+        <section
+          className={styles.chapterSection}
+        >
+          <div className={styles.eyebrow} ref={reveal(0)}>
+            <span className={styles.eyebrowLine} />
+            <span className={styles.eyebrowText}>Our Vision</span>
           </div>
 
-          <div className={styles.introText}>
-            <p className={styles.leadText}>
-              Siamo Gerardo Romani e un nucleo di collaboratori selezionati.
-              Ogni progetto è diretto — non prodotto in serie.
-              Portiamo la stessa testa creativa a un videoclip indipendente
-              come a una campagna televisiva.
-            </p>
-
-            <blockquote className={styles.directorQuote}>
-              <p>
-                "Non mi interessa fare bei video.<br />
-                Mi interessa fare cose che rimangono."
+          <div className={styles.heroGrid}>
+            <div className={styles.heroCopy} ref={reveal(1)}>
+              <p className={styles.kicker}>ASSE ZERO / Creative direction in motion</p>
+              <SimpleBlurText
+                text="Ogni storia chiede una forma precisa."
+                className={styles.heroTitle}
+              />
+              <p className={styles.heroBody}>
+                Non cerchiamo una firma ripetibile. Cerchiamo la forma piu giusta
+                per ogni racconto, lasciando che regia, montaggio e sound design
+                si influenzino a vicenda fin dal primo frame.
               </p>
-              <cite>Gerardo Romani — Director &amp; Sound Designer</cite>
-            </blockquote>
-          </div>
-        </div>
 
-        {/* ── D: Full-width pull quote ─────────────────────────────── */}
-        <div className={styles.pullQuote} ref={reveal(3)}>
-          <span className={styles.pullMark}>"</span>
-          <p className={styles.pullText}>
-            Ogni fotogramma è una decisione.<br />Ogni suono, un'intenzione.
-          </p>
-        </div>
-
-        {/* ── E: Second image + strengths text ────────────────────── */}
-        <div className={styles.strengthsRow} ref={reveal(4)}>
-          <div className={styles.strengthsLeft}>
-            <span className={styles.sectionMicro}>// Il nostro approccio</span>
-            <p className={styles.strengthsBody}>
-              Lavoriamo con brand emergenti, artisti indipendenti e registi
-              alla loro prima opera. Non abbiamo un formato standard:
-              costruiamo ogni progetto attorno alla storia che deve raccontare,
-              senza mai separare la direzione artistica dalla produzione.
-            </p>
-            <p className={styles.strengthsBody}>
-              Il sound design non è un'aggiunta — è metà della storia.
-              Coloriamo, mixiamo e masteriziamo in-house, mantenendo
-              una visione coerente dall'inizio alla fine.
-            </p>
-          </div>
-
-          <div className={styles.imageBlockB}>
-            <div className={styles.imageBInner} ref={imgBRef}>
-              <img src="/photos/f3.jpg" alt="Direzione artistica" />
+              <div className={styles.visionList}>
+                {VISION_POINTS.map((point) => (
+                  <p key={point} className={styles.visionItem}>
+                    {point}
+                  </p>
+                ))}
+              </div>
             </div>
-            <div className={styles.imageBLabel}>
-              <span>Post-production</span>
-              <span>Color · Sound · Mix</span>
-            </div>
-          </div>
-        </div>
 
-        {/* ── F: Process phases ───────────────────────────────────── */}
-        <div className={styles.processSection} ref={reveal(5)}>
-          <div className={styles.processHeader}>
-            <span className={styles.sectionMicro}>// Il processo</span>
-            <h3 className={styles.processTitle}>Dal concept al master</h3>
-          </div>
-          <div className={styles.processGrid}>
-            {PROCESS.map((p) => (
-              <div key={p.n} className={styles.phaseItem}>
-                <span className={styles.phaseNum}>{p.n}</span>
-                <div className={styles.phaseBody}>
-                  <h4 className={styles.phaseTitle}>{p.phase}</h4>
-                  <p  className={styles.phaseDesc}>{p.desc}</p>
+            <div className={styles.heroMedia} ref={reveal(2)}>
+              <div className={styles.heroImageFrame}>
+                <div className={styles.heroImageInner} ref={imgARef}>
+                  <img src="/photos/1.webp" alt="Workspace creativo di ASSE ZERO" />
                 </div>
               </div>
-            ))}
+              <div className={styles.heroQuote}>
+                <p>
+                  "Non mi interessa fare bei video.
+                  <br />
+                  Mi interessa fare cose che rimangono."
+                </p>
+                <cite>Gerardo Romani / Director &amp; Sound Designer</cite>
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
 
-        {/* ── G: Final CTA ────────────────────────────────────────── */}
-        <div className={styles.ctaBar} ref={reveal(6)}>
-          <p className={styles.ctaTagline}>Hai un'idea. Noi la rendiamo reale.</p>
-          <div className={styles.ctaButtons}>
-            <button
-              className={styles.btnPrimary}
-              onClick={() => transit(() => navigate('/servizi'))}
-            >
-              Vedi i servizi
-            </button>
-            <button
-              className={styles.btnSecondary}
-              onClick={() => transit(() => navigate('/servizi'))}
-            >
-              Inizia un progetto →
-            </button>
+        <section
+          className={styles.chapterSection}
+        >
+          <div className={styles.sectionShell} ref={reveal(3)}>
+            <div className={styles.sectionIntro}>
+              <span className={styles.sectionLabel}>Our Story</span>
+              <h2 className={styles.sectionTitle}>Un percorso costruito attorno alle immagini.</h2>
+            </div>
+
+            <div className={styles.storyGrid}>
+              <div className={styles.storyText}>
+                <p>
+                  ASSE ZERO nasce dal desiderio di tenere unita la parte autoriale e
+                  quella produttiva. Dalla pubblicita ai videoclip, ogni progetto viene
+                  costruito senza separare concept, esecuzione e atmosfera finale.
+                </p>
+                <p>
+                  Il metodo e semplice: meno formule, piu ascolto. Ogni storia viene
+                  sviluppata su misura, scegliendo ritmo, materia visiva e tono sonoro
+                  in funzione dell identita del lavoro.
+                </p>
+              </div>
+
+              <div className={styles.storyStats}>
+                {STORY_STATS.map((item) => (
+                  <div key={item.label} className={styles.statCard}>
+                    <span className={styles.statValue}>{item.value}</span>
+                    <span className={styles.statLabel}>{item.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
 
+        <section
+          className={styles.chapterSection}
+        >
+          <div className={styles.workspaceGrid} ref={reveal(4)}>
+            <div className={styles.workspaceMedia}>
+              <div className={styles.workspaceImageWrap}>
+                <div className={styles.workspaceImageInner} ref={imgBRef}>
+                  <img src="/photos/3.webp" alt="Post produzione e color grading di ASSE ZERO" />
+                </div>
+                <div className={styles.workspaceBadge}>
+                  <span>Our Workspace</span>
+                  <span>Concept / Edit / Color / Sound</span>
+                </div>
+              </div>
+            </div>
+
+            <div className={styles.workspaceCopy}>
+              <span className={styles.sectionLabel}>Our Workspace</span>
+              <h2 className={styles.sectionTitle}>Uno spazio dove il film prende forma due volte.</h2>
+              <p className={styles.workspaceText}>
+                La prima volta sul set, la seconda in post-produzione. Il workspace e il
+                punto in cui ogni dettaglio torna a dialogare: montaggio, color, texture,
+                pause, frequenze, pulizia.
+              </p>
+              <p className={styles.workspaceText}>
+                Per questo lavoriamo con un processo integrato. Le decisioni visive non
+                finiscono allo shooting e quelle sonore non arrivano per ultime: crescono
+                insieme al progetto.
+              </p>
+
+              <div className={styles.processRail}>
+                {PROCESS.map((step) => (
+                  <div key={step.n} className={styles.processCard}>
+                    <span className={styles.processNum}>{step.n}</span>
+                    <div>
+                      <h3 className={styles.processCardTitle}>{step.phase}</h3>
+                      <p className={styles.processCardDesc}>{step.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section
+          className={styles.chapterSection}
+        >
+          <div className={styles.teamSection} ref={reveal(5)}>
+            <div className={styles.sectionIntro}>
+              <span className={styles.sectionLabel}>Our Team</span>
+              <h2 className={styles.sectionTitle}>Una struttura leggera, una direzione molto chiara.</h2>
+            </div>
+
+            <div className={styles.teamGrid}>
+              {TEAM_MEMBERS.map((member) => (
+                <article key={member.name} className={styles.teamCard}>
+                  <p className={styles.teamRole}>{member.role}</p>
+                  <h3 className={styles.teamName}>{member.name}</h3>
+                  <p className={styles.teamText}>{member.text}</p>
+                </article>
+              ))}
+            </div>
+
+            <div className={styles.ctaBar}>
+              <p className={styles.ctaTagline}>Hai un progetto in mente? Costruiamolo con un linguaggio preciso.</p>
+              <div className={styles.ctaButtons}>
+                <button
+                  className={styles.btnPrimary}
+                  onClick={() => transit(() => navigate('/servizi'))}
+                >
+                  Vedi i servizi
+                </button>
+                <button
+                  className={styles.btnSecondary}
+                  onClick={() => transit(() => navigate('/servizi'))}
+                >
+                  Inizia un progetto
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
-    </section>
+    </div>
   );
 }

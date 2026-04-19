@@ -1,5 +1,5 @@
 .hero {
-  height:             100svh;
+  min-height:         var(--chapter-min-height);
   display:            grid;
   grid-template-rows: auto 1fr auto;
   padding:            0 3.5rem;
@@ -10,11 +10,7 @@
 }
 
 .gradientText {
-  background:              linear-gradient(135deg, var(--teal-100), var(--teal-300));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip:         text;
-  color:                   transparent;
+  color: var(--color-red);
 }
 
 @media (max-width: 768px) {
@@ -30,7 +26,7 @@
 
 .topLabel,
 .topYear {
-  font-family:    'Space Mono', monospace;
+  font-family:    var(--font-mono);
   font-size:      0.68rem;
   letter-spacing: 0.28em;
   color:          var(--text-muted);
@@ -41,16 +37,18 @@
   display:         flex;
   flex-direction:  column;
   justify-content: center;
+  align-items:     center;
   pointer-events:  none;
 }
 
 .titleLine {
-  font-family:    'Archivo Black', sans-serif !important;
-  font-size:      clamp(4.5rem, 12vw, 17rem);
+  font-family:    var(--font-display) !important;
+  font-size:      clamp(3rem, 9vw, 11rem);
   line-height:    0.87;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   color:          var(--text-primary);
   width:          100%;
+  white-space:    nowrap;
 }
 
 .bottomRow {
@@ -61,7 +59,7 @@
 }
 
 .disciplines {
-  font-family:    'Space Mono', monospace;
+  font-family:    var(--font-mono);
   font-size:      0.62rem;
   letter-spacing: 0.22em;
   color:          var(--text-muted);
@@ -87,7 +85,7 @@
   display:    block;
   width:      1px;
   height:     52px;
-  background: linear-gradient(to bottom, transparent, var(--teal-400));
+  background: linear-gradient(to bottom, transparent, var(--color-red));
   animation:  scrollPulse 2.2s ease-in-out infinite;
 }
 
@@ -97,10 +95,10 @@
 }
 
 .scrollText {
-  font-family:    'Space Mono', monospace;
+  font-family:    var(--font-mono);
   font-size:      0.55rem;
   letter-spacing: 0.32em;
-  color:          var(--teal-400);
+  color:          var(--color-dark-red);
   text-transform: uppercase;
   writing-mode:   vertical-lr;
   transform:      rotate(180deg);

@@ -1,0 +1,21 @@
+.separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+.line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(
+        to bottom,
+        transparent,
+        var(--teal-300),
+        transparent
+    );
+    opacity: 0.4;
+}

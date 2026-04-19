@@ -2,7 +2,7 @@
   padding:   4rem 4rem 6rem;
   max-width: 1400px;
   margin:    0 auto;
-  min-height: 100svh;
+  min-height: var(--chapter-min-height);
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -1,0 +1,91 @@
+.mobileContainer {
+  padding: 6rem 0 0 0;
+  min-height: var(--chapter-min-height);
+  background: var(--color-bg);
+}
+
+.header {
+  padding: 0 1.5rem;
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.subtitle {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: rgba(35, 35, 35, 0.6);
+  letter-spacing: 1px;
+  margin-top: 0.5rem;
+}
+
+.scrollArea {
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+  padding-bottom: 6rem;
+}
+
+.slide {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 0 1.5rem;
+  /* Snaps cleanly to the center of the viewport */
+  scroll-snap-align: center;
+}
+
+.imageWrapper {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgb(var(--accent-rgb) / 0.14);
+}
+
+.imageWrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.infoWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.category {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--teal-300);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.title {
+  font-family: 'Archivo Black', sans-serif;
+  font-size: 1.6rem;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.desc {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0 0 1rem 0;
+  max-width: 90%;
+}
+
+.date {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+  opacity: 0.7;
+}

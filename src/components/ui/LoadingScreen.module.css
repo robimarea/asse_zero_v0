@@ -23,7 +23,7 @@
 
 /* Panel A – foreground, carries all the visible content */
 .panelA {
-  background: #03090a;
+  background: var(--color-bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -35,7 +35,7 @@
 
 /* Panel B – slightly lighter/different tint, peeks out for 1 frame */
 .panelB {
-  background: #071a1f;
+  background: var(--color-bg);
   z-index: 1;
 }
 .panelBExit {
@@ -53,7 +53,7 @@
   font-size: 0.48rem;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: rgba(146, 200, 211, 0.35);
+  color: rgb(var(--accent-rgb) / 0.32);
   opacity: 0;
   animation: fadeUp 0.7s ease forwards 0.3s;
 }
@@ -84,12 +84,12 @@
 .lineBot {
   width: 100%;
   height: 1px;
-  background: rgba(146, 200, 211, 0.12);
+  background: rgb(var(--accent-rgb) / 0.12);
   overflow: hidden;
 }
 .lineInner {
   height: 100%;
-  background: rgba(146, 200, 211, 0.60);
+  background: rgb(var(--secondary-rgb) / 0.6);
   transform-origin: left center;
   /* starts at scaleX(0), driven by inline style */
   transition: transform 0.05s linear;
@@ -120,14 +120,14 @@
   font-size: clamp(5rem, 18vw, 12rem);
   line-height: 0.9;
   letter-spacing: -0.04em;
-  color: #e4f3f6;
+  color: var(--color-primary);
   font-variant-numeric: tabular-nums;
 }
 .sup {
   font-family: 'DM Sans', sans-serif;
   font-size: clamp(1rem, 3vw, 2rem);
   font-weight: 300;
-  color: rgba(146, 200, 211, 0.6);
+  color: rgb(var(--accent-rgb) / 0.58);
   margin-top: 0.5em;
   letter-spacing: 0.05em;
 }
@@ -151,14 +151,14 @@
   font-family: 'Archivo Black', sans-serif;
   font-size: clamp(1.4rem, 5vw, 3.2rem);
   letter-spacing: 0.22em;
-  color: #e4f3f6;
+  color: var(--color-primary);
 }
 .logoB {
   font-family: 'Archivo Black', sans-serif;
   font-size: clamp(1.4rem, 5vw, 3.2rem);
   letter-spacing: 0.22em;
   color: transparent;
-  -webkit-text-stroke: 1px rgba(146, 200, 211, 0.7);
+  -webkit-text-stroke: 1px var(--color-secondary);
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -173,7 +173,7 @@
   font-size: 0.48rem;
   letter-spacing: 0.30em;
   text-transform: uppercase;
-  color: rgba(146, 200, 211, 0.30);
+  color: rgb(var(--accent-rgb) / 0.28);
   white-space: nowrap;
   opacity: 0;
   animation: fadeUp 0.7s ease forwards 0.5s;

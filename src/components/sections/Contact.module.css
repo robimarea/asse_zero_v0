@@ -1,19 +1,15 @@
-/* Contact.module.css — stessa architettura di Services.module.css */
-
-/* ─── Section wrapper ──────────────────────────────────────── */
 .section {
   width: 100%;
   overflow: hidden;
   padding-bottom: 10rem;
 }
 
-/* ─── Section header ───────────────────────────────────────── */
 .sectionHeader {
   max-width: 900px;
   margin: 0 auto;
   padding: 10rem 2rem 5rem;
   text-align: center;
-  min-height: 100svh;
+  min-height: var(--chapter-min-height);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -25,7 +21,7 @@
   font-size: 0.75rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: #666;
+  color: rgb(var(--text-rgb) / 0.62);
   margin: 0 0 1.5rem;
 }
 
@@ -33,24 +29,23 @@
   font-size: clamp(3rem, 8vw, 7rem);
   font-weight: 900;
   letter-spacing: -0.03em;
-  color: #fff;
+  color: var(--text-primary);
   margin: 0 0 2rem;
   line-height: 1;
 }
 
 .sectionIntro {
   font-size: clamp(1rem, 2vw, 1.2rem);
-  color: #888;
+  color: rgb(var(--text-rgb) / 0.62);
   line-height: 1.7;
   max-width: 600px;
   margin: 0 auto;
 }
 
-/* ─── Card section (ContainerScroll wrapper) ───────────────── */
 .cardSection {
   position: relative;
   padding: 4rem 2rem 4rem;
-  min-height: 70svh;
+  min-height: var(--chapter-content-min-height);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -58,7 +53,6 @@
   scroll-snap-align: center;
 }
 
-/* Title above the card */
 .cardTitle {
   display: flex;
   align-items: baseline;
@@ -71,7 +65,7 @@
 .cardIndex {
   font-family: 'Courier New', Courier, monospace;
   font-size: 0.75rem;
-  color: var(--teal-300, #92c8d3);
+  color: var(--color-primary);
   letter-spacing: 0.2em;
   opacity: 0.8;
   flex-shrink: 0;
@@ -94,66 +88,37 @@
   font-weight: 400;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--teal-300, #92c8d3);
+  color: var(--color-primary);
   font-family: 'Courier New', Courier, monospace;
 }
 
-/* ─── Perspective wrapper ──────────────────────────────────── */
 .cardPerspective {
   width: 100%;
   max-width: 1200px;
   perspective: 1200px;
   perspective-origin: center 30%;
+  overflow: visible;
 }
 
-/* ─── The GlareCard ────────────────────────────────────────── */
 .card {
   width: 100%;
-  border-radius: 24px;
-  overflow: hidden;
   position: relative;
   will-change: transform;
-  transform-style: preserve-3d;
-  background: #0a0c10;
-  border: 1px solid rgba(146, 200, 211, 0.08);
-  box-shadow:
-    0 2px 2px rgba(0, 0, 0, 0.4),
-    0 20px 60px rgba(0, 0, 0, 0.7),
-    0 60px 120px rgba(0, 0, 0, 0.5);
-  transition: transform 0.08s ease-out, box-shadow 0.3s ease;
 }
 
-.card:hover {
-  box-shadow:
-    0 2px 2px rgba(0, 0, 0, 0.4),
-    0 30px 80px rgba(0, 0, 0, 0.8),
-    0 0 60px rgba(146, 200, 211, 0.08);
-}
-
-/* ─── Glare overlay ─────────────────────────────────────────── */
-.glareOverlay {
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-  pointer-events: none;
-  border-radius: inherit;
-  transition: background 0.08s ease-out, opacity 0.3s ease;
-}
-
-/* ─── Inner layout ──────────────────────────────────────────── */
 .layout {
   display: grid;
   grid-template-columns: 1fr 1.6fr;
   min-height: 520px;
+  overflow: hidden;
 }
 
-/* ─── Info column ───────────────────────────────────────────── */
 .info {
   display: flex;
   flex-direction: column;
   gap: 1.8rem;
   padding: 3.5rem;
-  border-right: 1px solid rgba(146, 200, 211, 0.06);
+  border-right: 1px solid rgba(255, 255, 255, 0.14);
   position: relative;
 }
 
@@ -161,14 +126,14 @@
   font-family: 'Archivo Black', sans-serif;
   font-size: clamp(1.4rem, 2.5vw, 2rem);
   line-height: 1.25;
-  color: #fff;
+  color: rgba(255, 255, 255, 0.98);
   letter-spacing: -0.3px;
 }
 
 .infoBody {
   font-size: 0.95rem;
   line-height: 1.9;
-  color: #888;
+  color: rgba(255, 255, 255, 0.78);
 }
 
 .contactDetails {
@@ -176,7 +141,7 @@
   flex-direction: column;
   gap: 0.4rem;
   padding-top: 0.5rem;
-  border-top: 1px solid rgba(146, 200, 211, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
   margin-top: auto;
 }
 
@@ -185,30 +150,31 @@
   font-size: 0.65rem;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: var(--teal-500, #5a9aaa);
+  color: rgba(255, 255, 255, 0.62);
   margin-top: 1rem;
 }
 
 .contactLink {
   font-size: 0.95rem;
-  color: var(--teal-300, #92c8d3);
+  color: rgba(255, 255, 255, 0.94);
   text-decoration: none;
   transition: color 0.25s ease;
 }
-.contactLink:hover { color: #c8eef5; }
 
-/* Accent bar decorativa (come .cardAccentBar in Services) */
+.contactLink:hover {
+  color: rgba(255, 255, 255, 0.72);
+}
+
 .accentBar {
   position: absolute;
   left: 0;
   top: 0;
   width: 3px;
   height: 100%;
-  background: var(--teal-300, #92c8d3);
-  opacity: 0.5;
+  background: rgba(255, 255, 255, 0.65);
+  opacity: 0.6;
 }
 
-/* ─── Form column ───────────────────────────────────────────── */
 .formCol {
   padding: 3.5rem;
 }
@@ -237,16 +203,16 @@
   font-size: 0.65rem;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: #666;
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .group input,
 .group textarea {
   padding: 0.85rem 1rem;
-  background: rgba(146, 200, 211, 0.025);
-  border: 1px solid rgba(146, 200, 211, 0.1);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   border-radius: 6px;
-  color: #f0f0f0;
+  color: rgba(255, 255, 255, 0.96);
   font-family: 'DM Sans', sans-serif;
   font-size: 0.93rem;
   outline: none;
@@ -254,22 +220,26 @@
 }
 
 .group input::placeholder,
-.group textarea::placeholder { color: #444; }
+.group textarea::placeholder {
+  color: rgba(255, 255, 255, 0.46);
+}
 
 .group input:focus,
 .group textarea:focus {
-  border-color: rgba(146, 200, 211, 0.35);
-  background: rgba(146, 200, 211, 0.04);
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.12);
 }
 
-.group textarea { resize: vertical; min-height: 130px; }
+.group textarea {
+  resize: vertical;
+  min-height: 130px;
+}
 
-/* ─── Button ────────────────────────────────────────────────── */
 .btn {
   padding: 0.9rem 2.4rem;
-  background: var(--teal-300, #92c8d3);
+  background: rgba(255, 255, 255, 0.92);
   border: none;
-  color: #060a0c;
+  color: var(--text-primary);
   font-family: 'Courier New', Courier, monospace;
   font-size: 0.75rem;
   font-weight: 700;
@@ -283,41 +253,51 @@
   border-radius: 4px;
   transition: background 0.25s ease, transform 0.2s ease;
 }
-.btn svg { width: 14px; height: 14px; stroke-width: 2; }
-.btn:hover { background: #c8eef5; transform: translateY(-2px); }
 
-/* ─── Status messages ───────────────────────────────────────── */
+.btn svg {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
+}
+
+.btn:hover {
+  background: rgba(255, 255, 255, 0.8);
+  transform: translateY(-2px);
+}
+
 .msg {
   padding: 0.9rem 1rem;
   font-size: 0.88rem;
   letter-spacing: 0.3px;
   border-radius: 6px;
 }
+
 .success {
-  background: rgba(146, 200, 211, 0.06);
-  border: 1px solid rgba(146, 200, 211, 0.22);
-  color: #c8eef5;
-}
-.error {
-  background: rgba(200, 50, 50, 0.06);
-  border: 1px solid rgba(200, 50, 50, 0.22);
-  color: #ff8a8a;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.9);
 }
 
-/* ─── Responsive ────────────────────────────────────────────── */
+.error {
+  background: rgba(120, 20, 20, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #ffe0e0;
+}
+
 @media (max-width: 900px) {
   .layout {
     grid-template-columns: 1fr;
+    min-height: unset;
   }
 
   .info {
     border-right: none;
-    border-bottom: 1px solid rgba(146, 200, 211, 0.06);
-    padding: 2.5rem 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    padding: 2rem 1.5rem;
   }
 
   .formCol {
-    padding: 2.5rem 2rem;
+    padding: 2rem 1.5rem;
   }
 
   .row {
@@ -325,12 +305,9 @@
   }
 
   .cardSection {
-    padding: 4rem 1rem 2rem;
-    min-height: 50svh;
-  }
-
-  .layout {
+    padding: 3rem 1.5rem 2rem;
     min-height: unset;
+    overflow: hidden;
   }
 
   .cardTitle {
@@ -338,7 +315,26 @@
     gap: 0.5rem;
   }
 
+  .cardPerspective {
+    perspective: none;
+    overflow: hidden;
+    border-radius: 0;
+  }
+
+  .card {
+    transform: none !important;
+  }
+
   .sectionHeader {
     padding: 6rem 1.5rem 4rem;
+    min-height: unset;
+  }
+
+  .infoLead {
+    font-size: clamp(1.1rem, 4.5vw, 1.5rem);
+  }
+
+  .formCol {
+    padding: 2rem 1.5rem 2.5rem;
   }
 }

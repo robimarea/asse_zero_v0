@@ -16,7 +16,7 @@ const revealVariants = {
 
 export default function ServicesPreview({ onNavigate }) {
   return (
-    <section className={styles.servicesWrap} aria-label="Servizi" data-chapter="services-preview">
+    <section className={styles.servicesWrap} aria-label="Servizi">
       <motion.div
         className={styles.servicesHeader}
         initial="hidden"

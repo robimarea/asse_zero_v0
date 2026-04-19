@@ -1,0 +1,171 @@
+.container {
+  position: relative;
+  width: 100%;
+  transition: transform 200ms ease;
+  will-change: transform;
+}
+
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.canvas {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  min-height: 520px;
+  perspective: 1400px;
+}
+
+.tracker {
+  position: relative;
+  z-index: 3;
+}
+
+.tracker:hover {
+  cursor: pointer;
+}
+
+.card {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 24px;
+  overflow: hidden;
+  transition: transform 240ms ease, filter 240ms ease, box-shadow 320ms ease;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.2), transparent 28%),
+    linear-gradient(140deg, rgba(163, 56, 47, 0.95), rgba(106, 122, 127, 0.88) 52%, rgba(183, 132, 93, 0.92));
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 24px 60px rgba(36, 24, 22, 0.22),
+    0 10px 24px rgba(36, 24, 22, 0.16);
+  transform-style: preserve-3d;
+}
+
+.cardGlow {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: inherit;
+  filter: blur(2.6rem);
+  opacity: 0.34;
+  transform: scale(0.96);
+}
+
+.prompt {
+  position: absolute;
+  left: 1.4rem;
+  bottom: 1.2rem;
+  z-index: 2;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.84);
+  transition: opacity 220ms ease;
+}
+
+.heroCopy {
+  position: absolute;
+  left: 1.4rem;
+  top: 1.4rem;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  max-width: 14rem;
+  transition: opacity 220ms ease;
+}
+
+.title,
+.subtitle {
+  margin: 0;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3vw, 3rem);
+  line-height: 0.95;
+  color: rgba(255, 255, 255, 0.98);
+}
+
+.subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.74);
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  display: contents;
+}
+
+.tracker:hover ~ .card {
+  filter: brightness(1.08);
+  box-shadow:
+    0 30px 80px rgba(36, 24, 22, 0.24),
+    0 0 60px rgba(255, 255, 255, 0.08);
+}
+
+.tracker:hover ~ .card .prompt,
+.tracker:hover ~ .card .heroCopy {
+  opacity: 0;
+}
+
+.tr1:hover ~ .card  { transform: rotateX(16deg) rotateY(-12deg); }
+.tr2:hover ~ .card  { transform: rotateX(16deg) rotateY(-6deg); }
+.tr3:hover ~ .card  { transform: rotateX(16deg) rotateY(0deg); }
+.tr4:hover ~ .card  { transform: rotateX(16deg) rotateY(6deg); }
+.tr5:hover ~ .card  { transform: rotateX(16deg) rotateY(12deg); }
+.tr6:hover ~ .card  { transform: rotateX(8deg) rotateY(-12deg); }
+.tr7:hover ~ .card  { transform: rotateX(8deg) rotateY(-6deg); }
+.tr8:hover ~ .card  { transform: rotateX(8deg) rotateY(0deg); }
+.tr9:hover ~ .card  { transform: rotateX(8deg) rotateY(6deg); }
+.tr10:hover ~ .card { transform: rotateX(8deg) rotateY(12deg); }
+.tr11:hover ~ .card { transform: rotateX(0deg) rotateY(-12deg); }
+.tr12:hover ~ .card { transform: rotateX(0deg) rotateY(-6deg); }
+.tr13:hover ~ .card { transform: rotateX(0deg) rotateY(0deg); }
+.tr14:hover ~ .card { transform: rotateX(0deg) rotateY(6deg); }
+.tr15:hover ~ .card { transform: rotateX(0deg) rotateY(12deg); }
+.tr16:hover ~ .card { transform: rotateX(-8deg) rotateY(-12deg); }
+.tr17:hover ~ .card { transform: rotateX(-8deg) rotateY(-6deg); }
+.tr18:hover ~ .card { transform: rotateX(-8deg) rotateY(0deg); }
+.tr19:hover ~ .card { transform: rotateX(-8deg) rotateY(6deg); }
+.tr20:hover ~ .card { transform: rotateX(-8deg) rotateY(12deg); }
+.tr21:hover ~ .card { transform: rotateX(-16deg) rotateY(-12deg); }
+.tr22:hover ~ .card { transform: rotateX(-16deg) rotateY(-6deg); }
+.tr23:hover ~ .card { transform: rotateX(-16deg) rotateY(0deg); }
+.tr24:hover ~ .card { transform: rotateX(-16deg) rotateY(6deg); }
+.tr25:hover ~ .card { transform: rotateX(-16deg) rotateY(12deg); }
+
+@media (max-width: 900px) {
+  .canvas {
+    min-height: unset;
+    display: block;
+  }
+
+  .card {
+    position: relative;
+    width: 100%;
+  }
+
+  .tracker {
+    display: none;
+  }
+
+  .prompt,
+  .heroCopy {
+    opacity: 0;
+    pointer-events: none;
+  }
+}

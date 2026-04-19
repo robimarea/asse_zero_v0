@@ -86,6 +86,7 @@ export default function Navigation() {
             <span className={styles.bar} ref={bar1Ref} />
             <span className={styles.bar} ref={bar2Ref} />
           </span>
+          <span className={styles.menuLabel}>Menu</span>
         </button>
       </header>
 
@@ -104,7 +105,7 @@ export default function Navigation() {
                 >
                   <a
                     href={item.to}
-                    className={`${styles.overlayLink}${location.pathname === item.to ? ` ${styles.active}` : ''}`}
+                    className={`${styles.overlayLink} ${location.pathname === item.to ? styles.active : ''}`.trim()}
                     onClick={(e) => handleLinkClick(e, item.to)}
                     tabIndex={isOpen ? 0 : -1}
                   >

@@ -1,455 +1,455 @@
-/* ══════════════════════════════════════════════════════════════════════
-   ABOUT — editorial cinematic layout
-   Inspired by: A24, Partizan, DVEIN, Maxx Hat, Red Creative Films
-══════════════════════════════════════════════════════════════════════ */
-
 .about {
-  background: transparent;
-  padding: 10rem 0 12rem;
+  background:
+    radial-gradient(circle at top left, rgb(var(--accent-rgb) / 0.06), transparent 34%),
+    radial-gradient(circle at bottom right, rgb(var(--secondary-rgb) / 0.09), transparent 32%);
+  padding: 0;
   overflow: hidden;
-  scroll-snap-align: start;
 }
 
-/* ── Scroll-reveal base state ─────────────────────────────────────── */
-.tagLine,
-.heroStatement,
-.introRow,
-.pullQuote,
-.strengthsRow,
-.processSection,
-.ctaBar {
+.chapterSection {
+  min-height: var(--chapter-content-min-height);
+  display: flex;
+  align-items: center;
+  padding: clamp(5rem, 9vw, 8rem) 0;
+}
+
+.eyebrow,
+.heroCopy,
+.heroMedia,
+.sectionShell,
+.workspaceGrid,
+.teamSection {
   opacity: 0;
-  transform: translateY(36px);
-  transition: opacity .8s cubic-bezier(.25,.46,.45,.94),
-              transform .8s cubic-bezier(.25,.46,.45,.94);
+  transform: translateY(44px) scale(0.985);
+  transition:
+    opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.tagLine.visible,
-.heroStatement.visible,
-.introRow.visible,
-.pullQuote.visible,
-.strengthsRow.visible,
-.processSection.visible,
-.ctaBar.visible {
+.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
-/* stagger delays */
-.heroStatement { transition-delay: .05s; }
-.introRow       { transition-delay: .10s; }
-.pullQuote      { transition-delay: .08s; }
-.strengthsRow   { transition-delay: .08s; }
-.processSection { transition-delay: .08s; }
-.ctaBar         { transition-delay: .08s; }
-
-/* ── A: Tag line ──────────────────────────────────────────────────── */
-.tagLine {
+.eyebrow {
   display: flex;
   align-items: center;
   gap: 1.2rem;
-  margin-bottom: 3.5rem;
+  margin-bottom: 2rem;
 }
 
-.tagDash {
+.eyebrowLine {
   display: block;
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(146,200,211,.22), transparent);
+  background: linear-gradient(90deg, transparent, rgb(var(--accent-rgb) / 0.18), transparent);
 }
 
-.tagText {
-  font-family: 'Space Mono', monospace;
-  font-size: .72rem;
-  letter-spacing: 4px;
+.eyebrowText,
+.sectionLabel,
+.kicker,
+.teamRole,
+.statLabel,
+.processNum,
+.workspaceBadge span:last-child {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--teal-400);
-  white-space: nowrap;
+  color: var(--color-primary);
 }
 
-/* ── B: Hero statement ────────────────────────────────────────────── */
-.heroStatement {
-  font-family: 'Archivo Black', sans-serif;
-  font-size: clamp(3.6rem, 8.5vw, 8rem);
-  line-height: .95;
-  letter-spacing: -2px;
+.heroGrid,
+.workspaceGrid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+  width: 100%;
+}
+
+.heroCopy {
+  max-width: 760px;
+}
+
+.kicker {
+  margin-bottom: 1.25rem;
+}
+
+.heroTitle {
+  font-family: var(--font-display);
+  font-size: clamp(3.3rem, 8vw, 7rem);
+  line-height: 0.92;
+  letter-spacing: -0.04em;
   color: var(--text-primary);
   text-transform: uppercase;
-  margin-bottom: 7rem;
+  margin-bottom: 1.75rem;
 }
 
-.heroOutline {
-  display: block;
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--teal-300);
-  /* very subtle glow on the outline text */
-  filter: drop-shadow(0 0 28px rgba(146,200,211,.12));
+.heroBody,
+.storyText p,
+.workspaceText,
+.teamText {
+  font-size: 1.02rem;
+  line-height: 1.9;
+  color: var(--text-primary);
 }
 
-/* ── C: Intro row ─────────────────────────────────────────────────── */
-.introRow {
+.visionList {
   display: grid;
-  grid-template-columns: 1fr 1.3fr;
-  gap: 5rem;
-  align-items: start;
-  margin-bottom: 8rem;
+  gap: 0.9rem;
+  margin-top: 2rem;
 }
 
-/* ── Image A ──────────────────────────────────────────────────────── */
-.imageBlockA {
+.visionItem {
   position: relative;
-  overflow: hidden;
+  padding-left: 1.4rem;
+  color: var(--text-secondary);
+  font-size: 0.98rem;
+  line-height: 1.8;
 }
 
-.imageAInner {
-  will-change: transform;
-  transition: transform 0s linear;
-  position: relative;
-}
-
-.imageAInner img {
-  width: 100%;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
-  display: block;
-  filter: grayscale(15%) contrast(1.05);
-  transition: filter .6s ease;
-}
-
-.imageAInner:hover img { filter: grayscale(0%); }
-
-/* thin teal frame bracket on image A */
-.imageAInner::before,
-.imageAInner::after {
+.visionItem::before {
   content: '';
   position: absolute;
-  width: 24px; height: 24px;
-  pointer-events: none;
-  z-index: 2;
-}
-.imageAInner::before {
-  top: 12px; left: 12px;
-  border-top: 1.5px solid var(--teal-300);
-  border-left: 1.5px solid var(--teal-300);
-}
-.imageAInner::after {
-  bottom: 12px; right: 12px;
-  border-bottom: 1.5px solid var(--teal-300);
-  border-right: 1.5px solid var(--teal-300);
+  left: 0;
+  top: 0.8rem;
+  width: 0.5rem;
+  height: 1px;
+  background: var(--color-primary);
 }
 
-.imageCaption {
-  margin-top: .8rem;
-  font-family: 'Space Mono', monospace;
-  font-size: .65rem;
-  letter-spacing: 3px;
+.heroMedia,
+.workspaceMedia {
+  position: relative;
+}
+
+.heroImageFrame,
+.workspaceImageWrap {
+  position: relative;
+  overflow: visible;
+}
+
+.heroImageFrame::before,
+.workspaceImageWrap::before {
+  content: '';
+  position: absolute;
+  inset: auto auto -1.2rem -1.2rem;
+  width: 38%;
+  height: 38%;
+  border-left: 1px solid rgb(var(--accent-rgb) / 0.16);
+  border-bottom: 1px solid rgb(var(--accent-rgb) / 0.16);
+  pointer-events: none;
+}
+
+.heroImageInner,
+.workspaceImageInner {
+  position: relative;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.heroImageInner img,
+.workspaceImageInner img {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  filter: saturate(0.92) contrast(1.04);
+}
+
+.heroImageInner img {
+  aspect-ratio: 4 / 5;
+}
+
+.workspaceImageInner img {
+  aspect-ratio: 5 / 6;
+}
+
+.heroQuote {
+  position: relative;
+  margin-top: -2.75rem;
+  margin-left: auto;
+  width: min(340px, 84%);
+  padding: 1.35rem 1.4rem;
+  background: rgb(247 241 232 / 0.92);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgb(var(--accent-rgb) / 0.14);
+  box-shadow: 0 24px 80px rgb(var(--accent-rgb) / 0.08);
+}
+
+.heroQuote p {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  line-height: 1.35;
+  color: var(--text-primary);
+  margin-bottom: 0.8rem;
+}
+
+.heroQuote cite {
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--text-muted);
-}
-
-/* ── Intro text ───────────────────────────────────────────────────── */
-.introText {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-  padding-top: 1.5rem;
-}
-
-.leadText {
-  font-size: 1.15rem;
-  line-height: 1.9;
-  color: var(--text-secondary);
-}
-
-/* Director quote */
-.directorQuote {
-  border-left: 2px solid var(--teal-400);
-  padding-left: 1.8rem;
-  margin: 0;
-}
-
-.directorQuote p {
-  font-family: 'Archivo Black', sans-serif;
-  font-size: clamp(1.15rem, 1.8vw, 1.45rem);
-  line-height: 1.45;
-  color: var(--text-primary);
-  font-style: normal;
-  margin-bottom: .9rem;
-}
-
-.directorQuote cite {
-  font-family: 'Space Mono', monospace;
-  font-size: .68rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--teal-400);
   font-style: normal;
 }
 
-/* ── D: Full-width pull quote ─────────────────────────────────────── */
-.pullQuote {
-  border-top: 1px solid rgba(146,200,211,.12);
-  border-bottom: 1px solid rgba(146,200,211,.12);
-  padding: 4.5rem 0;
-  margin-bottom: 8rem;
-  text-align: center;
-  position: relative;
-}
-
-.pullMark {
-  display: block;
-  font-family: 'Archivo Black', sans-serif;
-  font-size: 7rem;
-  line-height: .6;
-  color: var(--teal-500);
-  opacity: .35;
-  margin-bottom: -.5rem;
-  user-select: none;
-}
-
-.pullText {
-  font-family: 'Archivo Black', sans-serif;
-  font-size: clamp(1.8rem, 4vw, 3.2rem);
-  line-height: 1.25;
-  color: var(--text-primary);
-  letter-spacing: -.5px;
-}
-
-/* ── E: Strengths row ─────────────────────────────────────────────── */
-.strengthsRow {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 5rem;
-  align-items: start;
-  margin-bottom: 8rem;
-}
-
-.strengthsLeft {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  padding-top: 1rem;
-}
-
-.sectionMicro {
-  font-family: 'Space Mono', monospace;
-  font-size: .68rem;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--teal-400);
-}
-
-.strengthsBody {
-  font-size: 1.05rem;
-  line-height: 1.95;
-  color: var(--text-secondary);
-}
-
-/* ── Image B ──────────────────────────────────────────────────────── */
-.imageBlockB {
-  position: relative;
-}
-
-.imageBInner {
-  will-change: transform;
-  transition: transform 0s linear;
-  overflow: hidden;
-}
-
-.imageBInner img {
+.sectionShell,
+.teamSection {
   width: 100%;
-  aspect-ratio: 4 / 5;
-  object-fit: cover;
-  display: block;
-  filter: grayscale(20%) contrast(1.05);
-  transition: filter .6s ease, transform .7s ease;
+  padding: clamp(2rem, 4vw, 3.5rem);
+  border: 1px solid rgb(var(--accent-rgb) / 0.12);
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.22), rgb(255 255 255 / 0.06));
+  backdrop-filter: blur(10px);
 }
 
-.imageBlockB:hover .imageBInner img {
-  filter: grayscale(0%);
-  transform: scale(1.03);
-}
-
-.imageBLabel {
-  position: absolute;
-  bottom: -1.5rem;
-  right: -1rem;
-  background: var(--bg-surface);
-  border: 1px solid rgba(146,200,211,.15);
-  padding: .8rem 1.2rem;
+.sectionIntro {
   display: flex;
   flex-direction: column;
-  gap: .2rem;
+  gap: 0.85rem;
+  margin-bottom: 2.2rem;
 }
 
-.imageBLabel span:first-child {
-  font-family: 'Archivo Black', sans-serif;
-  font-size: .85rem;
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.4vw, 4rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
   color: var(--text-primary);
-  letter-spacing: 1px;
+  max-width: 13ch;
 }
 
-.imageBLabel span:last-child {
-  font-family: 'Space Mono', monospace;
-  font-size: .62rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--teal-400);
-}
-
-/* ── F: Process ───────────────────────────────────────────────────── */
-.processSection {
-  margin-bottom: 8rem;
-}
-
-.processHeader {
-  display: flex;
-  align-items: baseline;
-  gap: 2rem;
-  margin-bottom: 3rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid rgba(146,200,211,.1);
-}
-
-.processTitle {
-  font-family: 'Archivo Black', sans-serif;
-  font-size: clamp(1.6rem, 3vw, 2.4rem);
-  color: var(--text-primary);
-  letter-spacing: -.5px;
-}
-
-.processGrid {
+.storyGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: start;
 }
 
-.phaseItem {
-  padding: 2rem 1.5rem 2rem 0;
-  border-right: 1px solid rgba(146,200,211,.08);
-  padding-right: 2rem;
-  display: flex;
-  flex-direction: column;
+.storyText {
+  display: grid;
+  gap: 1.3rem;
+}
+
+.storyStats {
+  display: grid;
   gap: 1rem;
-  transition: background .3s ease;
-  cursor: default;
 }
 
-.phaseItem:last-child { border-right: none; }
-.phaseItem:not(:first-child) { padding-left: 2rem; }
-
-.phaseItem:hover { background: rgba(146,200,211,.025); }
-
-.phaseNum {
-  font-family: 'Space Mono', monospace;
-  font-size: .65rem;
-  letter-spacing: 2px;
-  color: var(--teal-500);
+.statCard {
+  padding: 1.25rem 1.2rem;
+  border-top: 1px solid rgb(var(--accent-rgb) / 0.14);
 }
 
-.phaseTitle {
-  font-family: 'Archivo Black', sans-serif;
-  font-size: 1.05rem;
+.statValue {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2.6rem);
+  line-height: 1;
   color: var(--text-primary);
-  letter-spacing: .5px;
+  margin-bottom: 0.5rem;
 }
 
-.phaseDesc {
-  font-size: .88rem;
-  line-height: 1.8;
+.statLabel {
   color: var(--text-secondary);
 }
 
-/* ── G: CTA bar ───────────────────────────────────────────────────── */
+.workspaceCopy {
+  display: grid;
+  gap: 1rem;
+}
+
+.workspaceBadge {
+  position: absolute;
+  right: -1.2rem;
+  bottom: -1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.9rem 1rem;
+  background: rgb(247 241 232 / 0.95);
+  border: 1px solid rgb(var(--accent-rgb) / 0.16);
+}
+
+.workspaceBadge span:first-child {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  color: var(--text-primary);
+}
+
+.processRail {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+.processCard {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: start;
+  padding: 1rem 0;
+  border-top: 1px solid rgb(var(--accent-rgb) / 0.12);
+}
+
+.processCardTitle,
+.teamName {
+  font-family: var(--font-display);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.processCardTitle {
+  font-size: 1.12rem;
+  margin-bottom: 0.4rem;
+}
+
+.processCardDesc {
+  font-size: 0.92rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+
+.teamGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.teamCard {
+  min-height: 100%;
+  padding: 1.35rem;
+  border: 1px solid rgb(var(--accent-rgb) / 0.1);
+  background: rgb(255 255 255 / 0.18);
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.35s ease,
+    background 0.35s ease;
+}
+
+.teamCard:hover {
+  transform: translateY(-4px);
+  border-color: rgb(var(--accent-rgb) / 0.22);
+  background: rgb(255 255 255 / 0.26);
+}
+
+.teamRole {
+  margin-bottom: 1rem;
+}
+
+.teamName {
+  font-size: 1.45rem;
+  margin-bottom: 0.8rem;
+}
+
 .ctaBar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 2rem;
-  padding-top: 4rem;
-  border-top: 1px solid rgba(146,200,211,.12);
+  gap: 1.5rem;
+  margin-top: 2.4rem;
+  padding-top: 1.8rem;
+  border-top: 1px solid rgb(var(--accent-rgb) / 0.14);
   flex-wrap: wrap;
 }
 
 .ctaTagline {
-  font-family: 'Archivo Black', sans-serif;
-  font-size: clamp(1.3rem, 2.5vw, 2rem);
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2.6vw, 1.95rem);
+  line-height: 1.08;
   color: var(--text-primary);
-  letter-spacing: -.3px;
+  max-width: 22ch;
 }
 
 .ctaButtons {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
   flex-wrap: wrap;
 }
 
-.btnPrimary {
-  display: inline-block;
-  padding: .9rem 2.4rem;
-  background: var(--teal-300);
-  color: var(--bg-base);
-  font-family: 'Space Mono', monospace;
-  font-size: .75rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  text-decoration: none;
-  transition: background .25s ease, transform .2s ease;
+.btnPrimary,
+.btnSecondary {
+  border: none;
+  cursor: pointer;
 }
-.btnPrimary:hover { background: var(--teal-100); transform: translateY(-2px); }
+
+.btnPrimary {
+  padding: 0.9rem 1.8rem;
+  background: var(--color-primary);
+  color: var(--bg-base);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transition:
+    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.28s ease;
+}
+
+.btnPrimary:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.04);
+}
 
 .btnSecondary {
-  font-family: 'Space Mono', monospace;
-  font-size: .75rem;
-  letter-spacing: 2px;
+  padding: 0.9rem 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--teal-400);
-  text-decoration: none;
-  transition: color .25s ease, letter-spacing .3s ease;
+  border-bottom: 1px solid rgb(var(--accent-rgb) / 0.28);
+  transition:
+    letter-spacing 0.28s ease,
+    border-color 0.28s ease;
 }
-.btnSecondary:hover { color: var(--teal-100); letter-spacing: 3px; }
 
-/* ── Responsive ───────────────────────────────────────────────────── */
+.btnSecondary:hover {
+  letter-spacing: 0.24em;
+  border-color: rgb(var(--accent-rgb) / 0.48);
+}
+
 @media (max-width: 1024px) {
-  .processGrid { grid-template-columns: repeat(2, 1fr); }
-  .phaseItem:nth-child(2) { border-right: none; }
-  .phaseItem:nth-child(3) { border-right: 1px solid rgba(146,200,211,.08); padding-left: 0; }
-  .phaseItem:nth-child(3),
-  .phaseItem:nth-child(4) { padding-top: 2rem; border-top: 1px solid rgba(146,200,211,.08); }
+  .heroGrid,
+  .workspaceGrid,
+  .storyGrid,
+  .teamGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .sectionTitle {
+    max-width: 100%;
+  }
+
+  .heroQuote {
+    margin-top: 1rem;
+    width: 100%;
+  }
 }
 
 @media (max-width: 768px) {
-  .introRow      { grid-template-columns: 1fr; gap: 3rem; }
-  .strengthsRow  { grid-template-columns: 1fr; gap: 3rem; }
+  .chapterSection {
+    min-height: auto;
+    padding: 4.5rem 0;
+  }
 
-  .imageBlockA { order: -1; }
-  .imageBLabel { right: 0; }
+  .sectionShell,
+  .teamSection {
+    padding: 1.4rem;
+  }
 
-  .processGrid { grid-template-columns: 1fr 1fr; }
+  .heroTitle {
+    font-size: clamp(2.7rem, 13vw, 4.5rem);
+  }
 
-  .heroStatement { margin-bottom: 4rem; letter-spacing: -1px; }
-  .pullText { font-size: clamp(1.5rem, 5vw, 2rem); }
+  .teamCard {
+    padding: 1.1rem;
+  }
 
-  .ctaBar { flex-direction: column; align-items: flex-start; }
-}
-
-@media (max-width: 480px) {
-  .processGrid { grid-template-columns: 1fr; }
-  .phaseItem { border-right: none; border-bottom: 1px solid rgba(146,200,211,.08); padding-right: 0; padding-left: 0 !important; }
-  .phaseItem:last-child { border-bottom: none; }
-}
-
-/* ── Button overrides for React Router navigation ─────────────────── */
-/* These override default <button> styles so .btnPrimary / .btnSecondary
-   look identical to the original <a> tag styles */
-.btnPrimary {
-  border: none;
-  cursor: pointer;
-}
-
-.btnSecondary {
-  background: none;
-  border: none;
-  cursor: pointer;
+  .workspaceBadge {
+    position: static;
+    margin-top: 0.9rem;
+  }
 }

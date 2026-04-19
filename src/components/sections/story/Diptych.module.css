@@ -1,7 +1,7 @@
 .diptych {
   display:               grid;
   grid-template-columns: 58% 42%;
-  min-height:            100svh;
+  min-height:            var(--chapter-min-height);
   overflow:              hidden;
   scroll-snap-align:     center;
 }
@@ -35,7 +35,7 @@
   font-family:   'Space Mono', monospace;
   font-size:     0.68rem;
   letter-spacing: 3px;
-  color:         var(--teal-300);
+  color:         var(--color-primary);
   text-transform: uppercase;
 }
 
@@ -45,7 +45,7 @@
   flex-direction: column;
   justify-content: center;
   gap:            1.5rem;
-  background:     var(--bg-surface);
+  background:     var(--color-bg);
 }
 
 @media (max-width: 900px) {
@@ -57,7 +57,7 @@
   font-family:   'Space Mono', monospace;
   font-size:     0.72rem;
   letter-spacing: 3px;
-  color:         var(--teal-300);
+  color:         var(--color-primary);
   text-transform: uppercase;
 }
 

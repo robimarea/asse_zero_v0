@@ -14,6 +14,28 @@
 export const easeOutQuart = (t) => 1 - Math.pow(1 - t, 4);
 
 /**
+ * Hyper-Aggressive Sextic Ease-Out curve.
+ * Matches the user's "L" shaped drawing: instant dash, long glide.
+ * (1 - (1-t)^6)
+ */
+export const easeOutStrong = (t) => 1 - Math.pow(1 - t, 6);
+
+/**
+ * Custom Quartic Ease-In-Out curve.
+ * Starts slow, accelerates, and decelerates into a buttery stop.
+ * Feels more "natural" and organic than pure ease-out.
+ */
+export const easeInOutQuart = (t) => 
+  t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
+
+/**
+ * Exponential Ease-Out curve.
+ * Starts extremely fast and decelerates exponentially.
+ * Standard for premium cinematic "magnetic" transitions.
+ */
+export const easeOutExpo = (t) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t));
+
+/**
  * Standard Bell Curve (Gaussian-ish) centered at 0.
  * Used for proximity-based scaling / opacity.
  * @param {number} x - Distance from center

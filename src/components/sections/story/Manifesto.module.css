@@ -1,5 +1,5 @@
 .manifestoWrap {
-  min-height: 95svh;
+  min-height: var(--chapter-min-height);
   display:    flex;
   align-items: center;
   justify-content: space-between;

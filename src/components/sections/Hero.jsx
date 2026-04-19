@@ -13,24 +13,14 @@ export default function Hero() {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-      data-chapter="hero"
+      style={{ height: 'var(--svh-100)' }}
     >
       <div className={styles.topRow}>
         <span className={styles.topLabel}>Studio di Produzione</span>
         <span className={styles.topYear}>Roma · MMXXVI</span>
       </div>
 
-      <div className={styles.titleBlock} aria-label="Asse Zero">
-        <SimpleBlurText
-          as="div"
-          text="ASSE ZERO"
-          animateBy="letters"
-          delay={55}
-          className={styles.titleLine}
-          style={{ justifyContent: 'flex-start', gap: '0.18em' }}
-          spanClassName={styles.gradientText}
-        />
-      </div>
+      <div className={styles.titleBlock} aria-label="Asse Zero" />
 
       <div className={styles.bottomRow}>
         <p className={styles.disciplines}>
