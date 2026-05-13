@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { PHOTOS as photosData } from '@data/constants';
+import { PHOTOS as staticPhotos } from '@data/constants';
 import styles from './PhotosMobile.module.css';
 
 function PhotoSlide({ photo, index }) {
@@ -43,7 +43,7 @@ function PhotoSlide({ photo, index }) {
   );
 }
 
-export default function PhotosMobile() {
+export default function PhotosMobile({ photos = staticPhotos }) {
   const containerRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -52,6 +52,8 @@ export default function PhotosMobile() {
 
   const headerOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const headerY = useTransform(scrollYProgress, [0, 0.5], [0, -40]);
+
+  if (photos.length === 0) return null;
 
   return (
     <div ref={containerRef} className={styles.mobileContainer}>
@@ -66,7 +68,7 @@ export default function PhotosMobile() {
       </motion.div>
 
       <div className={styles.scrollArea}>
-        {photosData.map((photo, i) => (
+        {photos.map((photo, i) => (
           <PhotoSlide key={i} photo={photo} index={i} />
         ))}
       </div>

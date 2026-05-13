@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "media:photo": "node ./services/photo-service/server.mjs",
+    "media:video": "node ./services/video-service/server.mjs",
+    "media:auth": "node ./services/auth-service/server.mjs",
+    "db:up": "docker compose up -d mysql"
   },
   "dependencies": {
     "framer-motion": "^12.35.2",

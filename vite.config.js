@@ -4,7 +4,27 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  
+
+  server: {
+    proxy: {
+      '/api/photos': {
+        target: 'http://127.0.0.1:4001',
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/api\/photos/, '/photos'),
+      },
+      '/api/videos': {
+        target: 'http://127.0.0.1:4002',
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/api\/videos/, '/videos'),
+      },
+      '/api/auth': {
+        target: 'http://127.0.0.1:4003',
+        changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/api\/auth/, ''),
+      },
+    },
+  },
+
   build: {
     /* Image optimization settings */
     assetsInlineLimit: 4096, /* Inline assets < 4KB */

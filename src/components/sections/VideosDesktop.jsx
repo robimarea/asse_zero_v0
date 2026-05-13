@@ -1,12 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
-import { VIDEOS as videos } from '@data/constants';
+import { VIDEOS as staticVideos } from '@data/constants';
 import { verticalPath, bellCurve } from '@utils/math';
 import styles from './Videos.module.css';
 
-const N = videos.length;
-
-/* ── Sub-component for optimized thumbnail list ─────────────────── */
 /* ── Sub-component for optimized thumbnail list ─────────────────── */
 function ThumbItem({ vid, index, scrollPos, onScrollTo, isActive }) {
   const rawOffset = useTransform(scrollPos, (s) => index - s);
@@ -56,7 +53,10 @@ function ThumbItem({ vid, index, scrollPos, onScrollTo, isActive }) {
   );
 }
 
-export default function Videos() {
+export default function VideosDesktop({ videos = staticVideos }) {
+  const n = videos.length;
+  const scrollMax = Math.max(0, n - 1);
+
   const [activeIndex, setActiveIndex] = useState(0);
   const sectionRef   = useRef(null);
   const targetScroll = useRef(0);
@@ -78,7 +78,7 @@ export default function Videos() {
       // Account for the 100px offset from the header snap point
       const effectiveTop = top - 100;
       const progress = Math.max(0, Math.min(1, -effectiveTop / maxTravel));
-      targetScroll.current = progress * (N - 1);
+      targetScroll.current = progress * scrollMax;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -88,7 +88,7 @@ export default function Videos() {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
     };
-  }, []);
+  }, [scrollMax]);
 
   // 2. Smooth Lerp Loop via MotionValue
   useEffect(() => {
@@ -106,7 +106,7 @@ export default function Videos() {
       scrollPos.set(next);
 
       // Update active index for player section (React State)
-      const nextIdx = Math.max(0, Math.min(N - 1, Math.round(next)));
+      const nextIdx = Math.max(0, Math.min(n - 1, Math.round(next)));
       if (nextIdx !== activeIndex) {
         setActiveIndex(nextIdx);
       }
@@ -127,25 +127,28 @@ export default function Videos() {
       window.removeEventListener('scroll', runLoop);
       if (animFrame.current) cancelAnimationFrame(animFrame.current);
     };
-  }, [activeIndex]);
-
-  const activeVideo = videos[activeIndex];
+  }, [activeIndex, n]);
 
   const scrollToIdx = useCallback((idx) => {
     if (!sectionRef.current) return;
-    const progress = idx / (N - 1);
+    const clampedIdx = Math.max(0, Math.min(n - 1, idx));
+    const progress = scrollMax > 0 ? clampedIdx / scrollMax : 0;
     const parentRect = sectionRef.current.getBoundingClientRect();
     const maxTravel  = parentRect.height - window.innerHeight;
     const targetY    = window.scrollY + parentRect.top + (progress * maxTravel);
     window.scrollTo({ top: targetY, behavior: 'smooth' });
-  }, []);
+  }, [n, scrollMax]);
+
+  const activeVideo = videos[activeIndex];
+
+  if (n === 0) return null;
 
   return (
     <section 
       id="videos" 
       className={styles.videosSection} 
       ref={sectionRef}
-      style={{ height: `calc(var(--viewport-height) + ${N * 60}vh)` }} 
+      style={{ height: `calc(var(--viewport-height) + ${n * 60}vh)` }} 
     >
       {/* Invisible Snap Points for Desktop Granular Magnetism */}
       <div className={styles.snapStrip}>
@@ -252,7 +255,7 @@ export default function Videos() {
                   <button 
                     className={styles.navBtn} 
                     onClick={() => scrollToIdx(activeIndex + 1)} 
-                    disabled={activeIndex === N - 1}
+                    disabled={activeIndex === n - 1}
                     data-cursor="view"
                    >
                     NEXT

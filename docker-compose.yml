@@ -1,0 +1,97 @@
+# ASSE ZERO — Docker Compose: MySQL 8 + microservizi cataloghi + auth (JWT) + SPA (nginx gateway).
+# Primo avvio: MySQL esegue gli script in docker/mysql/init (schema + seed).
+# UI: http://localhost:8080  |  MySQL (host): localhost:3306
+#
+# Avvio: docker compose up --build
+# Reset DB (ATTENZIONE: cancella i dati): docker compose down -v
+
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootsecret
+    command:
+      - mysqld
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-prootsecret"]
+      interval: 5s
+      timeout: 5s
+      retries: 25
+      start_period: 20s
+
+  photo-service:
+    build:
+      context: ./services
+      dockerfile: photo-service/Dockerfile
+    environment:
+      PORT: "4001"
+      MYSQL_HOST: mysql
+      MYSQL_PORT: "3306"
+      MYSQL_USER: assezero
+      MYSQL_PASSWORD: appsecret
+      MYSQL_DATABASE: photos_svc
+      JWT_SECRET: ${JWT_SECRET:-dev_jwt_secret_change_in_production}
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  video-service:
+    build:
+      context: ./services
+      dockerfile: video-service/Dockerfile
+    environment:
+      PORT: "4002"
+      MYSQL_HOST: mysql
+      MYSQL_PORT: "3306"
+      MYSQL_USER: assezero
+      MYSQL_PASSWORD: appsecret
+      MYSQL_DATABASE: videos_svc
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  auth-service:
+    build:
+      context: ./services
+      dockerfile: auth-service/Dockerfile
+    environment:
+      PORT: "4003"
+      MYSQL_HOST: mysql
+      MYSQL_PORT: "3306"
+      MYSQL_USER: assezero
+      MYSQL_PASSWORD: appsecret
+      MYSQL_DATABASE: auth_svc
+      JWT_SECRET: ${JWT_SECRET:-dev_jwt_secret_change_in_production}
+      JWT_EXPIRES_IN: "8h"
+      DEFAULT_ADMIN_EMAIL: admin@assezero.local
+      DEFAULT_ADMIN_PASSWORD: admin_dev_change_me
+      DEFAULT_EDITOR_EMAIL: editor@assezero.local
+      DEFAULT_EDITOR_PASSWORD: editor_dev_change_me
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/web.Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      photo-service:
+        condition: service_started
+      video-service:
+        condition: service_started
+      auth-service:
+        condition: service_started
+
+volumes:
+  mysql-data:

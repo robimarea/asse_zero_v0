@@ -1,12 +1,10 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
-import { VIDEOS as videos } from '@data/constants';
+import { VIDEOS as staticVideos } from '@data/constants';
 import styles from './VideosMobile.module.css';
 
-const N = videos.length;
-
 /* ── Sub-component for individual 3D Slide performance ─────────── */
-function MobileSlide({ vid, index, scrollPos, isActive }) {
+function MobileSlide({ vid, index, scrollPos, isActive, slideCount }) {
   const rawOffset = useTransform(scrollPos, (s) => index - s);
   const absOffset = useTransform(rawOffset, (o) => Math.abs(o));
   
@@ -18,7 +16,7 @@ function MobileSlide({ vid, index, scrollPos, isActive }) {
   // "Evanescence" - Exponential smooth fading
   const opacity = useTransform(absOffset, (a) => Math.exp(-a * a * 1.5));
   const scale = useTransform(absOffset, (a) => Math.max(0.6, 1 - (a * 0.2)));
-  const zIndex = useTransform(absOffset, (a) => Math.round((N - a) * 10));
+  const zIndex = useTransform(absOffset, (a) => Math.round((slideCount - a) * 10));
 
   const placeholderIdx = ((index + 2) % 5) + 1;
   const imgSrc = `/photos/${placeholderIdx}.webp`;
@@ -67,7 +65,10 @@ function MobileSlide({ vid, index, scrollPos, isActive }) {
   );
 }
 
-export default function VideosMobile() {
+export default function VideosMobile({ videos = staticVideos }) {
+  const n = videos.length;
+  const scrollMax = Math.max(0, n - 1);
+
   const sectionRef   = useRef(null);
   const targetScroll = useRef(0);
   const animFrame    = useRef(null);
@@ -87,7 +88,7 @@ export default function VideosMobile() {
       if (maxTravel <= 0) return;
 
       const progress = Math.max(0, Math.min(1, -top / maxTravel));
-      targetScroll.current = progress * (N - 1);
+      targetScroll.current = progress * scrollMax;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -97,7 +98,7 @@ export default function VideosMobile() {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
     };
-  }, []);
+  }, [scrollMax]);
 
   // 2. High-Performance Loop: 0.18 LERP factor for jitter-free tracking
   useEffect(() => {
@@ -116,7 +117,7 @@ export default function VideosMobile() {
       const next = current + diff * 0.18;
       scrollPos.set(next);
 
-      const nextIdx = Math.max(0, Math.min(N - 1, Math.round(next)));
+      const nextIdx = Math.max(0, Math.min(n - 1, Math.round(next)));
       if (nextIdx !== lastIndex.current) {
         lastIndex.current = nextIdx;
         setActiveIndex(nextIdx);
@@ -136,7 +137,7 @@ export default function VideosMobile() {
       window.removeEventListener('scroll', runLoop);
       if (animFrame.current) cancelAnimationFrame(animFrame.current);
     };
-  }, []);
+  }, [n]);
 
   // 3. Optimize rendering: don't re-create list on index change
   const slides = useMemo(() => (
@@ -147,15 +148,18 @@ export default function VideosMobile() {
         index={i}
         scrollPos={scrollPos}
         isActive={i === activeIndex}
+        slideCount={n}
       />
     ))
-  ), [activeIndex]);
+  ), [videos, activeIndex, n]);
+
+  if (n === 0) return null;
 
   return (
     <section 
       ref={sectionRef} 
       className={styles.mobileSection}
-      style={{ height: `calc(var(--viewport-height) + ${N * 60}vh)` }} 
+      style={{ height: `calc(var(--viewport-height) + ${n * 60}vh)` }} 
     >
       <div className={styles.snapStrip}>
         {videos.map((_, i) => (

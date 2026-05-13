@@ -1,10 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from 'framer-motion';
-import { PHOTOS as photosData } from '@data/constants';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
+import { PHOTOS as staticPhotos } from '@data/constants';
 import { bezierPoint, bellCurve } from '@utils/math';
 import styles from './Photos.module.css';
-
-const N = photosData.length;
 
 /* ── Sub-component for individual card performance ──────────────── */
 function CurveCard({ photo, index, scrollPos, onLightbox, onScrollTo, isActive }) {
@@ -64,7 +62,10 @@ function CurveCard({ photo, index, scrollPos, onLightbox, onScrollTo, isActive }
   );
 }
 
-export default function Photos() {
+export default function PhotosDesktop({ photos = staticPhotos }) {
+  const n = photos.length;
+  const scrollMax = Math.max(0, n - 1);
+
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightbox, setLightbox] = useState(null);
   const sectionRef   = useRef(null);
@@ -83,7 +84,7 @@ export default function Photos() {
       if (maxTravel <= 0) return;
 
       const progress = Math.max(0, Math.min(1, -top / maxTravel));
-      targetScroll.current = progress * (N - 1);
+      targetScroll.current = progress * scrollMax;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -93,7 +94,7 @@ export default function Photos() {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleScroll);
     };
-  }, []);
+  }, [scrollMax]);
 
   // Smother Lerp via useMotionValue
   useEffect(() => {
@@ -111,7 +112,7 @@ export default function Photos() {
       scrollPos.set(next);
       
       // Update active index for info panel (React State)
-      const nextIdx = Math.max(0, Math.min(N - 1, Math.round(next)));
+      const nextIdx = Math.max(0, Math.min(n - 1, Math.round(next)));
       if (nextIdx !== activeIndex) {
         setActiveIndex(nextIdx);
       }
@@ -132,23 +133,23 @@ export default function Photos() {
       window.removeEventListener('scroll', runLoop);
       if (animFrame.current) cancelAnimationFrame(animFrame.current);
     };
-  }, [activeIndex]);
+  }, [activeIndex, n]);
 
   const scrollToTargetIndex = useCallback((idx) => {
     if (!sectionRef.current) return;
-    const clampedIdx = Math.max(0, Math.min(N - 1, idx));
-    const progress   = clampedIdx / (N - 1);
+    const clampedIdx = Math.max(0, Math.min(n - 1, idx));
+    const progress = scrollMax > 0 ? clampedIdx / scrollMax : 0;
     const parentRect = sectionRef.current.getBoundingClientRect();
     const maxTravel  = parentRect.height - window.innerHeight;
     const targetY    = window.scrollY + parentRect.top + (progress * maxTravel);
     window.scrollTo({ top: targetY, behavior: 'smooth' });
-  }, []);
+  }, [n, scrollMax]);
 
   // Keyboard navigation
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-        targetScroll.current = Math.min(N - 1, targetScroll.current + 1);
+        targetScroll.current = Math.min(scrollMax, targetScroll.current + 1);
       }
       if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp') {
         targetScroll.current = Math.max(0, targetScroll.current - 1);
@@ -156,9 +157,11 @@ export default function Photos() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [scrollMax]);
 
-  const activePhoto = photosData[activeIndex];
+  const activePhoto = photos[activeIndex];
+
+  if (n === 0) return null;
 
   const svgPath = (() => {
     const P0 = { x: 3, y: 8 };
@@ -173,11 +176,11 @@ export default function Photos() {
       id="photos" 
       className={styles.section} 
       ref={sectionRef}
-      style={{ height: `calc(var(--viewport-height) + ${N * 50}vh)` }}
+      style={{ height: `calc(var(--viewport-height) + ${n * 50}vh)` }}
     >
       {/* Invisible Snap Points for Desktop Granular Magnetism */}
       <div className={styles.snapStrip}>
-        {photosData.map((_, i) => (
+        {photos.map((_, i) => (
           <div 
             key={`snap-${i}`} 
             className={styles.snapPoint} 
@@ -215,7 +218,7 @@ export default function Photos() {
             />
           </svg>
 
-          {photosData.map((photo, i) => (
+          {photos.map((photo, i) => (
             <CurveCard 
               key={i}
               photo={photo}
@@ -245,7 +248,7 @@ export default function Photos() {
                   <div className={styles.infoMeta}>
                     <span className={styles.infoDate}>{activePhoto.date}</span>
                     <span className={styles.counter}>
-                      {String(activeIndex + 1).padStart(2, '0')} / {String(N).padStart(2, '0')}
+                      {String(activeIndex + 1).padStart(2, '0')} / {String(n).padStart(2, '0')}
                     </span>
                   </div>
 

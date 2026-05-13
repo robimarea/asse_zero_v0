@@ -2,6 +2,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 import { TransitionProvider } from '@context/TransitionContext';
+import { AdminAuthProvider } from '@context/AdminAuthContext';
 import LoadingScreen    from '@ui/LoadingScreen';
 import Navigation       from '@layout/Navigation';
 import Footer           from '@layout/Footer';
@@ -16,6 +17,9 @@ const Work    = lazy(() => import('./pages/Work'));
 const Servizi = lazy(() => import('./pages/Servizi'));
 const About   = lazy(() => import('./pages/About'));
 const NotFound = lazy(() => import('./pages/NotFound'));
+const AdminLogin = lazy(() => import('./pages/AdminLogin'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const RequireAdmin = lazy(() => import('./components/admin/RequireAdmin'));
 
 function FixedTitle() {
   const navigate = useNavigate();
@@ -69,9 +73,10 @@ export default function App() {
 
   useViewportSystem();
 
-
+  const isAdminArea = pathname.startsWith('/admin');
 
   return (
+    <AdminAuthProvider>
     <TransitionProvider>
       <DotGrid />
       <FixedTitle />
@@ -80,7 +85,7 @@ export default function App() {
       <ScrollProgress />
       
       <main>
-        <Navigation />
+        {!isAdminArea ? <Navigation /> : null}
         <Suspense fallback={null}>
           <Routes>
             <Route path="/"        element={<Home />} />
@@ -88,12 +93,17 @@ export default function App() {
             <Route path="/servizi" element={<Servizi />} />
             <Route path="/our-team" element={<About />} />
             <Route path="/about"    element={<Navigate to="/our-team" replace />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route element={<RequireAdmin />}>
+              <Route path="/admin" element={<AdminDashboard />} />
+            </Route>
             <Route path="*"        element={<NotFound />} />
           </Routes>
         </Suspense>
       </main>
 
-      <Footer />
+      {!isAdminArea ? <Footer /> : null}
     </TransitionProvider>
+    </AdminAuthProvider>
   );
 }
