@@ -85,6 +85,65 @@ sudo nginx -t && sudo systemctl reload nginx
 
 ---
 
+## Avvio con Docker Compose (microservizi riusabili)
+
+Questa repo include una **versione “a pezzi”** del setup docker: invece di un singolo `docker-compose.yml`, puoi usare un compose dedicato per ogni service.
+
+### Comandi rapidi
+
+#### 1) MySQL only (DB)
+```bash
+docker compose -f docker-compose.mysql.yml up
+```
+- UI/porta DB: `localhost:3306` (host)
+- Dati DB persistono in `mysql-data` (volume)
+
+Per fermare e tenere i volumi:
+```bash
+docker compose -f docker-compose.mysql.yml down
+```
+
+Per resettare DB (ATTENZIONE cancella i dati):
+```bash
+docker compose -f docker-compose.mysql.yml down -v
+```
+
+#### 2) Photo microservice (+ DB interno)
+```bash
+docker compose -f docker-compose.photo.yml up --build
+```
+- Non espone `3306` verso l’host (solo rete Docker)
+- Volume DB separato: `mysql-data-photo`
+
+#### 3) Video microservice (+ DB interno)
+```bash
+docker compose -f docker-compose.video.yml up --build
+```
+- Non espone `3306` verso l’host
+- Volume DB separato: `mysql-data-video`
+
+#### 4) Auth microservice (+ DB interno)
+```bash
+docker compose -f docker-compose.auth.yml up --build
+```
+- Non espone `3306` verso l’host
+- Volume DB separato: `mysql-data-auth`
+
+#### 5) Web (SPA + nginx gateway)
+```bash
+docker compose -f docker-compose.web.yml up --build
+```
+- Porta: `http://localhost:8080`
+
+### Robustezza / semplicità (per esame)
+- **Setup modulare**: puoi avviare solo ciò che ti serve (MySQL / Photo / Video / Auth / Web).
+- **Avvio ordinato**: `depends_on` con `condition: service_healthy` per evitare race-condition lato DB.
+- **Nessuna collisione di porte**: solo `docker-compose.mysql.yml` espone `3306` all’host.
+- **DB isolati per stack**: volumi separati per evitare interferenze tra microservizi durante test/demo.
+- **Riusabilità**: i file compose sono indipendenti e riutilizzabili anche in contesti diversi (es. prove parziali in sede).
+
+---
+
 ## Differenze rispetto ad Astro
 
 | Astro | React |

@@ -1,0 +1,43 @@
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootsecret
+    command:
+      - mysqld
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql-data-auth:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-prootsecret"]
+      interval: 5s
+      timeout: 5s
+      retries: 25
+      start_period: 20s
+
+  auth-service:
+    build:
+      context: ./services
+      dockerfile: auth-service/Dockerfile
+    environment:
+      PORT: "4003"
+      MYSQL_HOST: mysql
+      MYSQL_PORT: "3306"
+      MYSQL_USER: assezero
+      MYSQL_PASSWORD: appsecret
+      MYSQL_DATABASE: auth_svc
+      JWT_SECRET: ${JWT_SECRET:-dev_jwt_secret_change_in_production}
+      JWT_EXPIRES_IN: "8h"
+      DEFAULT_ADMIN_EMAIL: admin@assezero.local
+      DEFAULT_ADMIN_PASSWORD: admin_dev_change_me
+      DEFAULT_EDITOR_EMAIL: editor@assezero.local
+      DEFAULT_EDITOR_PASSWORD: editor_dev_change_me
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql-data-auth:

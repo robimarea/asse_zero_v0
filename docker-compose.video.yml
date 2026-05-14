@@ -1,0 +1,37 @@
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootsecret
+    command:
+      - mysqld
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - mysql-data-video:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-prootsecret"]
+      interval: 5s
+      timeout: 5s
+      retries: 25
+      start_period: 20s
+
+  video-service:
+    build:
+      context: ./services
+      dockerfile: video-service/Dockerfile
+    environment:
+      PORT: "4002"
+      MYSQL_HOST: mysql
+      MYSQL_PORT: "3306"
+      MYSQL_USER: assezero
+      MYSQL_PASSWORD: appsecret
+      MYSQL_DATABASE: videos_svc
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql-data:
