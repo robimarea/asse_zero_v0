@@ -39,6 +39,10 @@ services:
       MYSQL_PASSWORD: appsecret
       MYSQL_DATABASE: photos_svc
       JWT_SECRET: ${JWT_SECRET:-dev_jwt_secret_change_in_production}
+    ports:
+      - "4001:4001"
+    volumes:
+      - media-uploads:/app/uploads
     depends_on:
       mysql:
         condition: service_healthy
@@ -54,6 +58,10 @@ services:
       MYSQL_USER: assezero
       MYSQL_PASSWORD: appsecret
       MYSQL_DATABASE: videos_svc
+    ports:
+      - "4002:4002"
+    volumes:
+      - media-uploads:/app/uploads
     depends_on:
       mysql:
         condition: service_healthy
@@ -75,6 +83,8 @@ services:
       DEFAULT_ADMIN_PASSWORD: admin_dev_change_me
       DEFAULT_EDITOR_EMAIL: editor@assezero.local
       DEFAULT_EDITOR_PASSWORD: editor_dev_change_me
+    ports:
+      - "4003:4003"
     depends_on:
       mysql:
         condition: service_healthy
@@ -85,6 +95,8 @@ services:
       dockerfile: docker/web.Dockerfile
     ports:
       - "8080:80"
+    volumes:
+      - media-uploads:/usr/share/nginx/html/uploads
     depends_on:
       photo-service:
         condition: service_started
@@ -95,3 +107,4 @@ services:
 
 volumes:
   mysql-data:
+  media-uploads:

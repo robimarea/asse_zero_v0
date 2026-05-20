@@ -1,6 +1,29 @@
-# Refactoring Changelog
+# Changelog Progetto ASSE ZERO
 
-## Obiettivo
+## Novità Architetturali e Admin (Versione Corrente)
+
+### 1. Sistema di Upload File (Multer + Docker Volumes)
+- I microservizi `photo-service` e `video-service` ora supportano upload di file `multipart/form-data` tramite `multer`.
+- Creato un **volume condiviso Docker** (`media-uploads`) montato sui microservizi backend e sul container Nginx.
+- Nginx mappa automaticamente il traffico verso la rotta `/uploads/` per servire istantaneamente le risorse statiche caricate dal backend (video .mp4 e immagini .webp/.jpg) abbattendo a zero l'overhead di rete tra container.
+- Vite dev-server configurato con un proxy apposito per `/uploads`.
+
+### 2. Dashboard Admin Fluida e Avanzata
+- La pagina `AdminDashboard` è stata riprogettata con una UI a "Schede" (Tab).
+- Separazione logica netta tra **Catalogo Foto**, **Catalogo Video** e **Gestione Team**.
+- I form di inserimento ora utilizzano un **Input Calendario Nativo** (`<input type="month">`) per una UX migliore, formattando automaticamente la data stringa sul database ("Gennaio 2026").
+- Migliorati nettamente i placeholder per guidare l'inserimento dati.
+
+### 3. Monitoraggio Attività Team
+- Introdotta la colonna `last_login_at` in `auth-service` (aggiornata in automatico su `/login`).
+- Aggiunta colonna `uploaded_by_email` in `photo-service` e `video-service` (valorizzata tramite JWT `req.staff.email` ai vari POST).
+- Creato `AdminTeamPanel`: un aggregatore intelligente lato frontend in grado di fare interrogazioni parallele (senza onerose JOIN SQL distribuiti) tra `auth-service`, `photo-service` e `video-service`, riepilogando in tempo reale: data ultimo accesso e conteggio esatto dei media caricati da ciascun membro del team.
+
+---
+
+## Refactoring Iniziale
+
+### Obiettivo
 Leggibilità, correttezza, efficienza e pulizia del codice senza alterare
 lo stile visivo o il comportamento dell'applicazione.
 

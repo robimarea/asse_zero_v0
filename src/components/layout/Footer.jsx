@@ -24,6 +24,10 @@ export default function Footer() {
 
           <p className={styles.tagline}>ADV · FILM · MUSIC · SOUND</p>
 
+          <div className={styles.adminLinks} style={{ display: 'flex', gap: '1.5rem', marginTop: '1rem', fontSize: '0.85rem', opacity: 0.6 }}>
+            <a href="/admin/login" style={{ color: 'inherit', textDecoration: 'none' }}>Admin Login</a>
+          </div>
+
         </div>
       </div>
     </footer>

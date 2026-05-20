@@ -48,6 +48,31 @@ export function AdminAuthProvider({ children }) {
     };
   }, [token, clearSession]);
 
+  useEffect(() => {
+    if (!token || !admin) return;
+    
+    let cancelled = false;
+    const ping = async () => {
+      try {
+        await fetch(`${apiBase()}/ping`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` }
+        });
+      } catch (err) {
+        // Ignora errori di rete per il ping
+      }
+    };
+
+    const intervalId = setInterval(() => {
+      if (!cancelled) ping();
+    }, 30000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(intervalId);
+    };
+  }, [token, admin]);
+
   const login = useCallback(async (email, password) => {
     const r = await fetch(`${apiBase()}/login`, {
       method: 'POST',

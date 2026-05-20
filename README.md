@@ -140,6 +140,7 @@ docker compose -f docker-compose.web.yml up --build
 - **Avvio ordinato**: `depends_on` con `condition: service_healthy` per evitare race-condition lato DB.
 - **Nessuna collisione di porte**: solo `docker-compose.mysql.yml` espone `3306` all’host.
 - **DB isolati per stack**: volumi separati per evitare interferenze tra microservizi durante test/demo.
+- **Volume Multimediale Condiviso**: Nginx (`web`), `photo-service` e `video-service` condividono un volume Docker che permette il salvataggio fisico (`multer`) e la lettura immediata senza latenza.
 - **Riusabilità**: i file compose sono indipendenti e riutilizzabili anche in contesti diversi (es. prove parziali in sede).
 
 ---

@@ -9,8 +9,8 @@ services:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
     volumes:
-      - mysql-data:/var/lib/mysql
-      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+      - mysql-data-photo:/var/lib/mysql
+      - ../../docker/mysql/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-prootsecret"]
       interval: 5s
@@ -20,8 +20,8 @@ services:
 
   photo-service:
     build:
-      context: ./services
-      dockerfile: photo-service/Dockerfile
+      context: .
+      dockerfile: Dockerfile
     environment:
       PORT: "4001"
       MYSQL_HOST: mysql

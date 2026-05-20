@@ -56,6 +56,39 @@ async function migrateAuthSchema() {
     );
     console.log('[auth-service] colonna admins.role aggiunta');
   }
+  const [cols2] = await pool.query(
+    `SELECT COLUMN_NAME FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'admins' AND COLUMN_NAME = 'last_login_at'`,
+    [MYSQL_DATABASE],
+  );
+  if (!cols2.length) {
+    await pool.query(
+      `ALTER TABLE admins ADD COLUMN last_login_at TIMESTAMP NULL AFTER created_at`,
+    );
+    console.log('[auth-service] colonna admins.last_login_at aggiunta');
+  }
+  const [cols3] = await pool.query(
+    `SELECT COLUMN_NAME FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'admins' AND COLUMN_NAME = 'last_seen_at'`,
+    [MYSQL_DATABASE],
+  );
+  if (!cols3.length) {
+    await pool.query(
+      `ALTER TABLE admins ADD COLUMN last_seen_at TIMESTAMP NULL AFTER last_login_at`,
+    );
+    console.log('[auth-service] colonna admins.last_seen_at aggiunta');
+  }
+  const [cols4] = await pool.query(
+    `SELECT COLUMN_NAME FROM information_schema.COLUMNS
+     WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'admins' AND COLUMN_NAME = 'is_online'`,
+    [MYSQL_DATABASE],
+  );
+  if (!cols4.length) {
+    await pool.query(
+      `ALTER TABLE admins ADD COLUMN is_online TINYINT(1) NOT NULL DEFAULT 0 AFTER last_seen_at`,
+    );
+    console.log('[auth-service] colonna admins.is_online aggiunta');
+  }
 }
 
 async function ensureDefaultUsers() {
@@ -107,6 +140,16 @@ function requireAuth(req, res, next) {
   } catch {
     res.status(401).json({ error: 'Token non valido o scaduto' });
   }
+}
+
+function requireAdmin(req, res, next) {
+  requireAuth(req, res, () => {
+    if (req.user.role !== 'admin') {
+      res.status(403).json({ error: 'Operazione riservata agli admin' });
+      return;
+    }
+    next();
+  });
 }
 
 const loginLimiter = rateLimit({
@@ -162,6 +205,9 @@ app.post('/login', loginLimiter, async (req, res) => {
       return;
     }
     const role = row.role === 'editor' ? 'editor' : 'admin';
+    
+    await pool.query('UPDATE admins SET last_login_at = NOW(), last_seen_at = NOW(), is_online = 1 WHERE id = ?', [row.id]);
+    
     const token = jwt.sign(
       { sub: String(row.id), email: row.email, role },
       JWT_SECRET,
@@ -178,12 +224,39 @@ app.post('/login', loginLimiter, async (req, res) => {
   }
 });
 
-app.post('/logout', requireAuth, (_req, res) => {
+app.post('/logout', requireAuth, async (req, res) => {
+  try {
+    await pool.query('UPDATE admins SET is_online = 0, last_seen_at = NOW() WHERE id = ?', [req.user.id]);
+  } catch (e) {
+    console.error('Errore update logout:', e);
+  }
   res.json({ ok: true });
+});
+
+app.post('/ping', requireAuth, async (req, res) => {
+  try {
+    await pool.query('UPDATE admins SET last_seen_at = NOW(), is_online = 1 WHERE id = ?', [req.user.id]);
+    res.json({ ok: true });
+  } catch (e) {
+    console.error('Errore update ping:', e);
+    res.status(500).json({ error: 'Errore ping' });
+  }
 });
 
 app.get('/me', requireAuth, (req, res) => {
   res.json({ admin: { id: req.user.id, email: req.user.email, role: req.user.role } });
+});
+
+app.get('/users', apiLimiter, requireAdmin, async (req, res) => {
+  try {
+    const [rows] = await pool.query(
+      'SELECT id, email, role, created_at, last_login_at, last_seen_at, is_online FROM admins ORDER BY role ASC, id ASC'
+    );
+    res.json(rows);
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ error: 'Errore caricamento utenti' });
+  }
 });
 
 const port = Number(PORT) || 4003;
