@@ -1,6 +1,7 @@
 # ASSE ZERO — Docker Compose: MySQL 8 + microservizi cataloghi + auth (JWT) + SPA (nginx gateway).
 # Primo avvio: MySQL esegue gli script in docker/mysql/init (schema + seed).
-# UI: http://localhost:8080  |  MySQL (host): localhost:3306
+# UI/API gateway: http://localhost:8080
+# Produzione Raspberry/ngrok: esporre solo web:8080. MySQL e microservizi restano nella rete Docker.
 #
 # Avvio: docker compose up --build
 # Reset DB (ATTENZIONE: cancella i dati): docker compose down -v
@@ -10,7 +11,7 @@ services:
     image: mysql:8.0
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: rootsecret
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootsecret}
     command:
       - mysqld
       - --character-set-server=utf8mb4
@@ -18,10 +19,8 @@ services:
     volumes:
       - mysql-data:/var/lib/mysql
       - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
-    ports:
-      - "3306:3306"
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-prootsecret"]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$${MYSQL_ROOT_PASSWORD}\""]
       interval: 5s
       timeout: 5s
       retries: 25
@@ -39,8 +38,6 @@ services:
       MYSQL_PASSWORD: appsecret
       MYSQL_DATABASE: photos_svc
       JWT_SECRET: ${JWT_SECRET:-dev_jwt_secret_change_in_production}
-    ports:
-      - "4001:4001"
     volumes:
       - media-uploads:/app/uploads
     depends_on:
@@ -58,8 +55,6 @@ services:
       MYSQL_USER: assezero
       MYSQL_PASSWORD: appsecret
       MYSQL_DATABASE: videos_svc
-    ports:
-      - "4002:4002"
     volumes:
       - media-uploads:/app/uploads
     depends_on:
@@ -79,12 +74,10 @@ services:
       MYSQL_DATABASE: auth_svc
       JWT_SECRET: ${JWT_SECRET:-dev_jwt_secret_change_in_production}
       JWT_EXPIRES_IN: "8h"
-      DEFAULT_ADMIN_EMAIL: admin@assezero.local
-      DEFAULT_ADMIN_PASSWORD: admin_dev_change_me
-      DEFAULT_EDITOR_EMAIL: editor@assezero.local
-      DEFAULT_EDITOR_PASSWORD: editor_dev_change_me
-    ports:
-      - "4003:4003"
+      DEFAULT_ADMIN_EMAIL: ${DEFAULT_ADMIN_EMAIL:-admin@assezero.local}
+      DEFAULT_ADMIN_PASSWORD: ${DEFAULT_ADMIN_PASSWORD:-admin_dev_change_me}
+      DEFAULT_EDITOR_EMAIL: ${DEFAULT_EDITOR_EMAIL:-editor@assezero.local}
+      DEFAULT_EDITOR_PASSWORD: ${DEFAULT_EDITOR_PASSWORD:-editor_dev_change_me}
     depends_on:
       mysql:
         condition: service_healthy

@@ -145,6 +145,33 @@ docker compose -f docker-compose.web.yml up --build
 
 ---
 
+## Deploy Vercel + Raspberry + ngrok
+
+Il frontend su Vercel usa `vercel.json` per inoltrare le chiamate API al backend esposto da ngrok:
+
+```txt
+/api/*     -> https://lurk-rounding-tidiness.ngrok-free.dev/api/*
+/uploads/* -> https://lurk-rounding-tidiness.ngrok-free.dev/uploads/*
+```
+
+Sul Raspberry avvia lo stack backend/gateway:
+
+```bash
+docker compose up --build -d
+```
+
+Poi esponi solo il gateway nginx sulla porta 8080:
+
+```bash
+ngrok http 8080 --domain=lurk-rounding-tidiness.ngrok-free.dev
+```
+
+Nel `docker-compose.yml` solo `web` pubblica una porta host (`8080:80`). MySQL, photo-service, video-service e auth-service restano raggiungibili solo nella rete Docker interna.
+
+Prima del primo avvio sul Raspberry crea un `.env` partendo da `.env.example` e cambia almeno `MYSQL_ROOT_PASSWORD`, `JWT_SECRET`, `DEFAULT_ADMIN_PASSWORD` e `DEFAULT_EDITOR_PASSWORD`.
+
+---
+
 ## Differenze rispetto ad Astro
 
 | Astro | React |
