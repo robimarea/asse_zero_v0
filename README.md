@@ -156,6 +156,8 @@ Il Raspberry serve sia la SPA React sia il gateway API tramite nginx. ngrok espo
 /api/*     -> microservizi backend
 /uploads/* -> file caricati dai microservizi
 /health    -> healthcheck nginx
+
+Upload massimo via nginx: 1 GB. Upload molto grandi dipendono comunque da rete, spazio disco del Raspberry e stabilita del tunnel ngrok.
 ```
 
 Sul Raspberry avvia tutto lo stack:
