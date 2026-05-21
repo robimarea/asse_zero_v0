@@ -1,4 +1,11 @@
-# Nginx API gateway only. The public frontend is built and served by Vercel.
-FROM nginx:1.27-alpine
+# Build Vite SPA then serve it with nginx, which also acts as API gateway.
+FROM node:20-bookworm-slim AS build
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
 
+FROM nginx:1.27-alpine
 COPY docker/nginx.docker.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html
