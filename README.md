@@ -64,6 +64,15 @@ Al termine del caricamento, le seguenti rotte saranno attive:
 * 🌐 **Sito Web & Area Admin (Nginx Gateway)**: [http://localhost:8080](http://localhost:8080)
 * 🗄️ **Database MySQL**: Esposto localmente sulla porta `3306`
 
+> 💡 **Nota per il Database**: Non è possibile accedere a MySQL tramite il browser web (es. `http://localhost:3306/`). 
+> ### 1. Usare un programma "Database Client" (Consigliato)
+> Per esplorare le tabelle e i dati, scarica un client gratuito come **DBeaver**, **TablePlus** o **MySQL Workbench** e connettiti usando queste credenziali:
+> * **Host:** `localhost` (o `127.0.0.1`)
+> * **Port:** `3306`
+> * **Username:** `assezero`
+> * **Password:** `appsecret`
+> * **Database:** `photos_svc`, `videos_svc` o `auth_svc`
+
 ### 3. Arresto e Pulizia dello Stack
 Per fermare i container:
 ```bash

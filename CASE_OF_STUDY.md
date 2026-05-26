@@ -115,6 +115,14 @@ Il server MySQL 8.0 ospita tre schemi isolati per prevenire accoppiamenti logici
 
 La connessione ai database avviene tramite pooling gestito dalla libreria `mysql2/promise`.
 
+> 💡 **Nota per l'esplorazione dati locale**: Non è possibile accedere a MySQL tramite browser web (es. `http://localhost:3306/`).
+> ### 1. Usare un programma "Database Client" (Consigliato)
+> Per esplorare le tabelle e i dati durante lo sviluppo locale, si consiglia di scaricare un client gratuito come **DBeaver**, **TablePlus** o **MySQL Workbench** e connettersi usando queste credenziali:
+> * **Host:** `localhost` (o `127.0.0.1`)
+> * **Port:** `3306`
+> * **Username:** `assezero`
+> * **Password:** `appsecret`
+> * **Database:** `photos_svc`, `videos_svc` o `auth_svc`
 ### 3.3 Migrazioni dello Schema Autonome ed Idempotenti
 Per facilitare il deploy "zero-touch", i microservizi includono al loro avvio una logica di migrazione automatica. Eseguendo query riflessive su `information_schema`, i servizi verificano la presenza di tabelle o colonne ed eseguono query `ALTER TABLE` qualora manchino attributi aggiornati (ad esempio, le colonne di audit `uploaded_by_email` o lo stato `is_online`).
 
