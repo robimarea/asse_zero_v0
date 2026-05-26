@@ -116,10 +116,10 @@ export default function AdminDashboard() {
 function tabStyle(isActive) {
   return {
     padding: '0.65rem 1.25rem',
-    background: isActive ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-    color: isActive ? '#fff' : 'rgba(255, 255, 255, 0.6)',
+    background: isActive ? 'rgb(var(--accent-rgb) / 0.1)' : 'transparent',
+    color: isActive ? 'rgb(var(--accent-rgb))' : 'rgba(255, 255, 255, 0.6)',
     border: 'none',
-    borderBottom: isActive ? '2px solid #fff' : '2px solid transparent',
+    borderBottom: isActive ? '2px solid rgb(var(--accent-rgb))' : '2px solid transparent',
     cursor: 'pointer',
     fontSize: '0.9rem',
     fontWeight: isActive ? 'bold' : 'normal',

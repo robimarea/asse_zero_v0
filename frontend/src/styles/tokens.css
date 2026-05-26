@@ -2,7 +2,7 @@
    Design tokens - Trap editoriale pulita: avorio, bordeaux ossido, rame, petrolio */
 
 :root {
-  --white: #ffffff;
+--white: var(--text-primary);
   --color-bg: #f7f1e8;
   --color-primary: #a3382f;
   --color-secondary: #b7845d;

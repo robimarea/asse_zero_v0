@@ -1,31 +1,14 @@
 {
-  "name": "gerardoromani-react",
+  "name": "asse-zero-root",
   "private": true,
   "version": "1.0.0",
-  "type": "module",
   "scripts": {
-    "dev": "vite --host",
-    "build": "vite build",
-    "preview": "vite preview",
-    "media:photo": "node ./services/photo-service/server.mjs",
-    "media:video": "node ./services/video-service/server.mjs",
-    "media:auth": "node ./services/auth-service/server.mjs",
-    "db:up": "docker compose up -d mysql"
-  },
-  "dependencies": {
-    "framer-motion": "^12.35.2",
-    "gsap": "^3.14.2",
-    "ogl": "^1.0.11",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-helmet-async": "^2.0.5",
-    "react-router-dom": "^7.13.1"
-  },
-  "devDependencies": {
-    "@types/react": "^18.3.1",
-    "@types/react-dom": "^18.3.1",
-    "@vitejs/plugin-react": "^4.3.4",
-    "terser": "^5.46.1",
-    "vite": "^6.0.5"
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend:photo": "npm run dev --prefix backend/photo-service",
+    "dev:backend:video": "npm run dev --prefix backend/video-service",
+    "dev:backend:auth": "npm run dev --prefix backend/auth-service",
+    "docker:up": "docker compose up --build",
+    "docker:down": "docker compose down",
+    "docker:clean": "docker compose down -v"
   }
 }

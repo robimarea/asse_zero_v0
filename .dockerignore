@@ -1,8 +1,10 @@
 node_modules
 dist
 .git
-services/*/node_modules
-services/*/data
+backend/*/node_modules
+backend/*/data
+frontend/node_modules
+frontend/dist
 *.db
 .env
 .env.*

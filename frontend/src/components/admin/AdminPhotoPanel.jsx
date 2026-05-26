@@ -8,46 +8,47 @@ function formatDate(yyyyMmDd) {
   return `${parseInt(d, 10)} ${monthNames[parseInt(m, 10) - 1]} ${y}`;
 }
 
-function videosApiUrl(path = '') {
+function photosApiUrl(path = '') {
   const base = (import.meta.env.VITE_MEDIA_API_BASE ?? '/api').replace(/\/$/, '');
-  return `${base}/videos${path}`;
+  return `${base}/photos${path}`;
 }
 
-export default function AdminVideoPanel() {
+export default function AdminPhotoPanel() {
   const { token, admin } = useAdminAuth();
-  const [videos, setVideos] = useState([]);
+  const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [pending, setPending] = useState(false);
   const [form, setForm] = useState({
-    label: '',
+    title: '',
+    category: '',
     rawDate: '',
-    url: '',
+    src: '',
     desc: '',
     file: null,
   });
 
   const canEdit = admin?.role === 'admin' || admin?.role === 'editor';
 
-  const loadVideos = useCallback(async () => {
+  const loadPhotos = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
-      const r = await fetch(videosApiUrl());
+      const r = await fetch(photosApiUrl());
       if (!r.ok) throw new Error('Lettura catalogo fallita');
       const data = await r.json();
-      setVideos(Array.isArray(data) ? data : []);
+      setPhotos(Array.isArray(data) ? data : []);
     } catch {
-      setError('Impossibile caricare i video.');
-      setVideos([]);
+      setError('Impossibile caricare le foto.');
+      setPhotos([]);
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    loadVideos();
-  }, [loadVideos]);
+    loadPhotos();
+  }, [loadPhotos]);
 
   async function handleAdd(e) {
     e.preventDefault();
@@ -56,16 +57,17 @@ export default function AdminVideoPanel() {
     setError('');
     try {
       const formData = new FormData();
-      formData.append('label', form.label);
+      formData.append('title', form.title);
+      formData.append('category', form.category);
       formData.append('date', formatDate(form.rawDate));
       formData.append('desc', form.desc);
       if (form.file) {
         formData.append('file', form.file);
       } else {
-        formData.append('url', form.url);
+        formData.append('src', form.src);
       }
 
-      const r = await fetch(videosApiUrl(), {
+      const r = await fetch(photosApiUrl(), {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -74,8 +76,8 @@ export default function AdminVideoPanel() {
       });
       const data = await r.json().catch(() => ({}));
       if (!r.ok) throw new Error(data.error || 'Inserimento fallito');
-      setForm({ label: '', rawDate: '', url: '', desc: '', file: null });
-      await loadVideos();
+      setForm({ title: '', category: '', rawDate: '', src: '', desc: '', file: null });
+      await loadPhotos();
     } catch (err) {
       setError(err.message || 'Errore inserimento');
     } finally {
@@ -89,7 +91,7 @@ export default function AdminVideoPanel() {
     setPending(true);
     setError('');
     try {
-      const r = await fetch(videosApiUrl(`/${id}`), {
+      const r = await fetch(photosApiUrl(`/${id}`), {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -98,7 +100,7 @@ export default function AdminVideoPanel() {
         const data = await r.json().catch(() => ({}));
         throw new Error(data.error || 'Eliminazione fallita');
       }
-      await loadVideos();
+      await loadPhotos();
     } catch (err) {
       setError(err.message || 'Errore eliminazione');
     } finally {
@@ -111,9 +113,9 @@ export default function AdminVideoPanel() {
   }
 
   return (
-    <section style={{ marginTop: '3rem' }}>
+    <section style={{ marginTop: '2rem' }}>
       <h2 className="section-title" style={{ fontSize: 'clamp(1rem, 2.5vw, 1.25rem)', marginBottom: '1rem' }}>
-        Catalogo video
+        Catalogo foto
       </h2>
       {error ? (
         <p role="alert" style={{ color: 'var(--color-danger, #c44)', marginBottom: '1rem', fontSize: '0.9rem' }}>
@@ -125,18 +127,27 @@ export default function AdminVideoPanel() {
         onSubmit={handleAdd}
         style={{
           display: 'grid',
-          gap: '0.65rem',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+          gap: '1rem',
           marginBottom: '2rem',
-          padding: '1.25rem',
-          border: '1px solid rgb(var(--accent-rgb) / 0.2)',
-          borderRadius: '6px',
+          padding: '1.5rem',
+          border: '1px solid rgb(var(--accent-rgb) / 0.15)',
+          borderRadius: '8px',
+          background: 'rgba(0, 0, 0, 0.2)'
         }}
       >
-        <p style={{ opacity: 0.75, fontSize: '0.85rem', margin: 0 }}>Aggiungi video: scegli un file mp4 dal computer O inserisci un URL manualmente.</p>
+        <p style={{ gridColumn: '1 / -1', opacity: 0.8, fontSize: '0.9rem', margin: '0 0 0.5rem 0' }}>Aggiungi foto: scegli un file dal computer O inserisci un URL manualmente.</p>
         <input
-          placeholder="Etichetta / Titolo (es. Campagna Estiva)"
-          value={form.label}
-          onChange={(e) => setForm((f) => ({ ...f, label: e.target.value }))}
+          placeholder="Titolo (es. Tramonto in Duomo)"
+          value={form.title}
+          onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+          required
+          style={inp}
+        />
+        <input
+          placeholder="Categoria (es. Ritrattistica, Esterni, Eventi)"
+          value={form.category}
+          onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
           required
           style={inp}
         />
@@ -150,16 +161,16 @@ export default function AdminVideoPanel() {
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           <input
             type="file"
-            accept="video/*"
-            onChange={(e) => setForm((f) => ({ ...f, file: e.target.files[0], url: '' }))}
-            style={{ ...inp, flex: '1 1 auto' }}
+            accept="image/*"
+            onChange={(e) => setForm((f) => ({ ...f, file: e.target.files[0], src: '' }))}
+            style={{ ...inp, flex: '1 1 auto', padding: '0.65rem' }}
           />
           <span style={{ display: 'flex', alignItems: 'center', opacity: 0.6, fontSize: '0.8rem' }}>oppure</span>
           <input
-            placeholder="URL video o link Reel (se non carichi un file)"
-            value={form.url}
+            placeholder="URL immagine"
+            value={form.src}
             disabled={!!form.file}
-            onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
+            onChange={(e) => setForm((f) => ({ ...f, src: e.target.value }))}
             required={!form.file}
             style={{ ...inp, flex: '2 1 auto', opacity: form.file ? 0.5 : 1 }}
           />
@@ -170,22 +181,27 @@ export default function AdminVideoPanel() {
           onChange={(e) => setForm((f) => ({ ...f, desc: e.target.value }))}
           required
           rows={3}
-          style={{ ...inp, resize: 'vertical' }}
+          style={{ ...inp, gridColumn: '1 / -1', resize: 'vertical' }}
         />
         <button
           type="submit"
           disabled={pending}
           style={{
-            padding: '0.65rem 1rem',
+            gridColumn: '1 / -1',
+            padding: '0.85rem 1rem',
             letterSpacing: '0.06em',
-            fontSize: '0.75rem',
-            border: '1px solid rgb(var(--accent-rgb) / 0.35)',
-            background: 'rgb(var(--accent-rgb) / 0.12)',
-            color: 'var(--color-text)',
+            fontSize: '0.85rem',
+            fontWeight: 'bold',
+            borderRadius: '8px',
+            border: 'none',
+            background: 'rgb(var(--accent-rgb))',
+            color: '#000',
             cursor: pending ? 'wait' : 'pointer',
+            transition: 'opacity 0.2s',
+            opacity: pending ? 0.7 : 1
           }}
         >
-          Aggiungi video
+          {pending ? 'Aggiunta in corso...' : 'Aggiungi foto'}
         </button>
       </form>
 
@@ -193,9 +209,9 @@ export default function AdminVideoPanel() {
         <p style={{ opacity: 0.7 }}>Caricamento…</p>
       ) : (
         <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-          {videos.map((p) => (
+          {photos.map((p) => (
             <li
-              key={p.id ?? p.url}
+              key={p.id ?? p.src}
               style={{
                 display: 'flex',
                 alignItems: 'flex-start',
@@ -206,21 +222,13 @@ export default function AdminVideoPanel() {
               }}
             >
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                <div style={{ width: '60px', height: '60px', borderRadius: '4px', overflow: 'hidden', flexShrink: 0, backgroundColor: '#222', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  {p.url && p.url.endsWith('.mp4') ? (
-                    <video src={p.url} style={{ width: '100%', height: '100%', objectFit: 'cover' }} muted />
-                  ) : (
-                    <span style={{ fontSize: '10px', opacity: 0.5 }}>VIDEO</span>
-                  )}
+                <div style={{ width: '60px', height: '60px', borderRadius: '4px', overflow: 'hidden', flexShrink: 0, backgroundColor: '#222' }}>
+                  {p.src && <img src={p.src} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
                 </div>
                 <div>
-                  <strong>{p.label}</strong>
-                  <div style={{ fontSize: '0.8rem', opacity: 0.75 }}>{p.date}</div>
-                  <div style={{ fontSize: '0.75rem', opacity: 0.6, marginTop: '0.25rem' }}>
-                    <a href={p.url} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit' }}>
-                      {p.url}
-                    </a>
-                  </div>
+                  <strong>{p.title}</strong>
+                  <div style={{ fontSize: '0.8rem', opacity: 0.75 }}>{p.category} · {p.date}</div>
+                  <div style={{ fontSize: '0.75rem', opacity: 0.6, marginTop: '0.25rem' }}>{p.src}</div>
                 </div>
               </div>
               {p.id != null ? (
@@ -252,11 +260,12 @@ export default function AdminVideoPanel() {
 
 const inp = {
   width: '100%',
-  padding: '0.65rem 0.85rem',
-  borderRadius: '6px',
-  border: '1px solid rgba(255, 255, 255, 0.25)',
-  background: 'rgba(20, 20, 20, 0.95)',
-  color: '#ffffff',
+  padding: '0.75rem 1rem',
+  borderRadius: '8px',
+  border: '1px solid rgba(0, 0, 0, 0.1)',
+  background: 'rgba(0, 0, 0, 0.05)',
+  color: 'var(--text-primary)',
   fontSize: '0.95rem',
   outline: 'none',
+  transition: 'border-color 0.2s, background 0.2s'
 };
