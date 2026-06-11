@@ -72,11 +72,10 @@ jobs:
           username: ${{ secrets.VPS_USER }}   # Es: pi o tomas
           key: ${{ secrets.SSH_PRIVATE_KEY }} # Chiave SSH privata nei secrets di GitHub
           port: 22
-          host_key_checking: false            # Evita l'errore "Host key verification failed"
           script: |
             set -e
 
-            PROJECT_DIR="/home/$USER/asse_zero_v0"
+            PROJECT_DIR="$HOME/Evoluzione_software/asse_zero_v0"
 
             # Clona il repo se non esiste ancora, altrimenti fa pull
             if [ ! -d "$PROJECT_DIR/.git" ]; then
