@@ -4,7 +4,10 @@
 CREATE DATABASE IF NOT EXISTS photos_svc CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 CREATE DATABASE IF NOT EXISTS videos_svc CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-CREATE USER IF NOT EXISTS 'assezero'@'%' IDENTIFIED BY 'appsecret';
+-- NOTA SICUREZZA: l'utente MySQL 'assezero' e la sua password vengono creati
+-- automaticamente dal container MySQL tramite le variabili MYSQL_USER e MYSQL_PASSWORD
+-- definite in docker-compose.yml (che legge dal file .env).
+-- Non creare l'utente qui per evitare di hardcodare la password in questo file.
 GRANT ALL PRIVILEGES ON photos_svc.* TO 'assezero'@'%';
 GRANT ALL PRIVILEGES ON videos_svc.* TO 'assezero'@'%';
 FLUSH PRIVILEGES;

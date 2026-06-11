@@ -18,6 +18,9 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootsecret}
+      # MySQL auto-creates this user with GRANT ALL on first init
+      MYSQL_USER: ${MYSQL_USER:-assezero}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-appsecret}
     command:
       - mysqld
       - --character-set-server=utf8mb4
@@ -55,6 +58,7 @@ services:
       <<: *db-env
       PORT: "4002"
       MYSQL_DATABASE: videos_svc
+      JWT_SECRET: ${JWT_SECRET:-dev_jwt_secret_change_in_production}
     volumes:
       - media-uploads:/app/uploads
     depends_on:
@@ -70,7 +74,7 @@ services:
       PORT: "4003"
       MYSQL_DATABASE: auth_svc
       JWT_SECRET: ${JWT_SECRET:-dev_jwt_secret_change_in_production}
-      JWT_EXPIRES_IN: "8h"
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-8h}
       DEFAULT_ADMIN_EMAIL: ${DEFAULT_ADMIN_EMAIL:-admin@assezero.local}
       DEFAULT_ADMIN_PASSWORD: ${DEFAULT_ADMIN_PASSWORD:-admin_dev_change_me}
       DEFAULT_EDITOR_EMAIL: ${DEFAULT_EDITOR_EMAIL:-editor@assezero.local}

@@ -4,6 +4,8 @@ import mysql from 'mysql2/promise';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
+import compression from 'compression';
+import crypto from 'crypto';
 
 const {
   MYSQL_HOST = '127.0.0.1',
@@ -89,6 +91,29 @@ async function migrateAuthSchema() {
     );
     console.log('[auth-service] colonna admins.is_online aggiunta');
   }
+
+  // Creazione tabella token_blacklist
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS token_blacklist (
+      token_hash VARCHAR(64) NOT NULL,
+      expires_at TIMESTAMP NOT NULL,
+      PRIMARY KEY (token_hash),
+      KEY idx_blacklist_expiry (expires_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+  console.log('[auth-service] tabella token_blacklist verificata/creata');
+
+  // Creazione tabella upload_logs
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS upload_logs (
+      id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+      file_size_bytes BIGINT NOT NULL,
+      uploaded_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      KEY idx_upload_logs_time (uploaded_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+  console.log('[auth-service] tabella upload_logs verificata/creata');
 }
 
 async function ensureDefaultUsers() {
@@ -116,19 +141,34 @@ async function ensureDefaultUsers() {
   }
 }
 
+function hashToken(token) {
+  return crypto.createHash('sha256').update(token).digest('hex');
+}
+
+async function isTokenBlacklisted(token) {
+  const hash = hashToken(token);
+  const [rows] = await pool.query('SELECT 1 FROM token_blacklist WHERE token_hash = ? LIMIT 1', [hash]);
+  return rows.length > 0;
+}
+
 function bearerToken(req) {
   const h = req.headers.authorization;
   if (!h || !h.startsWith('Bearer ')) return null;
   return h.slice(7).trim();
 }
 
-function requireAuth(req, res, next) {
+async function requireAuth(req, res, next) {
   const token = bearerToken(req);
   if (!token) {
     res.status(401).json({ error: 'Token mancante' });
     return;
   }
   try {
+    const blacklisted = await isTokenBlacklisted(token);
+    if (blacklisted) {
+      res.status(401).json({ error: 'Sessione terminata (token invalidato)' });
+      return;
+    }
     const payload = jwt.verify(token, JWT_SECRET);
     const role = payload.role;
     if (role !== 'admin' && role !== 'editor') {
@@ -169,6 +209,7 @@ const apiLimiter = rateLimit({
 
 const app = express();
 app.set('trust proxy', 1);
+app.use(compression());
 app.use(
   cors({
     origin: true,
@@ -225,6 +266,30 @@ app.post('/login', loginLimiter, async (req, res) => {
 });
 
 app.post('/logout', requireAuth, async (req, res) => {
+  const token = bearerToken(req);
+  if (token) {
+    try {
+      const hash = hashToken(token);
+      let expiresAt = new Date();
+      try {
+        const payload = jwt.decode(token);
+        if (payload && payload.exp) {
+          expiresAt = new Date(payload.exp * 1000);
+        } else {
+          expiresAt.setHours(expiresAt.getHours() + 8);
+        }
+      } catch (_) {
+        expiresAt.setHours(expiresAt.getHours() + 8);
+      }
+      await pool.query(
+        'INSERT IGNORE INTO token_blacklist (token_hash, expires_at) VALUES (?, ?)',
+        [hash, expiresAt]
+      );
+    } catch (err) {
+      console.error('Errore durante la blacklist del token:', err);
+    }
+  }
+
   try {
     await pool.query('UPDATE admins SET is_online = 0, last_seen_at = NOW() WHERE id = ?', [req.user.id]);
   } catch (e) {
@@ -258,6 +323,16 @@ app.get('/users', apiLimiter, requireAdmin, async (req, res) => {
     res.status(500).json({ error: 'Errore caricamento utenti' });
   }
 });
+
+// Cleanup orario blacklist token scaduti
+setInterval(async () => {
+  try {
+    await pool.query('DELETE FROM token_blacklist WHERE expires_at < NOW()');
+    console.log('[auth-service] Cleanup token blacklist scaduti completato.');
+  } catch (err) {
+    console.error('[auth-service] Errore cleanup blacklist:', err);
+  }
+}, 60 * 60 * 1000);
 
 const port = Number(PORT) || 4003;
 

@@ -95,17 +95,19 @@ Il back-end è suddiviso in tre microservizi scritti in **Node.js (ES Modules)**
      * `GET /me`: Verifica e restituisce i dettagli dell'utente connesso (protetto da token).
      * `GET /users`: Restituisce la lista di utenti (riservato al ruolo `admin`).
 2. **`photo-service` (Porta 4001)**:
-   * **Responsabilità**: Catalogazione delle foto e caricamento dei file.
+   * **Responsabilità**: Catalogazione delle foto, caricamento e ottimizzazione dei file.
+   * **Ottimizzazione Media**: Converte automaticamente JPG/PNG in formato WebP (qualità 80) e rimuove l'originale dal disco. Riduce le dimensioni dei file del 70-80% a parità di qualità visiva per massimizzare il punteggio SEO PageSpeed.
    * **Endpoint principali**:
-     * `GET /photos`: Ritorna l'intero catalogo foto (pubblico).
-     * `POST /photos`: Carica una nuova foto tramite Multer e la inserisce a DB (protetto, richiede ruolo staff).
-     * `DELETE /photos/:id`: Rimuove il record e il file fisico associato (protetto).
+     * `GET /photos`: Ritorna l'intero catalogo foto con compressione `gzip` (pubblico).
+     * `POST /photos`: Carica una nuova foto, effettua la conversione a WebP, elimina l'originale ed inserisce il riferimento `.webp` a DB (protetto).
+     * `DELETE /photos/:id`: Rimuove il record e cancella definitivamente il file fisico dal volume condiviso (protetto).
 3. **`video-service` (Porta 4002)**:
    * **Responsabilità**: Catalogazione dei contenuti video.
+   * **Ottimizzazione Media**: Accetta esclusivamente video in formato MP4 per garantire il supporto universale su tutti i dispositivi/browser ed evitare la latenza di transcodifica video.
    * **Endpoint principali**:
-     * `GET /videos`: Elenco dei video (pubblico).
-     * `POST /videos`: Creazione di un nuovo record video (protetto).
-     * `DELETE /videos/:id`: Cancellazione del video (protetto).
+     * `GET /videos`: Elenco dei video con compressione `gzip` (pubblico).
+     * `POST /videos`: Creazione di un nuovo record / upload file MP4 (protetto).
+     * `DELETE /videos/:id`: Rimuove il record e cancella definitivamente il file MP4 fisico dal volume condiviso (protetto).
 
 ### 3.2 Database & Pattern "Database-per-Service"
 Il server MySQL 8.0 ospita tre schemi isolati per prevenire accoppiamenti logici:
@@ -140,13 +142,22 @@ if (!cols.length) {
 }
 ```
 
-### 3.4 Meccanismi di Sicurezza & Resilienza
-* **Autenticazione Stateless (JWT)**: I token sono firmati con chiave asimmetrica/simmetrica `JWT_SECRET` e hanno scadenza predefinita di 8 ore.
+### 3.4 Meccanismi di Sicurezza, Resilienza & Quota Limit
+* **Autenticazione Ibrida (JWT Stateless + Blacklist Stateful)**: 
+  * I token JWT hanno una scadenza originaria di 8 ore per ridurre l'overhead sui server.
+  * **Log-out & Revoca**: Al logout (`POST /logout`), la firma del token viene convertita in hash SHA-256 e memorizzata nella tabella `auth_svc.token_blacklist`.
+  * **Verifica della Blacklist**: Ciascun middleware di controllo accessi (`requireAuth`, `requirePhotoStaff`, `requireVideoStaff`) interroga questa tabella prima di procedere. Se l'hash corrisponde, l'accesso viene negato (sessione invalidata). Un processo orario nel backend provvede ad eliminare i token memorizzati ormai scaduti.
+* **Quota di Caricamento Giornaliera (50 GB / 24 ore)**:
+  * Per evitare attacchi DoS volti a saturare il disco del server (Disk Exhaustion), gli upload vengono tracciati nella tabella `auth_svc.upload_logs` registrando la dimensione in byte di ciascun file salvato fisicamente (WebP per le foto, MP4 per i video).
+  * Prima di elaborare un nuovo caricamento, il microservizio calcola il volume caricato nelle ultime 24 ore. Se la somma supera i **50 GB**, l'upload viene bloccato e il file temporaneo rimosso dal disco.
 * **Controllo dei Ruoli (RBAC)**: I middleware `requireAuth` e `requireAdmin` intercettano le chiamate HTTP e decodificano il payload per accertare il ruolo del richiedente prima di passare al controller.
 * **Rate Limiting**: Configurato tramite `express-rate-limit` per mitigare attacchi Denial of Service (DoS) e Brute-Force:
   * **Brute-Force Protection**: Massimo 12 tentativi su `POST /login` ogni 15 minuti.
   * **Global limits**: Limite di 120 chiamate al minuto per IP su `auth-service`.
   * **Mutation protection**: Massimo 30 operazioni di scrittura al minuto sui cataloghi foto/video per prevenire spam sul disco.
+* **Prevenzione di File Orfani (File Cleanup & Conversion)**:
+  * In caso di errori durante la convalida del form o fallimenti nelle query SQL del database, i file temporanei caricati o generati (es. WebP) vengono immediatamente cancellati fisicamente dal server (`fs.unlinkSync`) evitando sprechi di memoria.
+  * Quando si rimuove una voce di catalogo (`DELETE`), il backend cancella fisicamente e definitivamente i relativi file multimediali dal volume condiviso.
 
 ---
 

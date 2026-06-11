@@ -1,0 +1,225 @@
+.section {
+  margin-top: 2rem;
+  background: var(--bg-surface);
+  border: 1px solid rgba(183, 132, 93, 0.25);
+  border-radius: 12px;
+  padding: 2.5rem;
+  box-shadow: 0 10px 30px rgba(74, 35, 28, 0.04);
+}
+
+.title {
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+  margin-bottom: 0.75rem;
+  font-family: var(--font-display);
+  letter-spacing: 1px;
+}
+
+.description {
+  opacity: 0.85;
+  margin-bottom: 2.5rem;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.error {
+  color: var(--accent-red);
+  font-size: 0.85rem;
+  background: rgba(140, 47, 40, 0.05);
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  border: 1px solid rgba(140, 47, 40, 0.15);
+  font-family: var(--font-mono);
+  margin-bottom: 1.5rem;
+}
+
+.loading {
+  opacity: 0.7;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.25rem;
+}
+
+.listItem {
+  padding: 1.5rem;
+  border: 1px solid rgba(183, 132, 93, 0.2);
+  border-radius: 8px;
+  background: var(--bg-base);
+  box-shadow: 0 4px 12px rgba(74, 35, 28, 0.02);
+  transition: all 0.25s ease;
+}
+
+.listItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(74, 35, 28, 0.06);
+  border-color: rgba(183, 132, 93, 0.35);
+}
+
+.flexContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+@media (min-width: 480px) {
+  .flexContainer {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.infoRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.email {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+.badgeRole {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.roleAdmin {
+  background: rgba(140, 47, 40, 0.08);
+  color: var(--accent-red);
+  border: 1px solid rgba(140, 47, 40, 0.2);
+}
+
+.roleEditor {
+  background: rgba(183, 132, 93, 0.15);
+  color: var(--accent-copper);
+  border: 1px solid rgba(183, 132, 93, 0.3);
+}
+
+.badgeStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.statusOnline {
+  background: rgba(0, 200, 80, 0.08);
+  color: #00a843;
+  border: 1px solid rgba(0, 200, 80, 0.2);
+}
+
+@keyframes statusPulse {
+  0% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(0, 200, 80, 0.7);
+  }
+  70% {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 4px rgba(0, 200, 80, 0);
+  }
+  100% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(0, 200, 80, 0);
+  }
+}
+
+.statusOnlineDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00c850;
+  animation: statusPulse 2s infinite;
+}
+
+.statusOffline {
+  background: rgba(74, 35, 28, 0.05);
+  color: var(--text-muted);
+  border: 1px solid rgba(74, 35, 28, 0.1);
+}
+
+.statusOfflineDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  opacity: 0.6;
+}
+
+.lastSeen {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-top: 0.5rem;
+}
+
+.lastSeen strong {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.statsBox {
+  min-width: 100px;
+  text-align: left;
+  background: var(--bg-surface);
+  padding: 0.75rem 1.1rem;
+  border-radius: 6px;
+  border: 1px solid rgba(183, 132, 93, 0.2);
+  align-self: flex-start;
+}
+
+@media (min-width: 480px) {
+  .statsBox {
+    text-align: right;
+    align-self: center;
+  }
+}
+
+.statsTotal {
+  font-size: 1.35rem;
+  font-weight: 700;
+  font-family: var(--font-display);
+  color: var(--accent-red);
+}
+
+.statsLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.75;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+.statsBreakdown {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+  font-family: var(--font-body);
+}

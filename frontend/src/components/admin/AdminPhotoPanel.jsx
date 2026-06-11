@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useAdminAuth } from '@context/AdminAuthContext';
+import styles from './AdminPhotoPanel.module.css';
 
 const monthNames = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
 function formatDate(yyyyMmDd) {
@@ -113,66 +114,55 @@ export default function AdminPhotoPanel() {
   }
 
   return (
-    <section style={{ marginTop: '2rem' }}>
-      <h2 className="section-title" style={{ fontSize: 'clamp(1rem, 2.5vw, 1.25rem)', marginBottom: '1rem' }}>
+    <section className={styles.section}>
+      <h2 className={`section-title ${styles.title}`}>
         Catalogo foto
       </h2>
       {error ? (
-        <p role="alert" style={{ color: 'var(--color-danger, #c44)', marginBottom: '1rem', fontSize: '0.9rem' }}>
+        <p role="alert" className={styles.error}>
           {error}
         </p>
       ) : null}
 
-      <form
-        onSubmit={handleAdd}
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '1rem',
-          marginBottom: '2rem',
-          padding: '1.5rem',
-          border: '1px solid rgb(var(--accent-rgb) / 0.15)',
-          borderRadius: '8px',
-          background: 'rgba(0, 0, 0, 0.2)'
-        }}
-      >
-        <p style={{ gridColumn: '1 / -1', opacity: 0.8, fontSize: '0.9rem', margin: '0 0 0.5rem 0' }}>Aggiungi foto: scegli un file dal computer O inserisci un URL manualmente.</p>
+      <form onSubmit={handleAdd} className={styles.form}>
+        <p className={styles.formDescription}>Aggiungi foto: scegli un file dal computer O inserisci un URL manualmente.</p>
         <input
           placeholder="Titolo (es. Tramonto in Duomo)"
           value={form.title}
           onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
           required
-          style={inp}
+          className={styles.input}
         />
         <input
           placeholder="Categoria (es. Ritrattistica, Esterni, Eventi)"
           value={form.category}
           onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
           required
-          style={inp}
+          className={styles.input}
         />
         <input
           type="date"
           value={form.rawDate}
           onChange={(e) => setForm((f) => ({ ...f, rawDate: e.target.value }))}
           required
-          style={inp}
+          className={styles.input}
         />
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <div className={styles.fileInputContainer}>
           <input
             type="file"
-            accept="image/*"
+            accept="image/jpeg,image/png"
             onChange={(e) => setForm((f) => ({ ...f, file: e.target.files[0], src: '' }))}
-            style={{ ...inp, flex: '1 1 auto', padding: '0.65rem' }}
+            className={`${styles.input} ${styles.fileInput}`}
           />
-          <span style={{ display: 'flex', alignItems: 'center', opacity: 0.6, fontSize: '0.8rem' }}>oppure</span>
+          <span className={styles.fileOrLabel}>oppure</span>
           <input
             placeholder="URL immagine"
             value={form.src}
             disabled={!!form.file}
             onChange={(e) => setForm((f) => ({ ...f, src: e.target.value }))}
             required={!form.file}
-            style={{ ...inp, flex: '2 1 auto', opacity: form.file ? 0.5 : 1 }}
+            className={`${styles.input} ${styles.urlInput}`}
+            style={{ opacity: form.file ? 0.5 : 1 }}
           />
         </div>
         <textarea
@@ -181,25 +171,12 @@ export default function AdminPhotoPanel() {
           onChange={(e) => setForm((f) => ({ ...f, desc: e.target.value }))}
           required
           rows={3}
-          style={{ ...inp, gridColumn: '1 / -1', resize: 'vertical' }}
+          className={`${styles.input} ${styles.textarea}`}
         />
         <button
           type="submit"
           disabled={pending}
-          style={{
-            gridColumn: '1 / -1',
-            padding: '0.85rem 1rem',
-            letterSpacing: '0.06em',
-            fontSize: '0.85rem',
-            fontWeight: 'bold',
-            borderRadius: '8px',
-            border: 'none',
-            background: 'rgb(var(--accent-rgb))',
-            color: '#000',
-            cursor: pending ? 'wait' : 'pointer',
-            transition: 'opacity 0.2s',
-            opacity: pending ? 0.7 : 1
-          }}
+          className={styles.submitButton}
         >
           {pending ? 'Aggiunta in corso...' : 'Aggiungi foto'}
         </button>
@@ -208,27 +185,17 @@ export default function AdminPhotoPanel() {
       {loading ? (
         <p style={{ opacity: 0.7 }}>Caricamento…</p>
       ) : (
-        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+        <ul className={styles.list}>
           {photos.map((p) => (
-            <li
-              key={p.id ?? p.src}
-              style={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                justifyContent: 'space-between',
-                gap: '1rem',
-                padding: '0.85rem 0',
-                borderBottom: '1px solid rgb(var(--accent-rgb) / 0.12)',
-              }}
-            >
-              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                <div style={{ width: '60px', height: '60px', borderRadius: '4px', overflow: 'hidden', flexShrink: 0, backgroundColor: '#222' }}>
-                  {p.src && <img src={p.src} alt={p.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
+            <li key={p.id ?? p.src} className={styles.listItem}>
+              <div className={styles.mediaContainer}>
+                <div className={styles.imageWrapper}>
+                  {p.src && <img src={p.src} alt={p.title} className={styles.image} />}
                 </div>
                 <div>
                   <strong>{p.title}</strong>
-                  <div style={{ fontSize: '0.8rem', opacity: 0.75 }}>{p.category} · {p.date}</div>
-                  <div style={{ fontSize: '0.75rem', opacity: 0.6, marginTop: '0.25rem' }}>{p.src}</div>
+                  <div className={styles.meta}>{p.category} · {p.date}</div>
+                  <div className={styles.urlText}>{p.src}</div>
                 </div>
               </div>
               {p.id != null ? (
@@ -236,16 +203,7 @@ export default function AdminPhotoPanel() {
                   type="button"
                   disabled={pending}
                   onClick={() => handleDelete(p.id)}
-                  style={{
-                    flexShrink: 0,
-                    padding: '0.4rem 0.65rem',
-                    fontSize: '0.7rem',
-                    letterSpacing: '0.06em',
-                    border: '1px solid rgb(var(--accent-rgb) / 0.35)',
-                    background: 'transparent',
-                    color: 'var(--color-text)',
-                    cursor: pending ? 'wait' : 'pointer',
-                  }}
+                  className={styles.deleteButton}
                 >
                   Rimuovi
                 </button>
@@ -257,15 +215,3 @@ export default function AdminPhotoPanel() {
     </section>
   );
 }
-
-const inp = {
-  width: '100%',
-  padding: '0.75rem 1rem',
-  borderRadius: '8px',
-  border: '1px solid rgba(0, 0, 0, 0.1)',
-  background: 'rgba(0, 0, 0, 0.05)',
-  color: 'var(--text-primary)',
-  fontSize: '0.95rem',
-  outline: 'none',
-  transition: 'border-color 0.2s, background 0.2s'
-};

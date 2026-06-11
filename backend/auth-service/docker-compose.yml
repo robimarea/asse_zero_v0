@@ -1,9 +1,15 @@
+# docker-compose per avviare auth-service in isolamento (sviluppo standalone).
+# Per l'intero stack usa il docker-compose.yml nella root del progetto.
+# Copia ../../.env.example in ../../.env e compila le variabili prima di avviare.
+
 services:
   mysql:
     image: mysql:8.0
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: rootsecret
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootsecret_dev_only}
+      MYSQL_USER: ${MYSQL_USER:-assezero}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-appsecret_dev_only}
     command:
       - mysqld
       - --character-set-server=utf8mb4
@@ -12,7 +18,7 @@ services:
       - mysql-data-auth:/var/lib/mysql
       - ../../docker/mysql/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-prootsecret"]
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$${MYSQL_ROOT_PASSWORD}\""]
       interval: 5s
       timeout: 5s
       retries: 25
@@ -26,15 +32,15 @@ services:
       PORT: "4003"
       MYSQL_HOST: mysql
       MYSQL_PORT: "3306"
-      MYSQL_USER: assezero
-      MYSQL_PASSWORD: appsecret
+      MYSQL_USER: ${MYSQL_USER:-assezero}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-appsecret_dev_only}
       MYSQL_DATABASE: auth_svc
       JWT_SECRET: ${JWT_SECRET:-dev_jwt_secret_change_in_production}
-      JWT_EXPIRES_IN: "8h"
-      DEFAULT_ADMIN_EMAIL: admin@assezero.local
-      DEFAULT_ADMIN_PASSWORD: admin_dev_change_me
-      DEFAULT_EDITOR_EMAIL: editor@assezero.local
-      DEFAULT_EDITOR_PASSWORD: editor_dev_change_me
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-8h}
+      DEFAULT_ADMIN_EMAIL: ${DEFAULT_ADMIN_EMAIL:-admin@assezero.local}
+      DEFAULT_ADMIN_PASSWORD: ${DEFAULT_ADMIN_PASSWORD:-admin_dev_change_me}
+      DEFAULT_EDITOR_EMAIL: ${DEFAULT_EDITOR_EMAIL:-editor@assezero.local}
+      DEFAULT_EDITOR_PASSWORD: ${DEFAULT_EDITOR_PASSWORD:-editor_dev_change_me}
     depends_on:
       mysql:
         condition: service_healthy

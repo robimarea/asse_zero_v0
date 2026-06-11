@@ -1,0 +1,146 @@
+.dashboardContainer {
+  padding: 6rem 1.5rem 4rem;
+  max-width: 54rem;
+  margin: 0 auto;
+}
+
+.dashboardHeader {
+  background: var(--bg-surface);
+  border: 1px solid rgba(183, 132, 93, 0.2);
+  border-radius: 12px;
+  padding: 2.2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px rgba(74, 35, 28, 0.04);
+}
+
+.title {
+  margin-bottom: 0.75rem;
+  font-size: clamp(2rem, 4vw, 2.75rem);
+}
+
+.connectionStatus {
+  opacity: 0.9;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+}
+
+.email {
+  color: var(--accent-red);
+}
+
+.badgeRole {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+}
+
+.roleEditor {
+  background: rgba(183, 132, 93, 0.15);
+  color: var(--accent-copper);
+  border: 1px solid rgba(183, 132, 93, 0.3);
+}
+
+.roleAdmin {
+  background: rgba(140, 47, 40, 0.08);
+  color: var(--accent-red);
+  border: 1px solid rgba(140, 47, 40, 0.2);
+}
+
+.dashboardInfo {
+  opacity: 0.8;
+  line-height: 1.5;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.dashboardInfoFull {
+  opacity: 0.8;
+  line-height: 1.5;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Tabs Bar */
+.tabsContainer {
+  display: flex;
+  background: var(--bg-surface);
+  border: 1px solid rgba(183, 132, 93, 0.15);
+  border-radius: 8px;
+  padding: 0.35rem;
+  gap: 0.25rem;
+  margin-bottom: 2.5rem;
+}
+
+.tabButton {
+  flex: 1;
+  padding: 0.8rem 1.25rem;
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  font-family: var(--font-display);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tabButton:hover {
+  color: var(--accent-red);
+  background: rgba(183, 132, 93, 0.05);
+}
+
+.tabActive {
+  background: var(--accent-red);
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(140, 47, 40, 0.15);
+}
+
+.logoutButton {
+  margin-top: 3rem;
+  padding: 0.85rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border: 1px solid rgba(140, 47, 40, 0.3);
+  background: transparent;
+  color: var(--accent-red);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logoutButton:hover {
+  background: rgba(140, 47, 40, 0.05);
+  border-color: var(--accent-red);
+}
+
+.backLink {
+  margin-top: 2rem;
+  font-size: 0.85rem;
+}
+
+.backLink a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  transition: color 0.2s;
+}
+
+.backLink a:hover {
+  color: var(--accent-red);
+}
