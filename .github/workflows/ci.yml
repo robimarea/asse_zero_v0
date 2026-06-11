@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI — Build & Quality Check
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   # ----------------------------------------------------
-  # JOB 1: Controlli di Qualità e Build (CI)
+  # Controlli di Qualità e Build
   # ----------------------------------------------------
   code-quality-and-build:
     runs-on: ubuntu-latest
@@ -50,49 +50,3 @@ jobs:
 
       - name: Validazione Build Docker Compose
         run: docker compose build
-
-  # ----------------------------------------------------
-  # JOB 2: Deployment Automatico su VPS (CD)
-  # Viene eseguito solo sul branch principale se la CI passa
-  # ----------------------------------------------------
-  deploy:
-    needs: code-quality-and-build
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Connessione alla rete Tailscale
-        uses: tailscale/github-action@v2
-        with:
-          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
-
-      - name: Deploy su VPS via SSH (tramite Tailscale)
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}       # IP Tailscale del Raspberry (es. 100.x.x.x)
-          username: ${{ secrets.VPS_USER }}   # Es: pi o tomas
-          key: ${{ secrets.SSH_PRIVATE_KEY }} # Chiave SSH privata nei secrets di GitHub
-          port: 22
-          script: |
-            set -e
-
-            PROJECT_DIR="$HOME/Evoluzione_software/asse_zero_v0"
-
-            # Clona il repo se non esiste ancora, altrimenti fa pull
-            if [ ! -d "$PROJECT_DIR/.git" ]; then
-              git clone https://github.com/${{ github.repository }}.git "$PROJECT_DIR"
-            fi
-
-            cd "$PROJECT_DIR"
-            git pull origin main
-
-            # Controlla che il file .env esista (va creato manualmente sul Raspberry la prima volta)
-            if [ ! -f ".env" ]; then
-              echo "❌ ERRORE: file .env mancante in $PROJECT_DIR. Crealo manualmente sul Raspberry."
-              exit 1
-            fi
-
-            # Aggiorna i container (build e riavvio)
-            docker compose up -d --build
-
-            # Rimuove immagini vecchie per liberare spazio (importante sul Raspberry)
-            docker image prune -f

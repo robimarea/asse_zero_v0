@@ -1,0 +1,55 @@
+name: CD — Deploy su Raspberry Pi
+
+on:
+  # Si attiva solo quando la CI passa sul branch principale
+  workflow_run:
+    workflows: [ "CI — Build & Quality Check" ]
+    branches: [ "main", "master" ]
+    types:
+      - completed
+
+jobs:
+  # ----------------------------------------------------
+  # Deployment Automatico sul Raspberry Pi via Tailscale
+  # Viene eseguito solo se la CI è passata con successo
+  # ----------------------------------------------------
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Connessione alla rete Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+      - name: Deploy su Raspberry Pi via SSH (tramite Tailscale)
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}       # IP Tailscale del Raspberry (es. 100.x.x.x)
+          username: ${{ secrets.VPS_USER }}   # Es: robimarea
+          key: ${{ secrets.SSH_PRIVATE_KEY }} # Chiave SSH privata nei secrets di GitHub
+          port: 22
+          script: |
+            set -e
+
+            PROJECT_DIR="$HOME/Evoluzione_software/asse_zero_v0"
+
+            # Clona il repo se non esiste ancora, altrimenti fa pull
+            if [ ! -d "$PROJECT_DIR/.git" ]; then
+              git clone https://github.com/${{ github.repository }}.git "$PROJECT_DIR"
+            fi
+
+            cd "$PROJECT_DIR"
+            git pull origin main
+
+            # Controlla che il file .env esista (va creato manualmente sul Raspberry la prima volta)
+            if [ ! -f ".env" ]; then
+              echo "❌ ERRORE: file .env mancante in $PROJECT_DIR. Crealo manualmente sul Raspberry."
+              exit 1
+            fi
+
+            # Aggiorna i container (build e riavvio)
+            docker compose up -d --build
+
+            # Rimuove immagini vecchie per liberare spazio (importante sul Raspberry)
+            docker image prune -f
