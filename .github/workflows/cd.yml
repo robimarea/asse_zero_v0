@@ -3,7 +3,7 @@ name: CD — Deploy su Raspberry Pi
 on:
   # Si attiva solo quando la CI passa sul branch principale
   workflow_run:
-    workflows: [ "CI — Build & Quality Check" ]
+    workflows: [ "CI" ]
     branches: [ "main", "master" ]
     types:
       - completed
