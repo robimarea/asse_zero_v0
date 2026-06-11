@@ -60,22 +60,40 @@ jobs:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy su VPS via SSH
+      - name: Connessione alla rete Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+      - name: Deploy su VPS via SSH (tramite Tailscale)
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.VPS_HOST }}       # IP della VPS Aruba
-          username: ${{ secrets.VPS_USER }}   # Es: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }} # Chiave SSH privata salvata nei secrets di GitHub
-          port: ${{ secrets.VPS_PORT || 22 }}
+          host: ${{ secrets.VPS_HOST }}       # IP Tailscale del Raspberry (es. 100.x.x.x)
+          username: ${{ secrets.VPS_USER }}   # Es: pi o tomas
+          key: ${{ secrets.SSH_PRIVATE_KEY }} # Chiave SSH privata nei secrets di GitHub
+          port: 22
+          host_key_checking: false            # Evita l'errore "Host key verification failed"
           script: |
-            # Naviga nella cartella del progetto sulla VPS
-            cd /var/www/asse_zero_v0 || cd /home/tomas/asse_zero_v0
-            
-            # Scarica l'ultimo codice da GitHub
+            set -e
+
+            PROJECT_DIR="/home/$USER/asse_zero_v0"
+
+            # Clona il repo se non esiste ancora, altrimenti fa pull
+            if [ ! -d "$PROJECT_DIR/.git" ]; then
+              git clone https://github.com/${{ github.repository }}.git "$PROJECT_DIR"
+            fi
+
+            cd "$PROJECT_DIR"
             git pull origin main
-            
-            # Aggiorna i container (build e riavvio in background)
+
+            # Controlla che il file .env esista (va creato manualmente sul Raspberry la prima volta)
+            if [ ! -f ".env" ]; then
+              echo "❌ ERRORE: file .env mancante in $PROJECT_DIR. Crealo manualmente sul Raspberry."
+              exit 1
+            fi
+
+            # Aggiorna i container (build e riavvio)
             docker compose up -d --build
-            
-            # Sfoltisce le immagini Docker vecchie non utilizzate per liberare spazio
+
+            # Rimuove immagini vecchie per liberare spazio (importante sul Raspberry)
             docker image prune -f
