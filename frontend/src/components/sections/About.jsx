@@ -7,22 +7,22 @@ import styles from './About.module.css';
 
 const TEAM_MEMBERS = [
   {
-    name: 'Gerardo Romani',
-    role: 'Direction / Sound Design',
+    name: 'ASSE ZERO Core',
+    role: 'Creative / Direction',
     text:
-      'Guida ogni progetto dal concept alla finalizzazione, tenendo insieme linguaggio visivo, ritmo e identita sonora.',
+      'Un collettivo affiatato di menti creative. Uniamo regia, montaggio e sound design per dare vita a visioni uniche, lavorando in sinergia su ogni fase del progetto.',
   },
   {
     name: 'Production Network',
     role: 'Production / Crew',
     text:
-      'Una rete selezionata di collaboratori tra produzione, camera, styling e post che si adatta a ogni film senza irrigidirlo.',
+      'Una rete selezionata di collaboratori esterni tra dop, scenografia e styling che si integra nel nostro collettivo per supportare produzioni di ogni scala.',
   },
   {
     name: 'Post Pipeline',
-    role: 'Color / Edit / Mix',
+    role: 'Color / Sound / Edit',
     text:
-      'Montaggio, color e mix convivono nello stesso processo per evitare fratture tra idea, set e risultato finale.',
+      'Tutte le fasi della post-produzione avvengono internamente: color grading, sound design e montaggio nascono insieme per garantire la massima coerenza espressiva.',
   },
 ];
 
@@ -124,11 +124,11 @@ export default function About() {
               </div>
               <div className={styles.heroQuote}>
                 <p>
-                  "Non mi interessa fare bei video.
+                  "Non ci interessa fare solo bei video.
                   <br />
-                  Mi interessa fare cose che rimangono."
+                  Ci interessa creare immagini e suoni che lasciano il segno."
                 </p>
-                <cite>Gerardo Romani / Director &amp; Sound Designer</cite>
+                <cite>ASSE ZERO / Creative Collective</cite>
               </div>
             </div>
           </div>

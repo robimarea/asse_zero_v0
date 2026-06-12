@@ -1,6 +1,6 @@
 # ASSE ZERO — Web Platform
 
-Piattaforma web per la vetrina del portfolio cinematografico di Gerardo Romani, basata su architettura a microservizi.
+Piattaforma web per la vetrina del portfolio cinematografico del collettivo ASSE ZERO, basata su architettura a microservizi.
 
 ---
 

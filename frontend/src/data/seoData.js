@@ -49,9 +49,9 @@ export const SEO = {
     title: 'ASSE ZERO | Our Team e direzione creativa',
     heading: 'Our Team ASSE ZERO e direzione creativa',
     description:
-      'Scopri il team di ASSE ZERO, il metodo creativo e il processo produttivo guidato da Gerardo Romani.',
+      'Scopri il team di ASSE ZERO, il metodo creativo e il processo produttivo del nostro collettivo.',
     keywords:
-      'our team, gerardo romani, direzione creativa, produzione video, regia, post produzione',
+      'our team, collettivo, direzione creativa, produzione video, regia, post produzione',
     image: '/photos/4.webp',
     imageAlt: 'Team creativo di ASSE ZERO',
     schemaType: 'AboutPage',

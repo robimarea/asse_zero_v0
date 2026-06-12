@@ -129,9 +129,9 @@ export const VIDEOS = [
 ];
 
 export const CONTACT = {
-  email:        import.meta.env.VITE_CONTACT_EMAIL    ?? 'gerardo@example.com',
-  instagram:    import.meta.env.VITE_INSTAGRAM_HANDLE ?? '@gerardoromani',
-  instagramUrl: import.meta.env.VITE_INSTAGRAM_URL    ?? 'https://instagram.com/gerardoromani',
+  email:        import.meta.env.VITE_CONTACT_EMAIL    ?? 'assezeroinfo@gmail.com',
+  instagram:    import.meta.env.VITE_INSTAGRAM_HANDLE ?? '@assezero',
+  instagramUrl: import.meta.env.VITE_INSTAGRAM_URL    ?? 'https://instagram.com/assezero',
 };
 
 export const PROCESS_STEPS = [

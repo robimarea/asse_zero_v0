@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import SimpleBlurText from '@ui/SimpleBlurText';
 import styles from './Hero.module.css';
 
 export default function Hero() {
@@ -20,7 +19,9 @@ export default function Hero() {
         <span className={styles.topYear}>Roma · MMXXVI</span>
       </div>
 
-      <div className={styles.titleBlock} aria-label="Asse Zero" />
+      <div className={styles.titleBlock}>
+        <h1 className={styles.titleLine}>ASSE ZERO</h1>
+      </div>
 
       <div className={styles.bottomRow}>
         <p className={styles.disciplines}>

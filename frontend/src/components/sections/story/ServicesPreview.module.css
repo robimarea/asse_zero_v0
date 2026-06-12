@@ -52,28 +52,40 @@
   cursor:       pointer;
 }
 
+/* 1. Immagine di sfondo: di base scura, all'hover si illumina */
 .cardBg {
   position:            absolute;
   inset:               0;
   background-size:     cover;
   background-position: center;
-  filter:              brightness(0.35);
+  filter:              brightness(0.35); /* Scuro di base */
   transition:          transform 0.7s ease, filter 0.7s ease;
 }
 
 .card:hover .cardBg {
-  transform: scale(1.05);
-  filter:    brightness(0.55);
+  transform: scale(1.03);
+  filter:    brightness(0.85); /* Si illumina all'hover */
 }
 
+/* 2. Velo: di base scuro (bordeaux scuro), all'hover sfuma in avorio chiaro */
 .cardVeil {
   position: absolute;
   inset:    0;
   background: linear-gradient(
     to top,
-    rgba(3, 9, 10, 0.97) 0%,
-    rgba(3, 9, 10, 0.4)  55%,
+    rgba(36, 24, 22, 0.9) 0%,
+    rgba(36, 24, 22, 0.3) 55%,
     transparent          100%
+  );
+  transition: background 0.7s ease;
+}
+
+.card:hover .cardVeil {
+  background: linear-gradient(
+    to top,
+    rgba(247, 241, 232, 0.96) 0%,   /* Crema del sito all'hover */
+    rgba(247, 241, 232, 0.5)  50%,
+    transparent              100%
   );
 }
 
@@ -86,27 +98,44 @@
   display:        flex;
   flex-direction: column;
   gap:            0.4rem;
+  z-index:        2;
 }
 
+/* 3. Animazione colori dei testi: chiaro di base -> scuro all'hover */
 .cardNum {
   font-family:   'Space Mono', monospace;
   font-size:     0.78rem;
   letter-spacing: 2px;
-  color:         var(--teal-300);
+  color:         var(--teal-200); /* Rame chiaro di base */
+  transition:    color 0.5s ease;
+}
+
+.card:hover .cardNum {
+  color:         var(--text-secondary); /* Bordeaux medio all'hover */
 }
 
 .cardTitle {
   font-family:   'Archivo Black', sans-serif;
   font-size:     clamp(1.5rem, 3vw, 2.2rem);
-  color:         var(--text-primary);
+  color:         #f7f1e8; /* Avorio chiaro di base */
   letter-spacing: -0.5px;
+  transition:    color 0.5s ease;
+}
+
+.card:hover .cardTitle {
+  color:         var(--text-primary); /* Bordeaux scuro all'hover */
 }
 
 .cardSub {
   font-family:   'DM Sans', sans-serif;
   font-size:     0.82rem;
-  color:         var(--teal-200);
+  color:         var(--teal-300); /* Rame più scuro di base */
   letter-spacing: 0.5px;
+  transition:    color 0.5s ease;
+}
+
+.card:hover .cardSub {
+  color:         var(--text-muted); /* Bordeaux chiaro all'hover */
 }
 
 .cardArrow {
@@ -114,13 +143,15 @@
   top:       1.5rem;
   right:     1.5rem;
   font-size: 1.4rem;
-  color:     var(--teal-300);
+  color:     var(--text-secondary);
   opacity:   0;
   transform: translate(-8px, 8px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease, color 0.3s ease;
+  z-index:   2;
 }
 
 .card:hover .cardArrow {
   opacity:   1;
   transform: translate(0, 0);
+  color:     var(--text-primary);
 }

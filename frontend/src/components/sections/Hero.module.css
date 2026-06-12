@@ -43,11 +43,12 @@
 
 .titleLine {
   font-family:    var(--font-display) !important;
-  font-size:      clamp(3rem, 9vw, 11rem);
-  line-height:    0.87;
-  letter-spacing: -0.01em;
+  font-size:      clamp(4.5rem, 15vw, 18rem); /* Ingrandito sensibilmente */
+  line-height:    0.85;
+  letter-spacing: -0.02em;
   color:          var(--text-primary);
   width:          100%;
+  text-align:     center;                     /* Centra il testo all'interno del blocco */
   white-space:    nowrap;
 }
 

@@ -6,10 +6,10 @@ export default function Footer() {
       <div className="container">
         <div className={styles.footerContent}>
 
-          <p className={styles.copyright}>© 2026 Gerardo Romani</p>
+          <p className={styles.copyright}>© 2026 ASSE ZERO</p>
 
           <a
-            href="https://www.instagram.com/"
+            href="https://www.instagram.com/assezero"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.instagramLink}
@@ -24,8 +24,8 @@ export default function Footer() {
 
           <p className={styles.tagline}>ADV · FILM · MUSIC · SOUND</p>
 
-          <div className={styles.adminLinks} style={{ display: 'flex', gap: '1.5rem', marginTop: '1rem', fontSize: '0.85rem', opacity: 0.6 }}>
-            <a href="/admin/login" style={{ color: 'inherit', textDecoration: 'none' }}>Admin Login</a>
+          <div className={styles.adminLinks}>
+            <a href="/admin/login" className={styles.adminButton}>Admin Login</a>
           </div>
 
         </div>
