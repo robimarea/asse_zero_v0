@@ -1,7 +1,7 @@
 # ASSE ZERO — Caso di Studio e Documentazione Architetturale
 ## Corso di Evoluzione del Software
 
-Questo documento costituisce il caso di studio analitico e la documentazione tecnica del progetto **ASSE ZERO**. L'obiettivo è analizzare l'architettura applicativa, le scelte tecnologiche e l'infrastruttura DevOps in vista di un processo di evoluzione ed ingegnerizzazione del software.
+Questo documento costituisce il caso di studio analitico e la documentazione tecnica del progetto **ASSE ZERO**. L'obiettivo è analizzare l'architettura applicativa, le scelte tecnologiche e l'infrastruttura DevOps
 
 ---
 
@@ -21,11 +21,6 @@ Questo documento costituisce il caso di studio analitico e la documentazione tec
 
 **ASSE ZERO** è una piattaforma web concepita come portfolio e archivio multimediale per uno studio creativo. L'applicazione adotta un design editoriale fortemente incentrato su fluidità e micro-interazioni visuali nel front-end, supportato da un back-end distribuito orientato ai microservizi nel back-end.
 
-### Obiettivi Architetturali Principali:
-* **Separazione dei Confini (Bounded Contexts)**: Dividere la gestione dei contenuti fotografici, video e della sicurezza in tre servizi autonomi.
-* **Database-per-Service**: Evitare accoppiamenti di database e consentire a ciascun microservizio di gestire il proprio schema dati in modo indipendente.
-* **Infrastruttura Portabile**: Containerizzare l'intero sistema per permettere build e deploy riproducibili su qualsiasi ambiente (locale, staging o VPS di produzione).
-* **Automazione DevOps**: Sviluppare una pipeline CI/CD per eliminare le operazioni manuali e validare i rilasci.
 
 ```
                   +---------------------------------------+
@@ -246,19 +241,6 @@ Il ciclo di rilascio del software è interamente automatizzato tramite **GitHub 
                               +-----------------------+
 ```
 
-### 6.1 Dettaglio del Processo di Continuous Integration (CI)
-La CI si attiva su push o pull request verso `main` o `master` ed esegue le seguenti fasi:
-* **Dependency Check**: Installa e valida le dipendenze in parallelo sia sul frontend sia sui tre microservizi backend via `npm ci`.
-* **Frontend Build Integrity**: Esegue `npm run build` sul frontend per garantire che non vi siano errori sintattici o import mancanti.
-* **Docker Verification**: Esegue una build pulita di prova dell'intero cluster (`docker compose build`) per assicurare che nessun file Dockerfile o compose yaml contenga definizioni errate.
-
-### 6.2 Dettaglio del Processo di Continuous Deployment (CD)
-Se la CI ha esito positivo e il commit si trova sul branch principale, viene avviato il job `deploy`:
-1. **Connessione Sicura SSH**: Utilizzando `appleboy/ssh-action@v1.0.3` con chiavi cifrate private caricate nei GitHub Secrets.
-2. **Aggiornamento del Codice**: Si posiziona nella directory del progetto sulla VPS Aruba ed effettua il `git pull` degli ultimi sorgenti.
-3. **Ricostruzione Container**: Lancia il comando `docker compose up -d --build` per aggiornare solo i servizi modificati senza interrompere l'esecuzione generale.
-4. **Garbage Collection di Docker**: Rimuove le immagini orfane vecchie (`docker image prune -f`) per prevenire la saturazione del disco della VPS.
-
 ---
 
 ## 7. Comandistica e Script di Automazione
@@ -290,37 +272,3 @@ Il `package.json` della cartella radice è stato configurato per fungere da pann
   `npm run dev:backend:auth` / `npm run dev:backend:photo` / `npm run dev:backend:video`
 
 ---
-
-## 8. Strategia per l'Evoluzione del Software
-
-In un contesto accademico o professionale di **Evoluzione del Software**, il sistema as-is presenta una base eccellente, ma si presta a importanti evoluzioni architetturali per aumentarne la scalabilità, la tolleranza ai guasti e la manutenibilità:
-
-```
-               [Architettura As-Is]                   [Evoluzione Target]
-          +-----------------------------+       +-----------------------------+
-          | - DB MySQL unico           |       | - Istanze DB Cloud separate |
-          | - Volume Docker locale      | ----> | - Object Storage (S3)       |
-          | - Migrazioni hardcoded js   |       | - Strumenti dedicati (Prisma)|
-          | - Gateway Nginx statico     |       | - API Gateway (Kong/APISIX) |
-          +-----------------------------+       +-----------------------------+
-```
-
-### 8.1 Evoluzione dello Storage: Migrazione a Object Storage
-* **Problema attuale**: L'uso del volume locale `media-uploads` vincola i microservizi ad essere eseguiti sullo stesso server fisico del gateway. Questo impedisce di scalare orizzontalmente i microservizi su più istanze o nodi cloud differenti.
-* **Soluzione evolutiva**: Sostituire Multer DiskStorage con un adattatore S3 o Cloud Storage (es. AWS S3, Google Cloud Storage, MinIO). I microservizi caricano i file direttamente su cloud e registrano nel database solo l'URL pubblico assoluto. Nginx viene sollevato dal compito di servire la cartella locale `/uploads/`.
-
-### 8.2 Evoluzione del Database: Disaccoppiamento Fisico e Gestione Migrazioni
-* **Problema attuale**: Sebbene logicamente divisi in tre schemi, i database condividono la stessa istanza fisica di MySQL. Inoltre, le migrazioni del database sono scritte come query "hardcoded" all'avvio del server Express.
-* **Soluzione evolutiva**: 
-  * Assegnare a ciascun microservizio un'istanza fisica o cloud separata (es. istanze AWS RDS separate).
-  * Introdurre uno strumento di migrazione dello schema standardizzato come **Prisma Migrations** o **Liquibase** integrato nelle pipeline di CI/CD, eliminando la logica di migrazione personalizzata dal codice dei server.
-
-### 8.3 Gestione della Configurazione e Sicurezza Avanzata
-* **Problema attuale**: I segreti (come `JWT_SECRET`, password del DB) sono dichiarati nel file `.env` ed esposti come variabili d'ambiente nel server.
-* **Soluzione evolutiva**: Integrare un server di gestione dei segreti come **HashiCorp Vault** o servizi cloud equivalenti. All'avvio del container, il servizio interroga il Vault tramite API protette per ottenere temporaneamente le chiavi di sessione, eliminando la necessità di file `.env` fisici.
-
-### 8.4 Evoluzione DevOps: Test Automatici & Container Registry (CD Avanzato)
-* **Problema attuale**: Mancano i test automatici nella CI e la build avviene direttamente sul server di produzione VPS, consumando risorse CPU e RAM preziose.
-* **Soluzione evolutiva**:
-  1. **Aggiunta test**: Integrare framework come `Vitest` per il frontend e `SuperTest` + `Mocha` per il backend. Aggiornare `.github/workflows/ci.yml` per arrestare la CI in caso di fallimento dei test.
-  2. **Pipeline CD con Container Registry**: Modificare la pipeline di deploy per compilare le immagini Docker internamente alle GitHub Actions e caricarle in un registro privato (GitHub Packages o Docker Hub). La VPS Aruba dovrà solo eseguire `docker pull` delle immagini pre-buildate e riavviare lo stack, riducendo a zero il tempo di compilazione locale e il carico sulla VPS.
